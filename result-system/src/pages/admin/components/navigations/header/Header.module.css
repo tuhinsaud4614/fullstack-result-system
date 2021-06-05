@@ -1,0 +1,51 @@
+.Root {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0.15);
+  background: var(--bs-white);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+}
+
+.Title {
+  font-size: 1.8rem;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--bs-secondary);
+  font-weight: 700;
+}
+
+.NavItems {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.NavItem {
+  margin-left: 1rem;
+}
+
+.NavLink {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bs-gray);
+  font-size: 2.2rem;
+  transition: all 0.3s ease-out;
+}
+
+.NavLink:hover,
+.LinkActive {
+  color: var(--bs-gray-dark);
+  font-weight: 700;
+}
