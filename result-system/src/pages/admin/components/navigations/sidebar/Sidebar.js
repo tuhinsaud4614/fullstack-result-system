@@ -1,25 +1,23 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { BsGrid1X2Fill } from "react-icons/bs";
-import { FiChevronRight } from "react-icons/fi";
+import { FiChevronRight, FiUser } from "react-icons/fi";
 
 import { ADMIN_ROUTES } from "../../../../../routes/meta-data";
 import Backdrop from "../../../../../shared/components/backdrop/Backdrop";
 import styles from "./Sidebar.module.css";
 
-const SubItems = ({ data }) => {
+const SubItems = ({ data, icon, name }) => {
   const [open, setOpen] = useState(false);
-  
+
   return (
     <ul
       className={`${styles.SubItems} ${open ? styles.NavLinkClicked : ""}`}
       onClick={() => setOpen((prev) => !prev)}
     >
       <span className={`${styles.NavLink}`}>
-        <BsGrid1X2Fill />
-        <span className={`mx-3 ${styles.NavLinkText}`}>
-          {ADMIN_ROUTES.dashboard.name}
-        </span>
+        {icon}
+        <span className={`mx-3 ${styles.NavLinkText}`}>{name}</span>
         <FiChevronRight />
       </span>
       {open && (
@@ -30,6 +28,7 @@ const SubItems = ({ data }) => {
                 to={el.path}
                 className={`${styles.SubItemLink}`}
                 activeClassName={`${styles.LinkActive}`}
+                exact
               >
                 {el.name}
               </NavLink>
@@ -56,6 +55,7 @@ const Sidebar = ({ open, onClose }) => {
                     to={ADMIN_ROUTES.dashboard.path}
                     className={`${styles.NavLink}`}
                     activeClassName={`${styles.LinkActive}`}
+                    exact
                   >
                     <BsGrid1X2Fill />
                     <span className={`ms-3 ${styles.NavLinkText}`}>
@@ -65,9 +65,11 @@ const Sidebar = ({ open, onClose }) => {
                 </li>
                 <li>
                   <SubItems
+                    name="Users"
+                    icon={<FiUser />}
                     data={[
-                      { ...ADMIN_ROUTES.dashboard },
-                      { ...ADMIN_ROUTES.dashboard },
+                      { ...ADMIN_ROUTES.users },
+                      { ...ADMIN_ROUTES.addUser },
                     ]}
                   />
                 </li>

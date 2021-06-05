@@ -14,19 +14,19 @@ const Header = ({ onToggle }) => {
 
   return (
     <header className={`px-3 ${styles.Root}`}>
-      <IconButton className={`py-4`} onClick={onToggle}>
+      <IconButton className={`px-2 py-3 fs-3`} onClick={onToggle}>
         <FiMenu />
       </IconButton>
       {currentPath && (
-        <h1 className={`pl-4 ${styles.Title}`}>
+        <h1 className={`ps-2 fs-3 ${styles.Title}`}>
           {ADMIN_ROUTES[currentPath].name}
         </h1>
       )}
-      <ul className={`pl-4 ${styles.NavItems}`}>
-        <li className={`pl-4 ${styles.NavItem}`}>
+      <ul className={`${styles.NavItems}`}>
+        <li className={`${styles.NavItem}`}>
           <NavLink
             to="2"
-            className={`py-4 px-3 ${styles.NavLink}`}
+            className={`px-2 py-3 fs-3 ${styles.NavLink}`}
             activeClassName={`${styles.LinkActive}`}
             exact
           >

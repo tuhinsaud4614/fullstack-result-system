@@ -1,7 +1,7 @@
-import { classNameGenerator } from "../../../utils";
-import styles from "./IconButton.module.css";
+import { classNameGenerator } from "../../utils";
+import styles from "./Index.module.css";
 
-const IconButton = ({
+const Button = ({
   children,
   pending = false,
   disabled = false,
@@ -17,13 +17,13 @@ const IconButton = ({
     <button
       {...rest}
       disabled={disabled}
-      className={`p-2 ${styles.Root}${classNameGenerator(
+      className={`btn ${styles.Root}${classNameGenerator(
         className
-      )}${classNameGenerator(pending ? styles.Pending : null)}`}
+      )}`}
     >
       {pending && <span className={`${styles.PendingBlock}${classNameGenerator(pendingClassName)}`} />}
       {children}
     </button>
   );
 };
-export default IconButton;
+export default Button;

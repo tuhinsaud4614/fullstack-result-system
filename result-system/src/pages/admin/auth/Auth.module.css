@@ -1,0 +1,17 @@
+.Root {
+  height: 100vh;
+  background-color: #fafbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Form {
+  width: 100%;
+  max-width: 576px;
+}
+
+.Title {
+    font-size: 1.6rem;
+    text-align: center;
+} 

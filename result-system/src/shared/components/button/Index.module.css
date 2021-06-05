@@ -1,34 +1,18 @@
-.Root {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--bs-purple);
+.Root { 
   position: relative;
   overflow: hidden;
-  background: transparent;
-  border: none;
-  transition: all 0.3s ease-out;
-}
-
-.Root:hover {
-  color: rgb(107, 94, 174, 0.6);
 }
 
 .Root:disabled {
-  color: rgba(107, 94, 174, 0.4);
-  cursor: not-allowed;
-}
-
-.Pending {
-  font-size: 2rem;
+    cursor: not-allowed;
 }
 
 .PendingBlock {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 1.4em;
-  height: 1.4em;
+  width: 1.2em;
+  height: 1.2em;
   display: inline-block;
   border: 2.5px solid var(--bs-red);
   border-left-color: transparent;
