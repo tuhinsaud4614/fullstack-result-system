@@ -17,7 +17,7 @@ const IconButton = ({
     <button
       {...rest}
       disabled={disabled}
-      className={`p-2 ${styles.Root}${classNameGenerator(
+      className={`${styles.Root}${classNameGenerator(
         className
       )}${classNameGenerator(pending ? styles.Pending : null)}`}
     >

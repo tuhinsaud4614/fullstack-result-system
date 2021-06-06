@@ -4,7 +4,6 @@ import { Route, Switch } from "react-router-dom";
 import { ADMIN_ROUTES } from "./meta-data";
 import Dashboard from "../pages/admin/dashboard";
 import Users from "../pages/admin/users/Users";
-import AddUser from "../pages/admin/add-user/AddUser";
 import NotFound from "../pages/404/404";
 import Header from "../pages/admin/components/navigations/header/Header";
 import Sidebar from "../pages/admin/components/navigations/sidebar/Sidebar";
@@ -26,16 +25,13 @@ const Admin = () => {
           <Sidebar open={isSidebarOpen} onClose={closeSidebar} />
           <section className={`${styles.Content}`}>
             <Header onToggle={toggleSidebar} />
-            <main className={`p-4`}>
+            <main className={`p-3`}>
               <Switch>
                 <Route path={ADMIN_ROUTES.dashboard.path} exact>
                   <Dashboard />
                 </Route>
                 <Route path={ADMIN_ROUTES.users.path} exact>
                   <Users />
-                </Route>
-                <Route path={ADMIN_ROUTES.addUser.path} exact>
-                  <AddUser />
                 </Route>
                 <Route>
                   <NotFound name="Admin" />

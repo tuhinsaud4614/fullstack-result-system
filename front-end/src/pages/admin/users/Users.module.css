@@ -1,0 +1,15 @@
+.DelBtn {
+  color: var(--bs-red);
+}
+
+.DelBtn:hover {
+  color: rgb(220, 53, 69, 0.6);
+}
+
+.DelBtn:disabled {
+  color: rgba(220, 53, 69, 0.4);
+}
+
+.Pending {
+  border-color: var(--bs-warning);
+}

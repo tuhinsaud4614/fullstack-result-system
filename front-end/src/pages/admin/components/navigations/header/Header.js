@@ -18,7 +18,7 @@ const Header = ({ onToggle }) => {
         <FiMenu />
       </IconButton>
       {currentPath && (
-        <h1 className={`ps-2 fs-3 ${styles.Title}`}>
+        <h1 className={`ps-2 fs-4 ${styles.Title}`}>
           {ADMIN_ROUTES[currentPath].name}
         </h1>
       )}

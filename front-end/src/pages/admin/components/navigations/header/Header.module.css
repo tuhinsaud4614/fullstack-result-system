@@ -16,7 +16,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--bs-secondary);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .NavItems {
