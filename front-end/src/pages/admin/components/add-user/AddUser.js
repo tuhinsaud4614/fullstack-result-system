@@ -50,7 +50,7 @@ const AddUser = () => {
             onSubmit={handleSubmit}
             autoComplete="off"
           >
-            <div className={`row mb-3`}>
+            <div className={`row g-3`}>
               <div className={`col-12 col-sm-6`}>
                 <Input
                   label="Forename"
@@ -96,9 +96,9 @@ const AddUser = () => {
                 { name: "Pupil", value: "pupil" },
                 { name: "Teacher", value: "teacher" },
               ]}
-              classes={{ container: "mb-3" }}
+              classes={{ container: "my-3" }}
             />
-            <div className={`row mb-3`}>
+            <div className={`row g-3`}>
               <div className={`col-12 col-sm-6`}>
                 <Input
                   label="Username"
@@ -131,7 +131,7 @@ const AddUser = () => {
               </div>
             </div>
             <Button
-              className={`fs-5 btn-warning btn-lg`}
+              className={`mt-3 fs-5 btn-warning btn-lg`}
               disabled={!(isValid && dirty)}
               type="submit"
               pending={isSubmitting}

@@ -13,3 +13,19 @@
 .Pending {
   border-color: var(--bs-warning);
 }
+
+.EditBtn {
+  color: var(--bs-warning);
+}
+
+.EditBtn:hover {
+  color: rgba(255, 193, 7, 0.6);
+}
+
+.EditBtn:disabled {
+  color: rgba(255, 193, 7, 0.4);
+}
+
+.EditPending {
+  border-color: var(--bs-red);
+}

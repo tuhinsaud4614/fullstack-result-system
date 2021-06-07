@@ -27,13 +27,13 @@ body {
   --xl: 1200px;
   --xxl: 1400px; */
 
-
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   background: transparent;
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 
-::-webkit-scrollbar-thumb{
-  background: var(--bs-gray);
+::-webkit-scrollbar-thumb {
+  background: var(--bs-secondary);
   border-radius: 4px;
 }
