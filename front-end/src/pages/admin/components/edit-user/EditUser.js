@@ -13,7 +13,10 @@ const Schema = Yup.object().shape({
   password: Yup.string().required("Password is required!"),
 });
 
-const EditUser = ({ id, forename, surname, username, password }) => {
+const EditUser = ({
+  data: { id, forename, surname, username, password },
+  onHide,
+}) => {
   const values = {
     forename: forename || "",
     surname: surname || "",
@@ -23,6 +26,7 @@ const EditUser = ({ id, forename, surname, username, password }) => {
 
   const submitted = async (values) => {
     console.log(id, values);
+    onHide();
   };
 
   return (
@@ -43,7 +47,7 @@ const EditUser = ({ id, forename, surname, username, password }) => {
         handleBlur,
       }) => {
         return (
-          <Modal id="modal" data-bs-backdrop="static" data-bs-keyboard="false">
+          <Modal id="modal" onHide={onHide} show={!!id}>
             <Modal.Header label={id} closeBtn />
             <form onSubmit={handleSubmit} autoComplete="off">
               <Modal.Body>

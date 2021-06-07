@@ -1,20 +1,59 @@
+import { createContext, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import { getValidObjectValue } from "../../utils";
 import Body from "./Body";
 import Footer from "./Footer";
 import Header from "./Header";
+import styles from "./index.module.css";
 
-const Modal = ({ classes, children, id = "modal", ...rest }) => {
+export const ModalContext = createContext({
+  onHide: () => {},
+});
+
+const Modal = ({
+  onHide,
+  center,
+  classes,
+  children,
+  staticBack = false,
+  scroll = false,
+  show = false,
+  ...rest
+}) => {
   let root = getValidObjectValue("root", classes);
   let dialog = getValidObjectValue("dialog", classes);
   let content = getValidObjectValue("content", classes);
+
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style = undefined;
+    }
+  }, [show]);
+
   return createPortal(
-    <div className={`modal fade ${root}`} id={id} {...rest}>
-      <div className={`modal-dialog ${dialog}`}>
-        <div className={`modal-content ${content}`}>{children}</div>
-      </div>
-    </div>,
+    <>
+      {show && (
+        <div
+          onClick={staticBack ? () => {} : onHide}
+          className={`${styles.Root} ${root}`}
+          {...rest}
+        >
+          <ModalContext.Provider value={{ onHide: onHide }}>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className={`${styles.Dialog} ${center ? styles.Centered : ""} ${
+                scroll ? styles.Scroll : ""
+              } ${dialog}`}
+            >
+              <div className={`${styles.Content} ${content}`}>{children}</div>
+            </div>
+          </ModalContext.Provider>
+        </div>
+      )}
+    </>,
     document.getElementById("modal-wrapper")
   );
 };

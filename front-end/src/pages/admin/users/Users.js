@@ -4,7 +4,7 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddUser from "../components/add-user/AddUser";
 import EditUser from "../components/edit-user/EditUser";
-import styles from "./Users.module.css";
+// import styles from "./Users.module.css";
 
 const Users = () => {
   return (
@@ -21,14 +21,21 @@ const AllUsers = () => {
   const onEdit = (id) => {
     setEditId(id);
   };
+
+  const onHide = () => {
+    setEditId(null);
+  };
   return (
     <div className={`rounded border p-3`}>
       <EditUser
-        id={editId}
-        forename="for"
-        surname="surname"
-        password="pass"
-        username="user"
+        data={{
+          id: editId,
+          forename: "for",
+          surname: "surname",
+          password: "pass",
+          username: "user",
+        }}
+        onHide={onHide}
       />
       <div className="table-responsive">
         <table className="table">
@@ -51,18 +58,13 @@ const AllUsers = () => {
               <td>Cell</td>
               <td>
                 <IconButton
-                  className={`fs-4 ${styles.EditBtn}`}
-                  pendingClassName={`${styles.EditPending}`}
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal"
+                  className={`fs-4`}
+                  variant="warning"
                   onClick={() => onEdit("1")}
                 >
                   <FiEdit />
                 </IconButton>
-                <IconButton
-                  className={`ms-3 fs-4 ${styles.DelBtn}`}
-                  pendingClassName={`${styles.Pending}`}
-                >
+                <IconButton variant="danger" className={`ms-2 fs-4`}>
                   <FiTrash />
                 </IconButton>
               </td>
@@ -75,18 +77,13 @@ const AllUsers = () => {
               <td>Cell</td>
               <td>
                 <IconButton
-                  className={`fs-4 ${styles.EditBtn}`}
-                  pendingClassName={`${styles.EditPending}`}
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal"
+                  className={`fs-4`}
+                  variant="warning"
                   onClick={() => onEdit("2")}
                 >
                   <FiEdit />
                 </IconButton>
-                <IconButton
-                  className={`ms-3 fs-4 ${styles.DelBtn}`}
-                  pendingClassName={`${styles.Pending}`}
-                >
+                <IconButton variant="danger" className={`ms-2 fs-4`}>
                   <FiTrash />
                 </IconButton>
               </td>
@@ -99,25 +96,21 @@ const AllUsers = () => {
               <td>Cell</td>
               <td>
                 <IconButton
-                  className={`fs-4 ${styles.EditBtn}`}
-                  pendingClassName={`${styles.EditPending}`}
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal"
+                  className={`fs-4`}
+                  variant="warning"
                   onClick={() => onEdit("3")}
+                  pending
+                  spinnerWeight={1.2}
                 >
                   <FiEdit />
                 </IconButton>
-                <IconButton
-                  className={`ms-3 fs-4 ${styles.DelBtn}`}
-                  pendingClassName={`${styles.Pending}`}
-                >
+                <IconButton variant="danger" className={`ms-2 fs-4`} pending>
                   <FiTrash />
                 </IconButton>
               </td>
             </tr>
           </tbody>
         </table>
-      
       </div>
     </div>
   );

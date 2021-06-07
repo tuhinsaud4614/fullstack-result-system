@@ -1,10 +1,10 @@
-.Root { 
+.Root {
   position: relative;
   overflow: hidden;
 }
 
 .Root:disabled {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 .PendingBlock {

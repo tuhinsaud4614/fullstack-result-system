@@ -1,6 +1,8 @@
+import styles from "./index.module.css";
+
 const Body = ({ className = "", children, ...rest }) => {
   return (
-    <div className={`modal-body ${className}`} {...rest}>
+    <div className={`${styles.Body} ${className}`} {...rest}>
       {children}
     </div>
   );
