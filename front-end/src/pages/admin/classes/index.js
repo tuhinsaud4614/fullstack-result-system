@@ -1,3 +1,5 @@
+import {memo} from "react";
+
 import AddClass from "../components/add-class";
 
 const Classes = () => {
@@ -8,4 +10,4 @@ const Classes = () => {
   );
 };
 
-export default Classes;
+export default memo(Classes);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import { ADMIN_ROUTES } from "./meta-data";
@@ -10,11 +10,21 @@ import Users from "../pages/admin/users/Users";
 import Classes from "../pages/admin/classes";
 import NotFound from "../pages/404";
 import styles from "./Admin.module.css";
+import Subjects from "../pages/admin/subjects";
 
 const Admin = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
   const closeSidebar = () => setIsSidebarOpen(false);
+
+  useLayoutEffect(() => {
+    if(window.matchMedia("(min-width: 768px)").matches) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsSidebarOpen(false);
+
+    }
+  }, []);
 
   return (
     <Switch>
@@ -36,6 +46,9 @@ const Admin = () => {
                 </Route>
                 <Route path={ADMIN_ROUTES.classes.path} exact>
                   <Classes />
+                </Route>
+                <Route path={ADMIN_ROUTES.subjects.path} exact>
+                  <Subjects />
                 </Route>
                 <Route>
                   <NotFound />

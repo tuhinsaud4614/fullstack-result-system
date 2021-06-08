@@ -13,7 +13,7 @@ const NotFound = () => {
       <h1 className="text-danger mt-4">
         Page not <span className="fw-bolder">found</span>
       </h1>
-      <p className="my-4 lead">
+      <p className="my-4 lead text-center">
         Oops! Looks like you followed a bad link. If you think this is a problem
         with us, please tell us.
       </p>

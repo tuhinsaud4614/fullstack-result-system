@@ -1,6 +1,6 @@
 import { BsGrid1X2Fill } from "react-icons/bs";
-import { FiUsers } from "react-icons/fi";
-import { SiGoogleclassroom } from "react-icons/si";
+import { FiUsers, FiBook } from "react-icons/fi";
+import { FaUsers } from "react-icons/fa";
 
 import { ADMIN_ROUTES } from "../../../../../routes/meta-data";
 import Backdrop from "../../../../../shared/components/backdrop/Backdrop";
@@ -34,12 +34,20 @@ const Sidebar = ({ open, onClose }) => {
                   {ADMIN_ROUTES.users.name}
                 </NavItem>
                 <NavItem
-                  icon={<SiGoogleclassroom />}
+                  icon={<FaUsers />}
                   to={ADMIN_ROUTES.classes.path}
                   onClose={onClose}
                   exact
                 >
                   {ADMIN_ROUTES.classes.name}
+                </NavItem>
+                <NavItem
+                  icon={<FiBook />}
+                  to={ADMIN_ROUTES.subjects.path}
+                  onClose={onClose}
+                  exact
+                >
+                  {ADMIN_ROUTES.subjects.name}
                 </NavItem>
                 {/* <li>
                   <SubItems
