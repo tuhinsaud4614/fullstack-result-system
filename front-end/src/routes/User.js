@@ -2,7 +2,7 @@ import { Route, Switch } from "react-router-dom";
 
 import { USER_ROUTES } from "./meta-data";
 import Home from "../pages/user/home";
-import NotFound from "../pages/404/404";
+import NotFound from "../pages/404";
 
 const User = () => {
   return (
@@ -11,7 +11,7 @@ const User = () => {
         <Home />
       </Route>
       <Route>
-        <NotFound name="User" />
+        <NotFound />
       </Route>
     </Switch>
   );

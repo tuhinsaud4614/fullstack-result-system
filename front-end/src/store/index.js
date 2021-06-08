@@ -1,20 +1,18 @@
-// import { applyMiddleware, combineReducers, createStore } from "redux";
-// import { composeWithDevTools } from "redux-devtools-extension";
-// import thunk from "redux-thunk";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 
-// import adminSkillReducer from "./admin/skill/reducer";
-// import adminWorkReducer from "./admin/work/reducer";
+import adminUsersReducer from "./admin/users/reducer";
 
-// const rootReducer = combineReducers({
-//   adminSkills: adminSkillReducer,
-//   adminWorks: adminWorkReducer,
-// });
+const rootReducer = combineReducers({
+  adminUsers: adminUsersReducer,
+});
 
-// const store = createStore(
-//   rootReducer,
-//   composeWithDevTools(
-//     applyMiddleware(thunk)
-//   )
-// );
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(
+    applyMiddleware(thunk)
+  )
+);
 
-// export default store;
+export default store;

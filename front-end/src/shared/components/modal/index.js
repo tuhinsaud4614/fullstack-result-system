@@ -1,4 +1,4 @@
-import { createContext, useEffect } from "react";
+import { createContext } from "react";
 import { createPortal } from "react-dom";
 
 import { getValidObjectValue } from "../../utils";
@@ -24,14 +24,6 @@ const Modal = ({
   let root = getValidObjectValue("root", classes);
   let dialog = getValidObjectValue("dialog", classes);
   let content = getValidObjectValue("content", classes);
-
-  useEffect(() => {
-    if (show) {
-      document.body.style.overflowY = "hidden";
-    } else {
-      document.body.style = undefined;
-    }
-  }, [show]);
 
   return createPortal(
     <>

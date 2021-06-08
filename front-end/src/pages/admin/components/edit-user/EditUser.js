@@ -47,7 +47,7 @@ const EditUser = ({
         handleBlur,
       }) => {
         return (
-          <Modal id="modal" onHide={onHide} show={!!id}>
+          <Modal id="modal" onHide={onHide} show={!!id} center scroll staticBack>
             <Modal.Header label={id} closeBtn />
             <form onSubmit={handleSubmit} autoComplete="off">
               <Modal.Body>

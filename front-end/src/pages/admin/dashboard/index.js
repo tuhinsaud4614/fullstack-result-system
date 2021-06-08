@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const Dashboard = () => {
   return (
     <div>
@@ -43,4 +45,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default memo(Dashboard);

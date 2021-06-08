@@ -1,19 +1,10 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddUser from "../components/add-user/AddUser";
 import EditUser from "../components/edit-user/EditUser";
 // import styles from "./Users.module.css";
-
-const Users = () => {
-  return (
-    <>
-      <AddUser />
-      <AllUsers />
-    </>
-  );
-};
 
 const AllUsers = () => {
   const [editId, setEditId] = useState(null);
@@ -99,12 +90,10 @@ const AllUsers = () => {
                   className={`fs-4`}
                   variant="warning"
                   onClick={() => onEdit("3")}
-                  pending
-                  spinnerWeight={1.2}
                 >
                   <FiEdit />
                 </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`} pending>
+                <IconButton variant="danger" className={`ms-2 fs-4`}>
                   <FiTrash />
                 </IconButton>
               </td>
@@ -116,4 +105,13 @@ const AllUsers = () => {
   );
 };
 
-export default Users;
+const Users = () => {
+  return (
+    <>
+      <AddUser />
+      <AllUsers />
+    </>
+  );
+};
+
+export default memo(Users);
