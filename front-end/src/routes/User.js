@@ -11,7 +11,7 @@ const User = () => {
         <Home />
       </Route>
       <Route>
-        <NotFound />
+      <NotFound path={USER_ROUTES.home.path} />
       </Route>
     </Switch>
   );

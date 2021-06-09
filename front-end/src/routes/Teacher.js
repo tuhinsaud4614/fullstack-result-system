@@ -11,7 +11,7 @@ const Teacher = () => {
         <Home />
       </Route>
       <Route>
-        <NotFound />
+      <NotFound path={TEACHER_ROUTES.home.path} />
       </Route>
     </Switch>
   );

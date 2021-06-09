@@ -51,7 +51,7 @@ const Admin = () => {
                   <Subjects />
                 </Route>
                 <Route>
-                  <NotFound />
+                  <NotFound path={ADMIN_ROUTES.dashboard.path} />
                 </Route>
               </Switch>
             </main>

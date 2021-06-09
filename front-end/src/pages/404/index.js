@@ -1,12 +1,9 @@
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import img from "../../assets/404.svg";
-import Button from "../../shared/components/button";
 import styles from "./Index.module.css";
 
-const NotFound = () => {
-  const { goBack } = useHistory();
-
+const NotFound = ({ path }) => {
   return (
     <div className={`${styles.Root}`}>
       <img src={img} alt="Page Not Found" className="img-fluid w-75" />
@@ -17,9 +14,9 @@ const NotFound = () => {
         Oops! Looks like you followed a bad link. If you think this is a problem
         with us, please tell us.
       </p>
-      <Button className="btn-info" type="button" onClick={() => goBack()}>
-        Go Back
-      </Button>
+      <Link className="btn btn-danger" to={path}>
+        Go Back Home
+      </Link>
     </div>
   );
 };
