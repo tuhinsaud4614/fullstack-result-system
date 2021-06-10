@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import useMultiSourceData from "../../../../shared/hooks/fetch-multi-source-data";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Select from "../../../../shared/components/select";
@@ -9,50 +9,43 @@ import styles from "./Index.module.css";
 
 const Schema = Yup.object().shape({
   name: Yup.string().required("Name is required!"),
-  className: Yup.string().required("Class name is required!"),
+  className: Yup.string().required("Class is required!"),
   teacher: Yup.string().required("Teacher is required"),
 });
 
+const x = new Promise((res, rej) => {
+  setTimeout(() => {
+    res([
+      { name: "Red", value: "red" },
+      { name: "Green", value: "green" },
+    ]);
+  }, 3000);
+});
+
+const y = new Promise((res, rej) => {
+  setTimeout(() => {
+    res([
+      { name: "Yellow", value: "yellow" },
+      { name: "Blue", value: "blue" },
+    ]);
+  }, 2000);
+});
+
 const AddSubject = () => {
-  const [loading, setLoading] = useState("idle");
-  const [classes, setClasses] = useState(null);
-  const [teachers, setTeachers] = useState(null);
+  const {
+    status,
+    data: [all, error],
+  } = useMultiSourceData(x, y);
 
-  useEffect(() => {
-    (async () => {
-      const classes = new Promise((res, rej) => {
-        setTimeout(() => {
-          res([
-            { name: "Red", value: "red" },
-            { name: "Green", value: "green" },
-          ]);
-        }, 3000);
-      });
-
-      const teachers = new Promise((res, rej) => {
-        setTimeout(() => {
-          res([
-            { name: "Yellow", value: "yellow" },
-            { name: "Blue", value: "blue" },
-          ]);
-        }, 2000);
-      });
-
-      setLoading("loading");
-      const all = await Promise.all([classes, teachers]);
-      setLoading("complete");
-      setClasses(all[0]);
-      setTeachers(all[1]);
-    })();
-  }, []);
-
-  if (loading === "idle") {
+  if (status === "idle") {
     return null;
   }
 
-  if (loading === "loading") {
+  if (status === "loading") {
     return (
-      <div className={`${styles.Form} rounded-1 border mb-3 p-3 d-flex justify-content-center`}>
+      <div
+        className={`${styles.Form} rounded-1 border mb-3 p-3 d-flex justify-content-center`}
+      >
         <div className="spinner-grow text-danger" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -60,12 +53,22 @@ const AddSubject = () => {
     );
   }
 
+  if (status === "complete" && error) {
+    return (
+      <div className={`${styles.Form} mb-3 alert alert-danger`} role="alert">
+        Something went wong!
+      </div>
+    );
+  }
+
   if (
-    loading === "complete" &&
-    (!Array.isArray(classes) ||
-      !Array.isArray(teachers) ||
-      !classes.length ||
-      !teachers.length)
+    status === "complete" &&
+    (!Array.isArray(all) ||
+      all.length !== 2 ||
+      !Array.isArray(all[0]) ||
+      !Array.isArray(all[1]) ||
+      !all[0].length ||
+      !all[1].length)
   ) {
     return (
       <div className={`${styles.Form} rounded-1 border mb-3 p-3`}>
@@ -77,10 +80,13 @@ const AddSubject = () => {
     );
   }
 
+  const classes = all[0];
+  const teachers = all[1];
+
   const values = {
     name: "",
-    className: "",
-    teacher: "",
+    className: classes[0]["value"],
+    teacher: teachers[0]["value"],
   };
 
   const submitted = async (values) => {
@@ -88,7 +94,7 @@ const AddSubject = () => {
   };
 
   return (
-    loading === "complete" && (
+    status === "complete" && (
       <Formik
         initialValues={values}
         onSubmit={submitted}
@@ -136,7 +142,7 @@ const AddSubject = () => {
                         ? errors.className
                         : null
                     }
-                    defaultValue={classes[0]}
+                    defaultValue={classes[0]["value"]}
                     options={classes}
                   />
                 </div>
@@ -150,7 +156,7 @@ const AddSubject = () => {
                     errorText={
                       touched.teacher && errors.teacher ? errors.teacher : null
                     }
-                    defaultValue={teachers[0]}
+                    defaultValue={teachers[0]["value"]}
                     options={teachers}
                   />
                 </div>

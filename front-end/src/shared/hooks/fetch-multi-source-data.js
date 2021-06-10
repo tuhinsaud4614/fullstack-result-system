@@ -2,37 +2,20 @@ import { useEffect, useState } from "react";
 
 function useMultiSourceData(...source) {
   const [status, setStatus] = useState("idle");
-  const [data, setData] = useState([null, null]);
+  const [data, setData] = useState([null, false]);
 
   useEffect(() => {
     (async () => {
-      //   const classes = new Promise((res, rej) => {
-      //     setTimeout(() => {
-      //       res([
-      //         { name: "Red", value: "red" },
-      //         { name: "Green", value: "green" },
-      //       ]);
-      //     }, 3000);
-      //   });
-
-      //   const teachers = new Promise((res, rej) => {
-      //     setTimeout(() => {
-      //       res([
-      //         { name: "Yellow", value: "yellow" },
-      //         { name: "Blue", value: "blue" },
-      //       ]);
-      //     }, 2000);
-      //   });
-
       setStatus("loading");
       try {
         const all = await Promise.all(source);
-        setData([all, null]);
+        setData([all, false]);
       } catch (error) {
-        setData([null, error]);
+        setData([null, true]);
       }
       setStatus("complete");
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { status: status, data: data };

@@ -4,7 +4,7 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddUser from "../components/add-user/AddUser";
 import EditUser from "../components/edit-user/EditUser";
-// import styles from "./Users.module.css";
+import styles from "./Users.module.css";
 
 const AllUsers = () => {
   const [editId, setEditId] = useState(null);
@@ -47,7 +47,7 @@ const AllUsers = () => {
               <td>Cell</td>
               <td>Cell</td>
               <td>Cell</td>
-              <td>
+              <td className={`${styles.Actions}`}>
                 <IconButton
                   className={`fs-4`}
                   variant="warning"
@@ -66,7 +66,7 @@ const AllUsers = () => {
               <td>Cell</td>
               <td>Cell</td>
               <td>Cell</td>
-              <td>
+              <td className={`${styles.Actions}`}>
                 <IconButton
                   className={`fs-4`}
                   variant="warning"
@@ -85,7 +85,7 @@ const AllUsers = () => {
               <td>Cell</td>
               <td>Cell</td>
               <td>Cell</td>
-              <td>
+              <td className={`${styles.Actions}`}>
                 <IconButton
                   className={`fs-4`}
                   variant="warning"
