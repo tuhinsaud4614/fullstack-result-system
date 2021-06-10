@@ -1,5 +1,23 @@
 import { useEffect, useState } from "react";
 
+// const x = new Promise((res, rej) => {
+//   setTimeout(() => {
+//     res([
+//       { name: "Red", value: "red" },
+//       { name: "Green", value: "green" },
+//     ]);
+//   }, 3000);
+// });
+
+// const y = new Promise((res, rej) => {
+//   setTimeout(() => {
+//     res([
+//       { name: "Yellow", value: "yellow" },
+//       { name: "Blue", value: "blue" },
+//     ]);
+//   }, 2000);
+// });
+
 function useMultiSourceData(...source) {
   const [status, setStatus] = useState("idle");
   const [data, setData] = useState([null, false]);

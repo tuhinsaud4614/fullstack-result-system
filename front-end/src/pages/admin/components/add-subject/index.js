@@ -1,7 +1,9 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import useMultiSourceData from "../../../../shared/hooks/fetch-multi-source-data";
+import { fetchingOptions } from "../../../../store/admin/utility/add-subject/actions";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Select from "../../../../shared/components/select";
@@ -13,29 +15,15 @@ const Schema = Yup.object().shape({
   teacher: Yup.string().required("Teacher is required"),
 });
 
-const x = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      { name: "Red", value: "red" },
-      { name: "Green", value: "green" },
-    ]);
-  }, 3000);
-});
-
-const y = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      { name: "Yellow", value: "yellow" },
-      { name: "Blue", value: "blue" },
-    ]);
-  }, 2000);
-});
-
 const AddSubject = () => {
-  const {
-    status,
-    data: [all, error],
-  } = useMultiSourceData(x, y);
+  const rdxDispatch = useDispatch();
+  const { status, classes, teachers, error } = useSelector(
+    (state) => state.adminUtilitySubjectOptions
+  );
+
+  useEffect(() => {
+    rdxDispatch(fetchingOptions());
+  }, [rdxDispatch]);
 
   if (status === "idle") {
     return null;
@@ -61,15 +49,7 @@ const AddSubject = () => {
     );
   }
 
-  if (
-    status === "complete" &&
-    (!Array.isArray(all) ||
-      all.length !== 2 ||
-      !Array.isArray(all[0]) ||
-      !Array.isArray(all[1]) ||
-      !all[0].length ||
-      !all[1].length)
-  ) {
+  if (status === "complete" && (!classes.length || !teachers.length)) {
     return (
       <div className={`${styles.Form} rounded-1 border mb-3 p-3`}>
         <p className="text-danger m-0">
@@ -79,9 +59,6 @@ const AddSubject = () => {
       </div>
     );
   }
-
-  const classes = all[0];
-  const teachers = all[1];
 
   const values = {
     name: "",

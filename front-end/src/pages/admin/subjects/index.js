@@ -1,5 +1,6 @@
 import { memo, useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import { BsFileEarmarkArrowDown } from "react-icons/bs";
 
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddSubject from "../components/add-subject";
@@ -54,6 +55,9 @@ const AllSubjects = () => {
                 >
                   <FiEdit />
                 </IconButton>
+                <IconButton className={`ms-2 fs-4`} variant="primary">
+                  <BsFileEarmarkArrowDown />
+                </IconButton>
                 <IconButton variant="danger" className={`ms-2 fs-4`}>
                   <FiTrash />
                 </IconButton>
@@ -72,6 +76,9 @@ const AllSubjects = () => {
                 >
                   <FiEdit />
                 </IconButton>
+                <IconButton className={`ms-2 fs-4`} variant="primary">
+                  <BsFileEarmarkArrowDown />
+                </IconButton>
                 <IconButton variant="danger" className={`ms-2 fs-4`}>
                   <FiTrash />
                 </IconButton>
@@ -89,6 +96,9 @@ const AllSubjects = () => {
                   onClick={() => onEdit("3")}
                 >
                   <FiEdit />
+                </IconButton>
+                <IconButton className={`ms-2 fs-4`} variant="primary">
+                  <BsFileEarmarkArrowDown />
                 </IconButton>
                 <IconButton variant="danger" className={`ms-2 fs-4`}>
                   <FiTrash />
