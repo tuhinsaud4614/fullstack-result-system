@@ -14,7 +14,7 @@ const NotFound = ({ path }) => {
         Oops! Looks like you followed a bad link. If you think this is a problem
         with us, please tell us.
       </p>
-      <Link className="btn btn-danger" to={path}>
+      <Link className="btn btn-danger" style={{width: "max-content"}} to={path}>
         Go Back Home
       </Link>
     </div>

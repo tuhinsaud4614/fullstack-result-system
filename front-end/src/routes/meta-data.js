@@ -6,6 +6,11 @@ export const ADMIN_ROUTES = {
   subjects: { name: "Subjects", path: "/admin/subjects" },
 };
 
-export const TEACHER_ROUTES = { home: { name: "Home", path: "/teacher" } };
+export const TEACHER_ROUTES = {
+  auth: { name: "Auth", path: "/teacher/auth" },
+  home: { name: "Home", path: "/teacher" },
+  pupils: { name: "Pupils", path: "/teacher/pupils" },
+  test: { name: "Test", path: "/teacher/test" },
+};
 
 export const USER_ROUTES = { home: { name: "Home", path: "/" } };
