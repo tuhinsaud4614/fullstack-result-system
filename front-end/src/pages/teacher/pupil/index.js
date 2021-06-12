@@ -1,6 +1,10 @@
+import { useParams } from "react-router-dom";
+
 import styles from "./Index.module.css";
 
 const Pupil = () => {
+  const params = useParams();
+  console.log(params);
   return (
     <div className={`rounded border p-3`}>
       <div className="table-responsive">

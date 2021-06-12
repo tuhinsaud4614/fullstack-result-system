@@ -9,8 +9,9 @@ export const ADMIN_ROUTES = {
 export const TEACHER_ROUTES = {
   auth: { name: "Auth", path: "/teacher/auth" },
   home: { name: "Home", path: "/teacher" },
-  pupils: { name: "Pupils", path: "/teacher/pupils" },
-  test: { name: "Test", path: "/teacher/test" },
+  tests: { name: "Tests", path: "/teacher/:subjectId" },
+  pupils: { name: "Pupils", path: "/teacher/:subjectId/pupils" },
+  testDetail: { name: "TestDetail", path: "/teacher/:subjectId/test/:testId" },
 };
 
 export const USER_ROUTES = { home: { name: "Home", path: "/" } };

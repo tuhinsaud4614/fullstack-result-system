@@ -7,6 +7,7 @@ import NotFound from "../pages/404";
 import Pupil from "../pages/teacher/pupil";
 import Auth from "../pages/teacher/auth/Auth";
 import Test from "../pages/teacher/test";
+import TestDetail from "../pages/teacher/test-deatil";
 
 const Teacher = () => {
   return (
@@ -24,8 +25,11 @@ const Teacher = () => {
             <Route path={TEACHER_ROUTES.pupils.path} exact>
               <Pupil />
             </Route>
-            <Route path={TEACHER_ROUTES.test.path} exact>
+            <Route path={TEACHER_ROUTES.tests.path} exact>
               <Test />
+            </Route>
+            <Route path={TEACHER_ROUTES.testDetail.path} exact>
+              <TestDetail />
             </Route>
             <Route>
               <NotFound path={TEACHER_ROUTES.home.path} />

@@ -41,7 +41,7 @@ const AddClass = () => {
             onSubmit={handleSubmit}
             autoComplete="off"
           >
-            <div className={`d-flex`}>
+            <div className={`d-flex align-items-start`}>
               <div className="flex-grow-1">
                 <Input
                   label="Forename"
@@ -58,7 +58,7 @@ const AddClass = () => {
                 />
               </div>
               <Button
-                className={`ms-3 fs-5 btn-warning btn-lg`}
+                className={`ms-3 fs-5 btn-warning`}
                 disabled={!(isValid && dirty)}
                 type="submit"
                 pending={isSubmitting}

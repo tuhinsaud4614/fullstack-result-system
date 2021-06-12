@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { FiEdit, FiEye, FiTrash } from "react-icons/fi";
-import { useHistory, useLocation } from "react-router-dom";
+import { FiEdit, FiTrash } from "react-icons/fi";
+import { useParams } from "react-router-dom";
 
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
-import AddTest from "../components/add-test";
-import EditTest from "../components/edit-test";
+import AddGrade from "../components/add-grade";
+import EditGrade from "../components/edit-grade";
 import styles from "./Index.module.css";
 
-const AllTests = () => {
-  const { pathname } = useLocation();
-  const { push } = useHistory();
+const AllPupils = () => {
   const [editId, setEditId] = useState(null);
 
   const onEdit = (id) => {
@@ -22,11 +20,12 @@ const AllTests = () => {
   return (
     <div className={`rounded border p-3`}>
       {editId && (
-        <EditTest
+        <EditGrade
           data={{
             id: editId,
-            name: "X",
-            date: new Date().toISOString().split("T")[0],
+            subject_id: "1",
+            teacher_id: "1",
+            grade: 1.5,
           }}
           onHide={onHide}
         />
@@ -36,8 +35,9 @@ const AllTests = () => {
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Date</th>
+              <th scope="col">Forename</th>
+              <th scope="col">Surname</th>
+              <th scope="col">Grade</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -46,18 +46,10 @@ const AllTests = () => {
               <th scope="row">1</th>
               <td>Cell</td>
               <td>Cell</td>
+              <td>Cell</td>
               <td className={`${styles.Actions}`}>
                 <IconButton
-                  variant="primary"
                   className={`fs-4`}
-                  onClick={() => {
-                    push(`${pathname}/test/1`);
-                  }}
-                >
-                  <FiEye />
-                </IconButton>
-                <IconButton
-                  className={`ms-2 fs-4`}
                   variant="warning"
                   onClick={() => onEdit("1")}
                 >
@@ -72,18 +64,10 @@ const AllTests = () => {
               <th scope="row">2</th>
               <td>Cell</td>
               <td>Cell</td>
+              <td>Cell</td>
               <td className={`${styles.Actions}`}>
                 <IconButton
-                  variant="primary"
                   className={`fs-4`}
-                  onClick={() => {
-                    push(`${pathname}/test/2`);
-                  }}
-                >
-                  <FiEye />
-                </IconButton>
-                <IconButton
-                  className={`ms-2 fs-4`}
                   variant="warning"
                   onClick={() => onEdit("2")}
                 >
@@ -98,18 +82,10 @@ const AllTests = () => {
               <th scope="row">3</th>
               <td>Cell</td>
               <td>Cell</td>
+              <td>Cell</td>
               <td className={`${styles.Actions}`}>
                 <IconButton
-                  variant="primary"
                   className={`fs-4`}
-                  onClick={() => {
-                    push(`${pathname}/test/3`);
-                  }}
-                >
-                  <FiEye />
-                </IconButton>
-                <IconButton
-                  className={`ms-2 fs-4`}
                   variant="warning"
                   onClick={() => onEdit("3")}
                 >
@@ -127,13 +103,15 @@ const AllTests = () => {
   );
 };
 
-const Test = () => {
+const TestDetail = () => {
+  const params = useParams();
+  console.log(params);
   return (
     <>
-      <AddTest />
-      <AllTests />
+      <AddGrade />
+      <AllPupils />
     </>
   );
 };
 
-export default Test;
+export default TestDetail;

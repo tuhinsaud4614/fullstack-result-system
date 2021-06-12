@@ -1,9 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { BsBoxArrowRight, BsPeopleCircle } from "react-icons/bs";
-import { IoBookSharp } from "react-icons/io5";
+import { FiUsers } from "react-icons/fi";
 
 import styles from "./Index.module.css";
-import { TEACHER_ROUTES } from "../../../../routes/meta-data";
+import {
+  ADMIN_ROUTES,
+  TEACHER_ROUTES,
+  USER_ROUTES,
+} from "../../../../routes/meta-data";
 
 const Header = () => {
   return (
@@ -24,7 +28,7 @@ const Header = () => {
           >
             <li>
               <NavLink
-                to={TEACHER_ROUTES.pupils.path}
+                to={ADMIN_ROUTES.dashboard.path}
                 className={`nav-link ${styles.Link}`}
                 activeClassName="text-danger"
                 exact
@@ -32,20 +36,18 @@ const Header = () => {
                 <BsPeopleCircle
                   className={`${styles.Icon} d-block mx-auto mb-1`}
                 />
-                {TEACHER_ROUTES.pupils.name}
+                Admin
               </NavLink>
             </li>
             <li>
               <NavLink
-                to={TEACHER_ROUTES.test.path}
+                to={USER_ROUTES.home.path}
                 className={`nav-link ${styles.Link}`}
                 activeClassName="text-danger"
                 exact
               >
-                <IoBookSharp
-                  className={`${styles.Icon} d-block mx-auto mb-1`}
-                />
-                {TEACHER_ROUTES.test.name}
+                <FiUsers className={`${styles.Icon} d-block mx-auto mb-1`} />
+                Pupils
               </NavLink>
             </li>
             <li>
