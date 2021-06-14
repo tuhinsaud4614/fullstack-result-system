@@ -1,6 +1,8 @@
+import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import { editTest } from "../../../../store/teacher/tests/actions";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Modal from "../../../../shared/components/modal";
@@ -16,14 +18,16 @@ const Schema = Yup.object().shape({
     ),
 });
 
-const EditTest = ({ data: { id, name, date }, onHide }) => {
+const EditTest = ({ data: { id, name, date }, subjectId, onHide }) => {
+  const rdxDispatch = useDispatch();
   const values = {
     name: name || "",
     date: date || "",
   };
 
-  const submitted = async (values) => {
-    console.log(id, values);
+  const submitted = async (values, {resetForm}) => {
+    await rdxDispatch(editTest(subjectId, { id: id, ...values }));
+    resetForm();
     onHide();
   };
 

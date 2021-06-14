@@ -15,7 +15,7 @@
   height: 1.2em;
   display: inline-block;
   border: 2.5px solid var(--bs-red);
-  border-left-color: transparent;
+  border-left-color: transparent !important;
   border-radius: 50%;
   transform: rotate(0deg) translate(-50%, -50%);
   animation: animation 0.8s linear infinite;

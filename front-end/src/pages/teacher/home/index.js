@@ -2,18 +2,18 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
-import { fetchingPupilsAverageGrade } from "../../../store/teacher/average-grades/actions";
+import { fetchingAssignedSubject } from "../../../store/teacher/assigned-subjects/actions";
 import styles from "./Index.module.css";
 
 const Home = () => {
   const { pathname } = useLocation();
   const rdxDispatch = useDispatch();
   const { status, data, error } = useSelector(
-    (state) => state.teacherAverageGrade
+    (state) => state.teacherAssignedSubjects
   );
 
   useEffect(() => {
-    rdxDispatch(fetchingPupilsAverageGrade(1));
+    rdxDispatch(fetchingAssignedSubject());
   }, [rdxDispatch]);
 
   if (status === "idle") {
@@ -63,9 +63,7 @@ const Home = () => {
           <tbody>
             {data.map((d, index) => (
               <tr key={d.id}>
-                <th scope="row">
-                  {index + 1}
-                </th>
+                <th scope="row">{index + 1}</th>
                 <td>{d.name}</td>
                 <td>{d.className}</td>
                 <td className={`${styles.Actions}`}>

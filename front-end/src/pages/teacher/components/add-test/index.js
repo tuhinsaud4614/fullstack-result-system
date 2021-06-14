@@ -1,9 +1,13 @@
+import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import { getValidObjectValue } from "../../../../shared/utils";
+import { addTest } from "../../../../store/teacher/tests/actions";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import styles from "./Index.module.css";
+import { useParams } from "react-router-dom";
 
 const Schema = Yup.object().shape({
   name: Yup.string().required("Name is required!"),
@@ -16,13 +20,22 @@ const Schema = Yup.object().shape({
 });
 
 const AddTest = () => {
+  const rdxDispatch = useDispatch();
+  const params = useParams();
+
+  const subjectId = getValidObjectValue("subjectId", params);
   const values = {
     name: "",
     date: "",
   };
 
-  const submitted = async (values) => {
-    console.log(values);
+  const submitted = async (values, { resetForm }) => {
+    if (subjectId) {
+      await rdxDispatch(
+        addTest(subjectId, { id: new Date().getTime().toString(), ...values })
+      );
+      resetForm();
+    }
   };
   return (
     <Formik
