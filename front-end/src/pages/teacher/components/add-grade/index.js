@@ -1,6 +1,9 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import { fetchingPupilOptions } from "../../../../store/teacher/utility/pupil-options/actions";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Select from "../../../../shared/components/select";
@@ -11,14 +14,58 @@ const Schema = Yup.object().shape({
   grade: Yup.number().required("Grade is required!"),
 });
 
-const AddGrade = () => {
+const AddGrade = ({ subjectId, testId }) => {
+  const rdxDispatch = useDispatch();
+  const { status, data, error } = useSelector(
+    (state) => state.teacherPupilOptions
+  );
+
+  useEffect(() => {
+    rdxDispatch(fetchingPupilOptions());
+  }, [rdxDispatch]);
+
+  if (status === "idle") {
+    return null;
+  }
+
+  if (status === "loading") {
+    return (
+      <div
+        className={`${styles.Form} rounded-1 border mb-3 p-3 d-flex justify-content-center`}
+      >
+        <div className="spinner-grow text-danger" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "complete" && error) {
+    return (
+      <div className={`${styles.Form} mb-3 alert alert-danger`} role="alert">
+        Something went wong!
+      </div>
+    );
+  }
+
+  if (status === "complete" && !data.length) {
+    return (
+      <div className={`${styles.Form} rounded-1 border mb-3 p-3`}>
+        <p className="text-danger m-0">
+          <span className="fw-bolder">Pupils</span> may be not added. So, can't
+          be added grade.
+        </p>
+      </div>
+    );
+  }
+
   const values = {
-    pupil: "",
+    pupil: data[0]["value"],
     grade: "",
   };
 
   const submitted = async (values) => {
-    console.log(values);
+    console.log(values, subjectId, testId);
   };
   return (
     <Formik
@@ -52,12 +99,10 @@ const AddGrade = () => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   errorText={
-                    touched.pupil && errors.pupil
-                      ? errors.pupil
-                      : null
+                    touched.pupil && errors.pupil ? errors.pupil : null
                   }
-                  defaultValue={"ok"}
-                  options={[{name : "Ok", "value": "ok"}]}
+                  defaultValue={data[0]["value"]}
+                  options={data}
                 />
               </div>
               <div className="col-12 col-sm-6">
@@ -70,7 +115,9 @@ const AddGrade = () => {
                   value={values.grade}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  errorText={touched.grade && errors.grade ? errors.grade : null}
+                  errorText={
+                    touched.grade && errors.grade ? errors.grade : null
+                  }
                 />
               </div>
             </div>

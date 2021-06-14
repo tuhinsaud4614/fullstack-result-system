@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 
+import { getValidObjectValue } from "../../../shared/utils";
+import SubHeader from "../components/header/SubHeader";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddGrade from "../components/add-grade";
 import EditGrade from "../components/edit-grade";
 import styles from "./Index.module.css";
+import { fetchingPupilTestGrade } from "../../../store/teacher/test-pupil-grade/actions";
 
-const AllPupils = () => {
+const AllPupils = ({ subjectId, testId }) => {
+  const rdxDispatch = useDispatch();
+  const { status, data, error } = useSelector(
+    (state) => state.teacherPupilTestGrade
+  );
   const [editId, setEditId] = useState(null);
 
   const onEdit = (id) => {
@@ -17,6 +25,45 @@ const AllPupils = () => {
   const onHide = () => {
     setEditId(null);
   };
+
+  useEffect(() => {
+    if (subjectId) {
+      rdxDispatch(fetchingPupilTestGrade(subjectId));
+    }
+  }, [rdxDispatch, subjectId, testId]);
+
+  if (status.fetched === "idle") {
+    return null;
+  }
+
+  if (status.fetched === "loading") {
+    return (
+      <div className={`rounded-1 border p-3 d-flex justify-content-center`}>
+        <div className="spinner-grow text-danger" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (status.fetched === "complete" && error.fetched) {
+    return (
+      <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
+        Something went wong!
+      </div>
+    );
+  }
+
+  if (status.fetched === "complete" && !data.length) {
+    return (
+      <div className={`rounded-1 border p-3`}>
+        <p className="text-danger m-0">
+          No data <span className="fw-bolder">found</span>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={`rounded border p-3`}>
       {editId && (
@@ -42,60 +89,26 @@ const AllPupils = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("1")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("2")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("3")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
+            {data.map((d, index) => (
+              <tr key={d.id}>
+                <th scope="row">{index + 1}</th>
+                <td>{d.forename}</td>
+                <td>{d.surname}</td>
+                <td>{d.grade}</td>
+                <td className={`${styles.Actions}`}>
+                  <IconButton
+                    className={`fs-4`}
+                    variant="warning"
+                    onClick={() => onEdit(d.id)}
+                  >
+                    <FiEdit />
+                  </IconButton>
+                  <IconButton variant="danger" className={`ms-2 fs-4`}>
+                    <FiTrash />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -105,11 +118,14 @@ const AllPupils = () => {
 
 const TestDetail = () => {
   const params = useParams();
-  console.log(params);
+  const subjectId = getValidObjectValue("subjectId", params);
+  const testId = getValidObjectValue("testId", params);
+
   return (
     <>
-      <AddGrade />
-      <AllPupils />
+      <SubHeader>Pupil Test Grades</SubHeader>
+      <AddGrade subjectId={subjectId} testId={testId} />
+      <AllPupils subjectId={subjectId} testId={testId} />
     </>
   );
 };
