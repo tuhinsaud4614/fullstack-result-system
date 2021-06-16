@@ -13,6 +13,7 @@ import SubHeader from "../components/header/SubHeader";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddGrade from "../components/add-grade";
 import EditGrade from "../components/edit-grade";
+import UploadGradeFile from "../components/upload-grade-file";
 import styles from "./Index.module.css";
 
 const AllPupils = ({ subjectId, testId }) => {
@@ -153,6 +154,7 @@ const TestDetail = () => {
     <>
       <SubHeader>Pupil Test Grades</SubHeader>
       <AddGrade subjectId={subjectId} testId={testId} />
+      <UploadGradeFile />
       <AllPupils subjectId={subjectId} testId={testId} />
     </>
   );
