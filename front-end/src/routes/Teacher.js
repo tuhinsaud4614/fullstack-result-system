@@ -7,7 +7,7 @@ import NotFound from "../pages/404";
 import Pupil from "../pages/teacher/pupil";
 import Auth from "../pages/teacher/auth/Auth";
 import Test from "../pages/teacher/test";
-import TestDetail from "../pages/teacher/test-deatil";
+import TestDetail from "../pages/teacher/test-detail";
 
 const Teacher = () => {
   return (
