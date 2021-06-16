@@ -4,31 +4,37 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 
 import { getValidObjectValue } from "../../../shared/utils";
+import {
+  deletePupilTestGrade,
+  fetchingPupilTestGrade,
+} from "../../../store/teacher/test-pupil-grade/actions";
+import Confirmation from "../../../shared/components/confirmation";
 import SubHeader from "../components/header/SubHeader";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddGrade from "../components/add-grade";
 import EditGrade from "../components/edit-grade";
 import styles from "./Index.module.css";
-import { fetchingPupilTestGrade } from "../../../store/teacher/test-pupil-grade/actions";
 
 const AllPupils = ({ subjectId, testId }) => {
   const rdxDispatch = useDispatch();
   const { status, data, error } = useSelector(
     (state) => state.teacherPupilTestGrade
   );
-  const [editId, setEditId] = useState(null);
-
-  const onEdit = (id) => {
-    setEditId(id);
-  };
+  const [editPupilGrade, setEditPupilGrade] = useState(null);
+  const [deleteItem, setDeleteItem] = useState(null);
 
   const onHide = () => {
-    setEditId(null);
+    setEditPupilGrade(null);
+  };
+
+  const onDelete = async () => {
+    await rdxDispatch(deletePupilTestGrade(subjectId, testId, deleteItem.pupilId));
+    setDeleteItem(null);
   };
 
   useEffect(() => {
     if (subjectId) {
-      rdxDispatch(fetchingPupilTestGrade(subjectId));
+      rdxDispatch(fetchingPupilTestGrade(subjectId, testId));
     }
   }, [rdxDispatch, subjectId, testId]);
 
@@ -66,15 +72,26 @@ const AllPupils = ({ subjectId, testId }) => {
 
   return (
     <div className={`rounded border p-3`}>
-      {editId && (
+      {editPupilGrade && (
         <EditGrade
+          subjectId={subjectId}
+          testId={testId}
           data={{
-            id: editId,
-            subject_id: "1",
-            teacher_id: "1",
-            grade: 1.5,
+            id: editPupilGrade.id,
+            grade: editPupilGrade.grade,
           }}
           onHide={onHide}
+        />
+      )}
+      {deleteItem && (
+        <Confirmation
+          id={deleteItem.pupilId}
+          title={deleteItem.name}
+          handler={onDelete}
+          pending={status.delete === "loading"}
+          onHide={() => {
+            setDeleteItem(null);
+          }}
         />
       )}
       <div className="table-responsive">
@@ -99,11 +116,22 @@ const AllPupils = ({ subjectId, testId }) => {
                   <IconButton
                     className={`fs-4`}
                     variant="warning"
-                    onClick={() => onEdit(d.id)}
+                    onClick={() =>
+                      setEditPupilGrade({ id: d.id, grade: d.grade })
+                    }
                   >
                     <FiEdit />
                   </IconButton>
-                  <IconButton variant="danger" className={`ms-2 fs-4`}>
+                  <IconButton
+                    variant="danger"
+                    className={`ms-2 fs-4`}
+                    onClick={() =>
+                      setDeleteItem({
+                        pupilId: d.id,
+                        name: `${d.forename} ${d.surname}`,
+                      })
+                    }
+                  >
                     <FiTrash />
                   </IconButton>
                 </td>

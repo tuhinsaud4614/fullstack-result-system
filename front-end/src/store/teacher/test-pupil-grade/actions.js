@@ -97,7 +97,7 @@ export const editPupilTestGrade = (subjectId, testId, pupilId, grade) => {
   };
 };
 
-export const deleteTest = (subjectId, testId, pupilId) => {
+export const deletePupilTestGrade = (subjectId, testId, pupilId) => {
   return async (dispatch) => {
     try {
       dispatch({

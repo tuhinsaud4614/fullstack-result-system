@@ -39,10 +39,20 @@ function reducer(state = initialState, action) {
         error: { ...state.error, add: null },
       };
     case TEACHER_TEST_PUPIL_GRADE_EDIT:
-      const fPupilGrade = state.data.find((d) => d.id === action.pupilId);
+      const fPupilIndex = state.data.findIndex((d) => d.id === action.pupilId);
+      if (fPupilIndex >= 0) {
+        let temp = state.data[fPupilIndex];
+        temp.grade = action.grade;
+        let newState = JSON.parse(JSON.stringify(state.data));
+        newState[fPupilIndex] = temp;
+        return {
+          ...state,
+          data: newState,
+          error: { ...state.error, edit: null },
+        };
+      }
       return {
         ...state,
-        data: [...state.data, { ...fPupilGrade, grade: action.grade }],
         error: { ...state.error, edit: null },
       };
     case TEACHER_TEST_PUPIL_GRADE_DELETE:

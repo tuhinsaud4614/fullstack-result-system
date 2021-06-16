@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { fetchingPupilOptions } from "../../../../store/teacher/utility/pupil-options/actions";
+import { addPupilTestGrade } from "../../../../store/teacher/test-pupil-grade/actions";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Select from "../../../../shared/components/select";
@@ -64,8 +65,20 @@ const AddGrade = ({ subjectId, testId }) => {
     grade: "",
   };
 
-  const submitted = async (values) => {
-    console.log(values, subjectId, testId);
+  const submitted = async (values, { resetForm }) => {
+    await rdxDispatch(
+      addPupilTestGrade(
+        subjectId,
+        testId,
+        {
+          id: new Date().getTime().toString(),
+          forename: values.pupil,
+          surname: values.pupil,
+        },
+        values.grade
+      )
+    );
+    resetForm();
   };
   return (
     <Formik

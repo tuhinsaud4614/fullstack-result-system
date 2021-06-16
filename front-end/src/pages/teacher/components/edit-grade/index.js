@@ -1,6 +1,8 @@
+import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import { editPupilTestGrade } from "../../../../store/teacher/test-pupil-grade/actions";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Modal from "../../../../shared/components/modal";
@@ -10,13 +12,15 @@ const Schema = Yup.object().shape({
   grade: Yup.number().required("Grade is required!"),
 });
 
-const EditGrade = ({ data: { id, teacher_id, subject_id, grade }, onHide }) => {
+const EditGrade = ({ data: { id, grade }, subjectId, testId, onHide }) => {
+  const rdxDispatch = useDispatch();
   const values = {
     grade: grade || "",
   };
 
-  const submitted = async (values) => {
-    console.log(id, values);
+  const submitted = async (values, { resetForm }) => {
+    await rdxDispatch(editPupilTestGrade(subjectId, testId, id, values.grade));
+    resetForm();
     onHide();
   };
 
