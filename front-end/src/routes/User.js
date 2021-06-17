@@ -1,6 +1,7 @@
 import { Route, Switch } from "react-router-dom";
 
 import { USER_ROUTES } from "./meta-data";
+import SubjectTestGrade from "../pages/user/subject-test-grade";
 import Home from "../pages/user/home";
 import Auth from "../pages/user/auth";
 import NotFound from "../pages/404";
@@ -18,6 +19,9 @@ const User = () => {
           <Switch>
             <Route path={USER_ROUTES.home.path} exact>
               <Home />
+            </Route>
+            <Route path={USER_ROUTES.tests.path} exact>
+              <SubjectTestGrade />
             </Route>
             <Route>
               <NotFound path={USER_ROUTES.home.path} />

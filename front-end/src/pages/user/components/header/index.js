@@ -9,7 +9,7 @@ import {
 
 const Header = () => {
   return (
-    <header className={`navbar navbar-expand-sm navbar-dark bg-primary`}>
+    <header className={`sticky-top navbar navbar-expand-sm navbar-dark bg-primary`}>
       <div className="container">
         <NavLink className={`navbar-brand`} to={USER_ROUTES.home.path}>
           Pupil
@@ -45,7 +45,7 @@ const Header = () => {
                 Teacher
               </NavLink>
             </li>
-            <li className="nav-item">
+            <li className="nav-item" style={{ cursor: "pointer" }}>
               <span className="nav-link">Sign Out (Pupil)</span>
             </li>
           </ul>

@@ -1,19 +1,24 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import { fetchingSubjectAverageGrade } from "../../../store/pupil/subject-average-grades/actions";
+import { getValidObjectValue } from "../../../shared/utils";
+import { fetchingSubjectTestGrade } from "../../../store/pupil/subject-test-grade/actions";
 import TableBox from "../components/table-box";
 
-const Home = () => {
+const SubjectTestGrade = () => {
+  const params = useParams();
+  const subjectId = getValidObjectValue("subjectId", params);
   const rdxDispatch = useDispatch();
   const { status, data, error } = useSelector(
-    (state) => state.pupilSubjectAverageGrade
+    (state) => state.pupilSubjectTestGrade
   );
 
   useEffect(() => {
-    rdxDispatch(fetchingSubjectAverageGrade("1"));
-  }, [rdxDispatch]);
+    if (subjectId) {
+      rdxDispatch(fetchingSubjectTestGrade("1", subjectId));
+    }
+  }, [rdxDispatch, subjectId]);
 
   if (status === "idle") {
     return null;
@@ -21,7 +26,7 @@ const Home = () => {
 
   if (status === "loading") {
     return (
-      <TableBox title="Average Grades">
+      <TableBox title="Test Grade">
         <div className={`d-flex justify-content-center`}>
           <div className="spinner-grow text-danger" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -33,7 +38,7 @@ const Home = () => {
 
   if (status === "complete" && error) {
     return (
-      <TableBox title="Average Grades">
+      <TableBox title="Test Grade">
         <div className={`alert alert-danger`} role="alert">
           Something went wong!
         </div>
@@ -42,28 +47,24 @@ const Home = () => {
   }
 
   return (
-    <TableBox title="Average Grades">
+    <TableBox title="Test Grade">
       <div className="table-responsive">
         <table className="table">
           <thead>
             <tr>
               <th scope="col">#</th>
               <th scope="col">Subject Name</th>
-              <th scope="col">Average Grade</th>
-              <th scope="col">Actions</th>
+              <th scope="col">Test Name</th>
+              <th scope="col">Grade</th>
             </tr>
           </thead>
           <tbody>
             {data.map((el, index) => (
               <tr key={el.id}>
                 <th scope="row">{index + 1}</th>
+                <td>{el.subjectName}</td>
                 <td>{el.name}</td>
-                <td>{el.average}</td>
-                <td>
-                  <Link to={`/${el.id}`} className={`btn btn-outline-info`}>
-                    More
-                  </Link>
-                </td>
+                <td>{el.grade}</td>
               </tr>
             ))}
           </tbody>
@@ -73,4 +74,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SubjectTestGrade;

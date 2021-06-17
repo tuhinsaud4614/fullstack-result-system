@@ -9,6 +9,8 @@ import teacherAssignedSubjectsReducer from "./teacher/assigned-subjects/reducer"
 import teacherAverageGradesReducer from "./teacher/average-grades/reducer";
 import teacherTestsReducer from "./teacher/tests/reducer";
 import teacherPupilTestGradeReducer from "./teacher/test-pupil-grade/reducer";
+import pupilSubjectAverageGradeReducer from "./pupil/subject-average-grades/reducer";
+import pupilSubjectTestGradeReducer from "./pupil/subject-test-grade/reducer";
 
 const rootReducer = combineReducers({
   adminUsers: adminUsersReducer,
@@ -18,6 +20,8 @@ const rootReducer = combineReducers({
   teacherTests: teacherTestsReducer,
   teacherPupilOptions: teacherPupilOptionsReducer,
   teacherPupilTestGrade: teacherPupilTestGradeReducer,
+  pupilSubjectAverageGrade: pupilSubjectAverageGradeReducer,
+  pupilSubjectTestGrade: pupilSubjectTestGradeReducer,
 });
 
 const store = createStore(
