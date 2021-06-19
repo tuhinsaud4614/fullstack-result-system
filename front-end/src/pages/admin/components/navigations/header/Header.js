@@ -1,3 +1,4 @@
+import { useDispatch } from "react-redux";
 import { FiMenu } from "react-icons/fi";
 import { BsBoxArrowRight } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
@@ -6,7 +7,6 @@ import { ADMIN_ROUTES } from "../../../../../routes/meta-data";
 import { adminSignOut } from "../../../../../store/admin/auth/actions";
 import IconButton from "../../../../../shared/components/button/icon-button/IconButton";
 import styles from "./Header.module.css";
-import { useDispatch } from "react-redux";
 
 const Header = ({ onToggle }) => {
   const rdxDispatch = useDispatch();

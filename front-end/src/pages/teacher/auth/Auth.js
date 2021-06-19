@@ -1,6 +1,9 @@
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import { teacherSignIn } from "../../../store/teacher/auth/actions";
 import Button from "../../../shared/components/button";
 import Input from "../../../shared/components/input";
 import styles from "./Auth.module.css";
@@ -11,12 +14,16 @@ const Schema = Yup.object().shape({
 });
 
 const Auth = () => {
+  const rdxDispatch = useDispatch();
+  const { push } = useHistory();
   const values = {
     username: "",
     password: "",
   };
 
-  const submitted = () => {};
+  const submitted = async (values) => {
+    await rdxDispatch(teacherSignIn(values.username, values.password, push));
+  };
 
   return (
     <div className={`${styles.Root} px-3`}>

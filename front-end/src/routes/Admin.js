@@ -15,7 +15,7 @@ import styles from "./Admin.module.css";
 import Subjects from "../pages/admin/subjects";
 
 const Admin = () => {
-  const { user, loading, error } = useSelector((state) => state.adminAuth);
+  const { admin, loading } = useSelector((state) => state.adminAuth);
   const rdxDispatch = useDispatch();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
@@ -37,15 +37,7 @@ const Admin = () => {
     return null;
   }
 
-  if (loading === "loading") {
-    return null;
-  }
-
-  if (loading === "complete" && error) {
-    return "error";
-  }
-
-  return user.token ? (
+  return admin.token && admin.role === "admin" ? (
     <div className={`${styles.Root}`}>
       <Sidebar open={isSidebarOpen} onClose={closeSidebar} />
       <section className={`${styles.Content}`}>

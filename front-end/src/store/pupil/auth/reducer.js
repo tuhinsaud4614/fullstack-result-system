@@ -1,14 +1,14 @@
 import {
-  ADMIN_AUTH_ACTION_ERROR,
-  ADMIN_AUTH_ACTION_PENDING,
-  ADMIN_AUTH_ACTION_SIGN_IN,
-  ADMIN_AUTH_ACTION_SIGN_OUT,
+  PUPIL_AUTH_ACTION_ERROR,
+  PUPIL_AUTH_ACTION_PENDING,
+  PUPIL_AUTH_ACTION_SIGN_IN,
+  PUPIL_AUTH_ACTION_SIGN_OUT,
 } from "./types";
 
 const initialState = {
-  admin: {
+  pupil: {
     id: null,
-    adminId: null,
+    pupilId: null,
     forename: null,
     surname: null,
     username: null,
@@ -22,23 +22,23 @@ const initialState = {
 
 function reducer(state = initialState, action) {
   switch (action.type) {
-    case ADMIN_AUTH_ACTION_PENDING:
+    case PUPIL_AUTH_ACTION_PENDING:
       return {
         ...state,
         loading: "loading",
         error: null,
       };
-    case ADMIN_AUTH_ACTION_ERROR:
+    case PUPIL_AUTH_ACTION_ERROR:
       return {
         ...state,
         loading: "complete",
         error: action.error,
       };
-    case ADMIN_AUTH_ACTION_SIGN_OUT:
+    case PUPIL_AUTH_ACTION_SIGN_OUT:
       return {
-        admin: {
+        pupil: {
           id: null,
-          adminId: null,
+          pupilId: null,
           forename: null,
           surname: null,
           username: null,
@@ -49,9 +49,9 @@ function reducer(state = initialState, action) {
         loading: "complete",
         error: null,
       };
-    case ADMIN_AUTH_ACTION_SIGN_IN:
+    case PUPIL_AUTH_ACTION_SIGN_IN:
       return {
-        admin: { ...action.admin },
+        pupil: { ...action.pupil },
         loading: "complete",
         error: null,
       };

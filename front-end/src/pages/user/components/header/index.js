@@ -1,6 +1,8 @@
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 
 // import styles from "./Index.module.css";
+import { pupilSignOut } from "../../../../store/pupil/auth/actions";
 import {
   ADMIN_ROUTES,
   TEACHER_ROUTES,
@@ -8,8 +10,15 @@ import {
 } from "../../../../routes/meta-data";
 
 const Header = () => {
+  const rdxDispatch = useDispatch();
+
+  const signOutHandler = () => {
+    rdxDispatch(pupilSignOut());
+  };
   return (
-    <header className={`sticky-top navbar navbar-expand-sm navbar-dark bg-primary`}>
+    <header
+      className={`sticky-top navbar navbar-expand-sm navbar-dark bg-primary`}
+    >
       <div className="container">
         <NavLink className={`navbar-brand`} to={USER_ROUTES.home.path}>
           Pupil
@@ -46,7 +55,9 @@ const Header = () => {
               </NavLink>
             </li>
             <li className="nav-item" style={{ cursor: "pointer" }}>
-              <span className="nav-link">Sign Out (Pupil)</span>
+              <span className="nav-link" onClick={signOutHandler}>
+                Sign Out (Pupil)
+              </span>
             </li>
           </ul>
         </div>

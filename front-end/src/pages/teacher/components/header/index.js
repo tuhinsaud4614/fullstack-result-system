@@ -1,15 +1,23 @@
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { BsBoxArrowRight, BsPeopleCircle } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
 
-import styles from "./Index.module.css";
 import {
   ADMIN_ROUTES,
   TEACHER_ROUTES,
   USER_ROUTES,
 } from "../../../../routes/meta-data";
+import { teacherSignOut } from "../../../../store/teacher/auth/actions";
+import styles from "./Index.module.css";
 
 const Header = () => {
+  const rdxDispatch = useDispatch();
+
+  const signOutHandler = () => {
+    rdxDispatch(teacherSignOut());
+  };
+
   return (
     <header className={`sticky-top bg-dark text-white shadow-sm`}>
       <div className={`container`}>
@@ -51,7 +59,10 @@ const Header = () => {
               </NavLink>
             </li>
             <li>
-              <span className={`nav-link ${styles.Link}`}>
+              <span
+                className={`nav-link ${styles.Link}`}
+                onClick={signOutHandler}
+              >
                 <BsBoxArrowRight
                   className={`${styles.Icon} d-block mx-auto mb-1`}
                 />
