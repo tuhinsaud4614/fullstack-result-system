@@ -1,16 +1,24 @@
-import { FiMenu, FiSettings } from "react-icons/fi";
-import { NavLink, useLocation } from "react-router-dom";
+import { FiMenu } from "react-icons/fi";
+import { BsBoxArrowRight } from "react-icons/bs";
+import { useLocation } from "react-router-dom";
 
 import { ADMIN_ROUTES } from "../../../../../routes/meta-data";
+import { adminSignOut } from "../../../../../store/admin/auth/actions";
 import IconButton from "../../../../../shared/components/button/icon-button/IconButton";
 import styles from "./Header.module.css";
+import { useDispatch } from "react-redux";
 
 const Header = ({ onToggle }) => {
+  const rdxDispatch = useDispatch();
   const { pathname } = useLocation();
 
   const currentPath = Object.keys(ADMIN_ROUTES).find(
     (value) => ADMIN_ROUTES[value].path === pathname
   );
+
+  const signOutHandler = () => {
+    rdxDispatch(adminSignOut());
+  };
 
   return (
     <header className={`px-3 ${styles.Root}`}>
@@ -24,14 +32,21 @@ const Header = ({ onToggle }) => {
       )}
       <ul className={`${styles.NavItems}`}>
         <li className={`${styles.NavItem}`}>
-          <NavLink
+          <span
+            className={`px-2 py-3 fs-3 ${styles.NavLink}`}
+            style={{ cursor: "pointer" }}
+            onClick={signOutHandler}
+          >
+            <BsBoxArrowRight />
+          </span>
+          {/* <NavLink
             to="2"
             className={`px-2 py-3 fs-3 ${styles.NavLink}`}
             activeClassName={`${styles.LinkActive}`}
             exact
           >
             <FiSettings />
-          </NavLink>
+          </NavLink> */}
         </li>
       </ul>
     </header>

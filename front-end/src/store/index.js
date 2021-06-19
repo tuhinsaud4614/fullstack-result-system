@@ -2,6 +2,7 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 
+import adminAuthReducer from "./admin/auth/reducer";
 import adminUsersReducer from "./admin/users/reducer";
 import adminUtilitySubjectOptionsReducer from "./admin/utility/add-subject/reducer";
 import teacherPupilOptionsReducer from "./teacher/utility/pupil-options/reducer";
@@ -13,6 +14,7 @@ import pupilSubjectAverageGradeReducer from "./pupil/subject-average-grades/redu
 import pupilSubjectTestGradeReducer from "./pupil/subject-test-grade/reducer";
 
 const rootReducer = combineReducers({
+  adminAuth: adminAuthReducer,
   adminUsers: adminUsersReducer,
   adminUtilitySubjectOptions: adminUtilitySubjectOptionsReducer,
   teacherAssignedSubjects: teacherAssignedSubjectsReducer,
