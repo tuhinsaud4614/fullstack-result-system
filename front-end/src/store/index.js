@@ -5,6 +5,7 @@ import thunk from "redux-thunk";
 import adminAuthReducer from "./admin/auth/reducer";
 import adminUsersReducer from "./admin/users/reducer";
 import adminUtilitySubjectOptionsReducer from "./admin/utility/add-subject/reducer";
+import adminUtilityClassPupilOptionOptionsReducer from "./admin/utility/class-pupil-option/reducer";
 import teacherAuthReducer from "./teacher/auth/reducer";
 import teacherPupilOptionsReducer from "./teacher/utility/pupil-options/reducer";
 import teacherAssignedSubjectsReducer from "./teacher/assigned-subjects/reducer";
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   adminAuth: adminAuthReducer,
   adminUsers: adminUsersReducer,
   adminUtilitySubjectOptions: adminUtilitySubjectOptionsReducer,
+  adminUtilityClassPupilOptionOptions: adminUtilityClassPupilOptionOptionsReducer,
   teacherAuth: teacherAuthReducer,
   teacherAssignedSubjects: teacherAssignedSubjectsReducer,
   teacherAverageGrades: teacherAverageGradesReducer,

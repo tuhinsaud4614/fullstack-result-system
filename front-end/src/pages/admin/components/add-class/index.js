@@ -37,35 +37,31 @@ const AddClass = () => {
       }) => {
         return (
           <form
-            className={`${styles.Form} rounded-1 border mb-3 p-3`}
+            className={`${styles.Form} rounded-1 border m-0 mb-3 p-3 row g-3 align-items-sm-stretch`}
             onSubmit={handleSubmit}
             autoComplete="off"
           >
-            <div className={`d-flex align-items-start`}>
-              <div className="flex-grow-1">
-                <Input
-                  label="Forename"
-                  id="forename"
-                  name="forename"
-                  type="text"
-                  placeholder="forename"
-                  value={values.forename}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  errorText={
-                    touched.forename && errors.forename ? errors.forename : null
-                  }
-                />
-              </div>
-              <Button
-                className={`ms-3 fs-5 btn-warning`}
-                disabled={!(isValid && dirty)}
-                type="submit"
-                pending={isSubmitting}
-              >
-                Create
-              </Button>
+            <div className="col-12 col-sm-auto flex-sm-grow-1 p-0 pe-sm-3 m-sm-0">
+              <Input
+                label="Name"
+                id="name"
+                name="name"
+                type="text"
+                placeholder="name"
+                value={values.name}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                errorText={touched.name && errors.name ? errors.name : null}
+              />
             </div>
+            <Button
+              className={`col-12 col-sm-auto m-sm-0 fs-5 btn-warning`}
+              disabled={!(isValid && dirty)}
+              type="submit"
+              pending={isSubmitting}
+            >
+              Create
+            </Button>
           </form>
         );
       }}
