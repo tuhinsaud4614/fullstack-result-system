@@ -1,7 +1,13 @@
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import {
+  addUser,
+  userErrorRemove,
+} from "../../../../store/admin/users/actions";
 import Button from "../../../../shared/components/button";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Input from "../../../../shared/components/input";
 import Select from "../../../../shared/components/select";
 import styles from "./AddUser.module.css";
@@ -15,6 +21,8 @@ const Schema = Yup.object().shape({
 });
 
 const AddUser = () => {
+  const { error } = useSelector((state) => state.adminUsers);
+  const rdxDispatch = useDispatch();
   const values = {
     forename: "",
     surname: "",
@@ -23,8 +31,17 @@ const AddUser = () => {
     password: "",
   };
 
-  const submitted = async (values) => {
-    console.log(values);
+  const submitted = async (values, { resetForm }) => {
+    await rdxDispatch(
+      addUser(
+        values.username,
+        values.forename,
+        values.surname,
+        values.role,
+        values.password
+      )
+    );
+    resetForm();
   };
 
   return (
@@ -50,6 +67,14 @@ const AddUser = () => {
             onSubmit={handleSubmit}
             autoComplete="off"
           >
+            {error.add && (
+              <AlertDismissible
+                className="mb-3"
+                onHide={() => rdxDispatch(userErrorRemove("add"))}
+              >
+                Error
+              </AlertDismissible>
+            )}
             <div className={`row g-3`}>
               <div className={`col-12 col-sm-6`}>
                 <Input

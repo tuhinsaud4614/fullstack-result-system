@@ -1,33 +1,86 @@
-import { memo, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FiEdit, FiTrash } from "react-icons/fi";
 
+import { deleteUser, fetchingUsers } from "../../../store/admin/users/actions";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddUser from "../components/add-user/AddUser";
+import Confirmation from "../../../shared/components/confirmation";
 import EditUser from "../components/edit-user/EditUser";
 import styles from "./Users.module.css";
 
 const AllUsers = () => {
-  const [editId, setEditId] = useState(null);
+  const rdxDispatch = useDispatch();
+  const { status, data, error } = useSelector((state) => state.adminUsers);
+  const [editItem, setEditItem] = useState(null);
+  const [deleteItem, setDeleteItem] = useState(null);
 
-  const onEdit = (id) => {
-    setEditId(id);
+  const onHide = useCallback(() => {
+    setEditItem(null);
+  }, []);
+
+  useEffect(() => {
+    rdxDispatch(fetchingUsers());
+  }, [rdxDispatch]);
+
+  const onDelete = async () => {
+    await rdxDispatch(deleteUser(deleteItem.id));
+    setDeleteItem(null);
   };
 
-  const onHide = () => {
-    setEditId(null);
-  };
+  if (status.fetched === "idle") {
+    return null;
+  }
+
+  if (status.fetched === "loading") {
+    return (
+      <div className={`rounded-1 border p-3 d-flex justify-content-center`}>
+        <div className="spinner-grow text-danger" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (status.fetched === "complete" && error.fetched) {
+    return (
+      <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
+        Something went wong!
+      </div>
+    );
+  }
+
+  if (status.fetched === "complete" && !data.length) {
+    return (
+      <div className={`rounded-1 border p-3`}>
+        <p className="text-danger m-0">
+          No users <span className="fw-bolder">found</span>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={`rounded border p-3`}>
-      <EditUser
-        data={{
-          id: editId,
-          forename: "for",
-          surname: "surname",
-          password: "pass",
-          username: "user",
-        }}
-        onHide={onHide}
-      />
+      {editItem && (
+        <EditUser
+          data={{
+            ...editItem,
+          }}
+          onHide={onHide}
+        />
+      )}
+      {deleteItem && (
+        <Confirmation
+          id={deleteItem.id}
+          title={deleteItem.name}
+          handler={onDelete}
+          pending={status.delete === "loading"}
+          onHide={() => {
+            setDeleteItem(null);
+          }}
+        />
+      )}
       <div className="table-responsive">
         <table className="table">
           <thead>
@@ -41,63 +94,43 @@ const AllUsers = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("1")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("2")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("3")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
+            {data.map((d, index) => (
+              <tr key={d.id}>
+                <th scope="row">{index + 1}</th>
+                <td>{d.forename}</td>
+                <td>{d.surname}</td>
+                <td>{d.username}</td>
+                <td>{d.role}</td>
+                <td className={`${styles.Actions}`}>
+                  <IconButton
+                    className={`ms-2 fs-4`}
+                    variant="warning"
+                    onClick={() =>
+                      setEditItem({
+                        id: d.id,
+                        forename: d.forename,
+                        surname: d.surname,
+                        username: d.username,
+                      })
+                    }
+                  >
+                    <FiEdit />
+                  </IconButton>
+                  <IconButton
+                    variant="danger"
+                    className={`ms-2 fs-4`}
+                    onClick={() =>
+                      setDeleteItem({
+                        id: d.id,
+                        name: `${d.forename} ${d.surname}`,
+                      })
+                    }
+                  >
+                    <FiTrash />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

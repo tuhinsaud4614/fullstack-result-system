@@ -1,6 +1,9 @@
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import { editUser, userErrorRemove } from "../../../../store/admin/users/actions";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Modal from "../../../../shared/components/modal";
@@ -10,22 +13,29 @@ const Schema = Yup.object().shape({
   forename: Yup.string().required("Forename is required!"),
   surname: Yup.string().required("Forename is required!"),
   username: Yup.string().required("Username is required!"),
-  password: Yup.string().required("Password is required!"),
+  password: Yup.string(),
 });
 
-const EditUser = ({
-  data: { id, forename, surname, username, password },
-  onHide,
-}) => {
+const EditUser = ({ data: { id, forename, surname, username }, onHide }) => {
+  const { error } = useSelector((state) => state.adminUsers);
+  const rdxDispatch = useDispatch();
   const values = {
     forename: forename || "",
     surname: surname || "",
     username: username || "",
-    password: password || "",
+    password: "",
   };
 
   const submitted = async (values) => {
-    console.log(id, values);
+    await rdxDispatch(
+      editUser(
+        id,
+        values.username,
+        values.forename,
+        values.surname,
+        values.password
+      )
+    );
     onHide();
   };
 
@@ -47,10 +57,25 @@ const EditUser = ({
         handleBlur,
       }) => {
         return (
-          <Modal id="modal" onHide={onHide} show={!!id} center scroll staticBack>
+          <Modal
+            id="modal"
+            onHide={onHide}
+            show={!!id}
+            center
+            scroll
+            staticBack
+          >
             <Modal.Header label={id} closeBtn />
             <form onSubmit={handleSubmit} autoComplete="off">
               <Modal.Body>
+                {error.edit && (
+                <AlertDismissible
+                  className="mb-3"
+                  onHide={() => rdxDispatch(userErrorRemove("edit"))}
+                >
+                  Error
+                </AlertDismissible>
+                )}
                 <div className={`row mb-3 g-3`}>
                   <div className={`col-12 col-sm-6`}>
                     <Input
