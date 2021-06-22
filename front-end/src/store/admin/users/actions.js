@@ -1,3 +1,6 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../shared/utils";
 import {
   ADMIN_USERS_ADD,
   ADMIN_USERS_DELETE,
@@ -8,34 +11,6 @@ import {
   ADMIN_USERS_REMOVE_ERROR,
 } from "./types";
 
-const promise = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      {
-        id: "1",
-        username: "ABC",
-        forename: "x",
-        surname: "y",
-        role: "pupil",
-      },
-      {
-        id: "2",
-        username: "ABC",
-        forename: "x",
-        surname: "y",
-        role: "pupil",
-      },
-      {
-        id: "3",
-        username: "ABC",
-        forename: "x",
-        surname: "y",
-        role: "pupil",
-      },
-    ]);
-  }, 3000);
-});
-
 export const fetchingUsers = () => {
   return async (dispatch) => {
     dispatch({
@@ -44,15 +19,26 @@ export const fetchingUsers = () => {
     });
 
     try {
-      const all = await promise;
-      dispatch({
-        type: ADMIN_USERS_FETCHED,
-        payload: all,
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_HOST_NAME}/users`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: ADMIN_USERS_FETCHED,
+          payload: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: ADMIN_USERS_ERROR,
+          for: "fetched",
+          messages: ["User fetching failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: ADMIN_USERS_ERROR,
         for: "fetched",
+        messages: errorsGenerator(error),
       });
     }
   };
@@ -61,26 +47,34 @@ export const fetchingUsers = () => {
 export const addUser = (username, forename, surname, role, password) => {
   return async (dispatch) => {
     try {
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: ADMIN_USERS_ADD,
-        payload: {
-          id: Date.now().toString(),
-          username,
-          forename,
-          surname,
-          role,
-          password,
-        },
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_HOST_NAME}/users`,
+        {
+          user_name: username,
+          fname: forename,
+          lname: surname,
+          role: role,
+          password: password,
+        }
+      );
+      if (res.status === 201) {
+        dispatch({
+          type: ADMIN_USERS_ADD,
+          payload: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: ADMIN_USERS_ERROR,
+          for: "add",
+          messages: ["User creation failed!"],
+        });
+      }
+      
     } catch (error) {
       dispatch({
         type: ADMIN_USERS_ERROR,
         for: "add",
+        messages: errorsGenerator(error),
       });
     }
   };
@@ -109,6 +103,7 @@ export const editUser = (id, username, forename, surname, password) => {
       dispatch({
         type: ADMIN_USERS_ERROR,
         for: "edit",
+        messages: errorsGenerator(error),
       });
     }
   };
@@ -134,6 +129,7 @@ export const deleteUser = (userId) => {
       dispatch({
         type: ADMIN_USERS_ERROR,
         for: "delete",
+        messages: errorsGenerator(error),
       });
     }
   };

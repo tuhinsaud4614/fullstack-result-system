@@ -45,7 +45,11 @@ const AllUsers = () => {
   if (status.fetched === "complete" && error.fetched) {
     return (
       <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
-        Something went wong!
+        <ul className={`m-0`}>
+          {error.fetched.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -82,14 +86,17 @@ const AllUsers = () => {
         />
       )}
       <div className="table-responsive">
-        <table className="table">
+        <table className={`table ${styles.Table}`}>
           <thead>
             <tr>
               <th scope="col">#</th>
+              <th scope="col">User ID</th>
               <th scope="col">Forename</th>
               <th scope="col">Surname</th>
               <th scope="col">Username</th>
               <th scope="col">Role</th>
+              <th scope="col">Created at</th>
+              <th scope="col">Updated at</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -97,11 +104,14 @@ const AllUsers = () => {
             {data.map((d, index) => (
               <tr key={d.id}>
                 <th scope="row">{index + 1}</th>
-                <td>{d.forename}</td>
-                <td>{d.surname}</td>
-                <td>{d.username}</td>
+                <td>{d.userid}</td>
+                <td>{d.fname}</td>
+                <td>{d.lname}</td>
+                <td>{d.user_name}</td>
                 <td>{d.role}</td>
-                <td className={`${styles.Actions}`}>
+                <td>{new Date(d.created_at).toLocaleString()}</td>
+                <td>{new Date(d.updated_at).toLocaleString()}</td>
+                <td>
                   <IconButton
                     className={`ms-2 fs-4`}
                     variant="warning"

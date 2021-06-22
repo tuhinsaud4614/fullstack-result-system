@@ -25,7 +25,7 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         status: { ...state.status, [action.for]: "complete" },
-        error: { ...state.error, [action.for]: "Something went wrong" },
+        error: { ...state.error, [action.for]: action.messages },
       };
     case ADMIN_USERS_REMOVE_ERROR:
       return {
@@ -41,7 +41,7 @@ function reducer(state = initialState, action) {
     case ADMIN_USERS_ADD:
       return {
         ...state,
-        data: [...state.data, action.payload],
+        data: [action.payload, ...state.data],
         error: { ...state.error, add: null },
       };
     case ADMIN_USERS_EDIT:

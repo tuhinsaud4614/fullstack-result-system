@@ -72,7 +72,11 @@ const AddUser = () => {
                 className="mb-3"
                 onHide={() => rdxDispatch(userErrorRemove("add"))}
               >
-                Error
+                <ul className={`m-0`}>
+                  {error.add.map((el, index) => (
+                    <li key={index}>{el}</li>
+                  ))}
+                </ul>
               </AlertDismissible>
             )}
             <div className={`row g-3`}>
@@ -113,9 +117,7 @@ const AddUser = () => {
               name="role"
               onBlur={handleBlur}
               onChange={handleChange}
-              errorText={
-                touched.surname && errors.surname ? errors.surname : null
-              }
+              errorText={touched.role && errors.role ? errors.role : null}
               defaultValue="pupil"
               options={[
                 { name: "Pupil", value: "pupil" },

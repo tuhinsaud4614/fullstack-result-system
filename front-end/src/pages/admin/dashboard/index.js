@@ -37,7 +37,7 @@ const Dashboard = () => {
     });
   };
 
-  console.log(state);
+  // console.log(state);
   return (
     <div>
       <div className="round-1 border p-3">
