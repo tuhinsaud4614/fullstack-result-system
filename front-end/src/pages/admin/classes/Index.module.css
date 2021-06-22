@@ -1,3 +1,4 @@
-.Actions {
-    white-space: nowrap;
+.Table th,
+.Table td {
+  white-space: nowrap;
 }
