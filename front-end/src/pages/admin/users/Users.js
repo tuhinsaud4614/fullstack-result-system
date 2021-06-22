@@ -2,10 +2,15 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiEdit, FiTrash } from "react-icons/fi";
 
-import { deleteUser, fetchingUsers } from "../../../store/admin/users/actions";
+import {
+  deleteUser,
+  fetchingUsers,
+  userErrorRemove,
+} from "../../../store/admin/users/actions";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddUser from "../components/add-user/AddUser";
 import Confirmation from "../../../shared/components/confirmation";
+import AlertDismissible from "../../../shared/components/alert/Dismissible";
 import EditUser from "../components/edit-user/EditUser";
 import styles from "./Users.module.css";
 
@@ -24,8 +29,11 @@ const AllUsers = () => {
   }, [rdxDispatch]);
 
   const onDelete = async () => {
-    await rdxDispatch(deleteUser(deleteItem.id));
-    setDeleteItem(null);
+    await rdxDispatch(
+      deleteUser(deleteItem.id, () => {
+        setDeleteItem(null);
+      })
+    );
   };
 
   if (status.fetched === "idle") {
@@ -83,7 +91,20 @@ const AllUsers = () => {
           onHide={() => {
             setDeleteItem(null);
           }}
-        />
+        >
+          {error.delete && (
+            <AlertDismissible
+              className="mb-3"
+              onHide={() => rdxDispatch(userErrorRemove("delete"))}
+            >
+              <ul className={`m-0`}>
+                {error.delete.map((el, index) => (
+                  <li key={index}>{el}</li>
+                ))}
+              </ul>
+            </AlertDismissible>
+          )}
+        </Confirmation>
       )}
       <div className="table-responsive">
         <table className={`table ${styles.Table}`}>
@@ -118,9 +139,9 @@ const AllUsers = () => {
                     onClick={() =>
                       setEditItem({
                         id: d.id,
-                        forename: d.forename,
-                        surname: d.surname,
-                        username: d.username,
+                        forename: d.fname,
+                        surname: d.lname,
+                        username: d.user_name,
                       })
                     }
                   >
@@ -132,7 +153,7 @@ const AllUsers = () => {
                     onClick={() =>
                       setDeleteItem({
                         id: d.id,
-                        name: `${d.forename} ${d.surname}`,
+                        name: `${d.fname} ${d.lname}`,
                       })
                     }
                   >

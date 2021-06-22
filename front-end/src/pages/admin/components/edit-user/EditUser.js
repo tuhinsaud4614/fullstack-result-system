@@ -2,7 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { editUser, userErrorRemove } from "../../../../store/admin/users/actions";
+import {
+  editUser,
+  userErrorRemove,
+} from "../../../../store/admin/users/actions";
 import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
@@ -30,13 +33,15 @@ const EditUser = ({ data: { id, forename, surname, username }, onHide }) => {
     await rdxDispatch(
       editUser(
         id,
-        values.username,
+        values.username !== username ? values.username : null,
         values.forename,
         values.surname,
-        values.password
+        values.password,
+        () => {
+          onHide();
+        }
       )
     );
-    onHide();
   };
 
   return (
@@ -65,16 +70,20 @@ const EditUser = ({ data: { id, forename, surname, username }, onHide }) => {
             scroll
             staticBack
           >
-            <Modal.Header label={id} closeBtn />
+            <Modal.Header label={`${forename} ${surname}`} closeBtn />
             <form onSubmit={handleSubmit} autoComplete="off">
               <Modal.Body>
                 {error.edit && (
-                <AlertDismissible
-                  className="mb-3"
-                  onHide={() => rdxDispatch(userErrorRemove("edit"))}
-                >
-                  Error
-                </AlertDismissible>
+                  <AlertDismissible
+                    className="mb-3"
+                    onHide={() => rdxDispatch(userErrorRemove("edit"))}
+                  >
+                    <ul className={`m-0`}>
+                      {error.edit.map((el, index) => (
+                        <li key={index}>{el}</li>
+                      ))}
+                    </ul>
+                  </AlertDismissible>
                 )}
                 <div className={`row mb-3 g-3`}>
                   <div className={`col-12 col-sm-6`}>

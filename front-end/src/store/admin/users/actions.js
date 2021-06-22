@@ -69,7 +69,6 @@ export const addUser = (username, forename, surname, role, password) => {
           messages: ["User creation failed!"],
         });
       }
-      
     } catch (error) {
       dispatch({
         type: ADMIN_USERS_ERROR,
@@ -87,18 +86,35 @@ export const userErrorRemove = (closeFor) => {
   };
 };
 
-export const editUser = (id, username, forename, surname, password) => {
+export const editUser = (id, username, forename, surname, password, onHide) => {
   return async (dispatch) => {
     try {
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: ADMIN_USERS_EDIT,
-        payload: { id, username, forename, surname, password },
-      });
+      const obj = {
+        fname: forename,
+        lname: surname,
+        user_name: username,
+      };
+
+      if (password) {
+        obj.password = password;
+      }
+      const res = await axios.put(
+        `${process.env.REACT_APP_API_HOST_NAME}/users/${id}`,
+        obj
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: ADMIN_USERS_EDIT,
+          payload: res.data.data,
+        });
+        onHide();
+      } else {
+        dispatch({
+          type: ADMIN_USERS_ERROR,
+          for: "edit",
+          messages: ["User update failed!"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: ADMIN_USERS_ERROR,
@@ -109,22 +125,29 @@ export const editUser = (id, username, forename, surname, password) => {
   };
 };
 
-export const deleteUser = (userId) => {
+export const deleteUser = (userId, onHide) => {
   return async (dispatch) => {
     try {
       dispatch({
         type: ADMIN_USERS_LOADING,
         for: "delete",
       });
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: ADMIN_USERS_DELETE,
-        userId: userId,
-      });
+      const res = await axios.delete(
+        `${process.env.REACT_APP_API_HOST_NAME}/users/${userId}`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: ADMIN_USERS_DELETE,
+          userId: userId,
+        });
+        onHide();
+      } else {
+        dispatch({
+          type: ADMIN_USERS_ERROR,
+          for: "delete",
+          messages: ["User delete failed!"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: ADMIN_USERS_ERROR,

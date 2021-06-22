@@ -41,7 +41,15 @@ const AddUser = () => {
         values.password
       )
     );
-    resetForm();
+    resetForm({
+      values: {
+        forename: "",
+        surname: "",
+        role: "pupil",
+        username: "",
+        password: "",
+      },
+    });
   };
 
   return (
@@ -118,7 +126,7 @@ const AddUser = () => {
               onBlur={handleBlur}
               onChange={handleChange}
               errorText={touched.role && errors.role ? errors.role : null}
-              defaultValue="pupil"
+              value={values.role}
               options={[
                 { name: "Pupil", value: "pupil" },
                 { name: "Teacher", value: "teacher" },

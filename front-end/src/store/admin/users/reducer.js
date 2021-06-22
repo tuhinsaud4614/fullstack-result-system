@@ -45,10 +45,14 @@ function reducer(state = initialState, action) {
         error: { ...state.error, add: null },
       };
     case ADMIN_USERS_EDIT:
-      const fData = state.data.filter((d) => d.id !== action.payload.id);
+      const updatedUserIndex = state.data.findIndex((d) => d.id === action.payload.id);
+      const updatedUsers = JSON.parse(JSON.stringify(state.data));
+      if(updatedUserIndex >= 0) {
+        updatedUsers[updatedUserIndex] = action.payload;
+      }
       return {
         ...state,
-        data: [...fData, action.payload],
+        data: updatedUsers,
         error: { ...state.error, edit: null },
       };
     case ADMIN_USERS_DELETE:

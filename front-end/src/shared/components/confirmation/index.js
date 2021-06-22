@@ -2,10 +2,18 @@ import Button from "../button";
 import Modal from "../modal";
 import styles from "./Index.module.css";
 
-const Confirmation = ({ id, title, pending = false, onHide, handler }) => {
+const Confirmation = ({
+  id,
+  title,
+  pending = false,
+  onHide,
+  handler,
+  children,
+}) => {
   return (
     <Modal id="modal" show={!!id} onHide={onHide} center scroll staticBack>
       <Modal.Body>
+        {children}
         Are you really want to delete{" "}
         <span className="fw-bolder text-danger">{title}</span>
       </Modal.Body>
