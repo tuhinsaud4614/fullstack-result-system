@@ -4,6 +4,7 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import { BsFileEarmarkArrowDown } from "react-icons/bs";
 
 import {
+  archiveSubject,
   deleteSubject,
   fetchingSubjects,
   userErrorRemove,
@@ -20,6 +21,7 @@ const AllSubjects = () => {
   const { status, data, error } = useSelector((state) => state.adminSubjects);
   const [editItem, setEditItem] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
+  const [archiveItem, setArchiveItem] = useState(null);
 
   const onHide = () => {
     setEditItem(null);
@@ -29,6 +31,14 @@ const AllSubjects = () => {
     await rdxDispatch(
       deleteSubject(deleteItem.id, () => {
         setDeleteItem(null);
+      })
+    );
+  };
+
+  const onArchive = async () => {
+    await rdxDispatch(
+      archiveSubject(archiveItem.id, () => {
+        setArchiveItem(null);
       })
     );
   };
@@ -110,6 +120,33 @@ const AllSubjects = () => {
           )}
         </Confirmation>
       )}
+      {archiveItem && (
+        <Confirmation
+          id={archiveItem.id}
+          title={archiveItem.name}
+          btnLabel="Archive"
+          variant="primary"
+          msg="Are you really want to archive"
+          handler={onArchive}
+          pending={status.archive === "loading"}
+          onHide={() => {
+            setArchiveItem(null);
+          }}
+        >
+          {error.archive && (
+            <AlertDismissible
+              className="mb-3"
+              onHide={() => rdxDispatch(userErrorRemove("archive"))}
+            >
+              <ul className={`m-0`}>
+                {error.archive.map((el, index) => (
+                  <li key={index}>{el}</li>
+                ))}
+              </ul>
+            </AlertDismissible>
+          )}
+        </Confirmation>
+      )}
       <div className="table-responsive">
         <table className={`table ${styles.Table}`}>
           <thead>
@@ -153,7 +190,16 @@ const AllSubjects = () => {
                   </IconButton>
 
                   {d.status === 1 && (
-                    <IconButton className={`ms-2 fs-4`} variant="primary">
+                    <IconButton
+                      className={`ms-2 fs-4`}
+                      variant="primary"
+                      onClick={() =>
+                        setArchiveItem({
+                          id: d.id,
+                          name: d.name,
+                        })
+                      }
+                    >
                       <BsFileEarmarkArrowDown />
                     </IconButton>
                   )}

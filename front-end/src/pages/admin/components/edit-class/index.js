@@ -146,7 +146,7 @@ const EditClass = ({ data: { id, name, pupils }, onHide }) => {
               <Modal.Footer>
                 <Button
                   className={`fs-5 btn-warning`}
-                  disabled={!(isValid && dirty)}
+                  disabled={!isValid}
                   type="submit"
                   pending={isSubmitting}
                 >

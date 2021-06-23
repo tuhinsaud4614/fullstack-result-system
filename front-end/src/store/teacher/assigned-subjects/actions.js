@@ -1,30 +1,11 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../shared/utils";
 import {
   TEACHER_ASSIGNED_SUBJECTS_ERROR,
   TEACHER_ASSIGNED_SUBJECTS_FETCHED,
   TEACHER_ASSIGNED_SUBJECTS_LOADING,
 } from "./types";
-
-const promise = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      {
-        id: "1",
-        name: "xyz",
-        className: "ABC",
-      },
-      {
-        id: "2",
-        name: "xyz",
-        className: "ABC",
-      },
-      {
-        id: "3",
-        name: "xyz",
-        className: "ABC",
-      },
-    ]);
-  }, 3000);
-});
 
 export const fetchingAssignedSubject = () => {
   return async (dispatch) => {
@@ -33,14 +14,24 @@ export const fetchingAssignedSubject = () => {
     });
 
     try {
-      const all = await promise;
-      dispatch({
-        type: TEACHER_ASSIGNED_SUBJECTS_FETCHED,
-        payload: all,
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_HOST_NAME}/teacher/assign/subject/16`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_ASSIGNED_SUBJECTS_FETCHED,
+          payload: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: TEACHER_ASSIGNED_SUBJECTS_ERROR,
+          messages: ["Subjects fetching failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_ASSIGNED_SUBJECTS_ERROR,
+        messages: errorsGenerator(error),
       });
     }
   };

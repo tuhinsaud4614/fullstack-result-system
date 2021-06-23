@@ -1,5 +1,6 @@
 import {
   ADMIN_SUBJECTS_ADD,
+  ADMIN_SUBJECTS_ARCHIVE,
   ADMIN_SUBJECTS_DELETE,
   ADMIN_SUBJECTS_EDIT,
   ADMIN_SUBJECTS_ERROR,
@@ -10,8 +11,8 @@ import {
 
 const initialState = {
   data: [],
-  status: { fetched: "idle", delete: "idle" },
-  error: { fetched: null, add: null, edit: null, delete: null },
+  status: { fetched: "idle", delete: "idle", archive: "idle" },
+  error: { fetched: null, add: null, edit: null, delete: null, archive: null },
 };
 
 function reducer(state = initialState, action) {
@@ -45,9 +46,11 @@ function reducer(state = initialState, action) {
         error: { ...state.error, add: null },
       };
     case ADMIN_SUBJECTS_EDIT:
-      const updatedUserIndex = state.data.findIndex((d) => d.id === action.payload.id);
+      const updatedUserIndex = state.data.findIndex(
+        (d) => d.id === action.payload.id
+      );
       const updatedUsers = JSON.parse(JSON.stringify(state.data));
-      if(updatedUserIndex >= 0) {
+      if (updatedUserIndex >= 0) {
         updatedUsers[updatedUserIndex] = action.payload;
       }
       return {
@@ -60,6 +63,22 @@ function reducer(state = initialState, action) {
         data: state.data.filter((d) => d.id !== action.id),
         status: { ...state.status, delete: "complete" },
         error: { ...state.error, delete: null },
+      };
+    case ADMIN_SUBJECTS_ARCHIVE:
+      const archivedIndex = state.data.findIndex((d) => d.id === action.id);
+      if (archivedIndex === -1) {
+        return {
+          ...state,
+          status: { ...state.status, archive: "complete" },
+          error: { ...state.error, archive: null },
+        };
+      }
+      const archivedSubjects = JSON.parse(JSON.stringify(state.data));
+      archivedSubjects[archivedIndex].status = 0;
+      return {
+        data: archivedSubjects,
+        status: { ...state.status, archive: "complete" },
+        error: { ...state.error, archive: null },
       };
     default:
       return state;

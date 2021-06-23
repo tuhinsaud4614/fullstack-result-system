@@ -13,7 +13,9 @@ const Home = () => {
   );
 
   useEffect(() => {
-    rdxDispatch(fetchingAssignedSubject());
+    (async () => {
+      await rdxDispatch(fetchingAssignedSubject());
+    })();
   }, [rdxDispatch]);
 
   if (status === "idle") {
@@ -33,7 +35,11 @@ const Home = () => {
   if (status === "complete" && error) {
     return (
       <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
-        Something went wong!
+        <ul className={`m-0`}>
+          {error.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -42,7 +48,7 @@ const Home = () => {
     return (
       <div className={`rounded-1 border p-3`}>
         <p className="text-danger m-0">
-          No data <span className="fw-bolder">found</span>
+          No subjects <span className="fw-bolder">found</span>
         </p>
       </div>
     );
@@ -65,7 +71,7 @@ const Home = () => {
               <tr key={d.id}>
                 <th scope="row">{index + 1}</th>
                 <td>{d.name}</td>
-                <td>{d.className}</td>
+                <td>{d.class_name}</td>
                 <td className={`${styles.Actions}`}>
                   <Link
                     to={`${pathname}/${d.id}/pupils`}

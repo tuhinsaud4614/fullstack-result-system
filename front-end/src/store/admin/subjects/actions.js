@@ -3,6 +3,7 @@ import axios from "axios";
 import { errorsGenerator } from "../../../shared/utils";
 import {
   ADMIN_SUBJECTS_ADD,
+  ADMIN_SUBJECTS_ARCHIVE,
   ADMIN_SUBJECTS_DELETE,
   ADMIN_SUBJECTS_EDIT,
   ADMIN_SUBJECTS_ERROR,
@@ -31,7 +32,7 @@ export const fetchingSubjects = () => {
         dispatch({
           type: ADMIN_SUBJECTS_ERROR,
           for: "fetched",
-          messages: ["Classes fetching failed"],
+          messages: ["Subjects fetching failed"],
         });
       }
     } catch (error) {
@@ -141,13 +142,52 @@ export const deleteSubject = (subjectId, onHide) => {
         dispatch({
           type: ADMIN_SUBJECTS_ERROR,
           for: "delete",
-          messages: ["Class delete failed!"],
+          messages: ["Subject delete failed!"],
         });
       }
     } catch (error) {
       dispatch({
         type: ADMIN_SUBJECTS_ERROR,
         for: "delete",
+        messages: errorsGenerator(error),
+      });
+    }
+  };
+};
+
+export const archiveSubject = (subjectId, onHide) => {
+  return async (dispatch) => {
+    try {
+      dispatch({
+        type: ADMIN_SUBJECTS_LOADING,
+        for: "archive",
+      });
+      dispatch({
+        type: ADMIN_SUBJECTS_ARCHIVE,
+        id: subjectId,
+      });
+      onHide();
+      // const res = await axios.post(
+      //   `${process.env.REACT_APP_API_HOST_NAME}/subject/delete/${subjectId}`
+      // );
+
+      // if (res.status === 200) {
+      //   dispatch({
+      //     type: ADMIN_SUBJECTS_ARCHIVE,
+      //     id: subjectId,
+      //   });
+      //   onHide();
+      // } else {
+      //   dispatch({
+      //     type: ADMIN_SUBJECTS_ERROR,
+      //     for: "archive",
+      //     messages: ["Subject delete failed!"],
+      //   });
+      // }
+    } catch (error) {
+      dispatch({
+        type: ADMIN_SUBJECTS_ERROR,
+        for: "archive",
         messages: errorsGenerator(error),
       });
     }

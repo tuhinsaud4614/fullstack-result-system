@@ -5,17 +5,19 @@ import styles from "./Index.module.css";
 const Confirmation = ({
   id,
   title,
+  btnLabel = "Delete",
   pending = false,
   onHide,
   handler,
+  variant = "danger",
+  msg = "Are you really want to delete",
   children,
 }) => {
   return (
     <Modal id="modal" show={!!id} onHide={onHide} center scroll staticBack>
       <Modal.Body>
         {children}
-        Are you really want to delete{" "}
-        <span className="fw-bolder text-danger">{title}</span>
+        {msg} <span className={`fw-bolder text-${variant}`}>{title}</span>
       </Modal.Body>
       <Modal.Footer>
         <Button
@@ -27,12 +29,12 @@ const Confirmation = ({
         </Button>
         <Button
           pendingClassName={styles.Pending}
-          className={`ms-3 btn-danger`}
+          className={`ms-3 btn-${variant}`}
           type="button"
           pending={pending}
           onClick={handler}
         >
-          Delete
+          {btnLabel}
         </Button>
       </Modal.Footer>
     </Modal>
