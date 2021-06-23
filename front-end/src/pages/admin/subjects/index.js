@@ -1,110 +1,179 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { BsFileEarmarkArrowDown } from "react-icons/bs";
 
+import {
+  deleteSubject,
+  fetchingSubjects,
+  userErrorRemove,
+} from "../../../store/admin/subjects/actions";
+import Confirmation from "../../../shared/components/confirmation";
+import AlertDismissible from "../../../shared/components/alert/Dismissible";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import AddSubject from "../components/add-subject";
 import EditSubject from "../components/edit-subject";
 import styles from "./Index.module.css";
 
 const AllSubjects = () => {
-  const [editId, setEditId] = useState(null);
-
-  const onEdit = (id) => {
-    setEditId(id);
-  };
+  const rdxDispatch = useDispatch();
+  const { status, data, error } = useSelector((state) => state.adminSubjects);
+  const [editItem, setEditItem] = useState(null);
+  const [deleteItem, setDeleteItem] = useState(null);
 
   const onHide = () => {
-    setEditId(null);
+    setEditItem(null);
   };
+
+  const onDelete = async () => {
+    await rdxDispatch(
+      deleteSubject(deleteItem.id, () => {
+        setDeleteItem(null);
+      })
+    );
+  };
+
+  useEffect(() => {
+    rdxDispatch(fetchingSubjects());
+  }, [rdxDispatch]);
+
+  if (status.fetched === "idle") {
+    return null;
+  }
+
+  if (status.fetched === "loading") {
+    return (
+      <div className={`rounded-1 border p-3 d-flex justify-content-center`}>
+        <div className="spinner-grow text-danger" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (status.fetched === "complete" && error.fetched) {
+    return (
+      <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
+        <ul className={`m-0`}>
+          {error.fetched.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  if (status.fetched === "complete" && !data.length) {
+    return (
+      <div className={`rounded-1 border p-3`}>
+        <p className="text-danger m-0">
+          No subjects <span className="fw-bolder">found</span>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={`rounded border p-3`}>
-      {editId && (
+      {editItem && (
         <EditSubject
           data={{
-            id: editId,
-            name: "X",
-            className: "red",
-            teacher: "yellow",
+            id: editItem.id,
+            name: editItem.name,
+            className: editItem.className,
+            teacher: editItem.teacher,
           }}
           onHide={onHide}
         />
       )}
+      {deleteItem && (
+        <Confirmation
+          id={deleteItem.id}
+          title={deleteItem.name}
+          handler={onDelete}
+          pending={status.delete === "loading"}
+          onHide={() => {
+            setDeleteItem(null);
+          }}
+        >
+          {error.delete && (
+            <AlertDismissible
+              className="mb-3"
+              onHide={() => rdxDispatch(userErrorRemove("delete"))}
+            >
+              <ul className={`m-0`}>
+                {error.delete.map((el, index) => (
+                  <li key={index}>{el}</li>
+                ))}
+              </ul>
+            </AlertDismissible>
+          )}
+        </Confirmation>
+      )}
       <div className="table-responsive">
-        <table className="table">
+        <table className={`table ${styles.Table}`}>
           <thead>
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
               <th scope="col">Class</th>
+              <th scope="col">Subject Class</th>
               <th scope="col">Teacher</th>
+              <th scope="col">Created At</th>
+              <th scope="col">Updated At</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("1")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton className={`ms-2 fs-4`} variant="primary">
-                  <BsFileEarmarkArrowDown />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("2")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton className={`ms-2 fs-4`} variant="primary">
-                  <BsFileEarmarkArrowDown />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td>Cell</td>
-              <td className={`${styles.Actions}`}>
-                <IconButton
-                  className={`fs-4`}
-                  variant="warning"
-                  onClick={() => onEdit("3")}
-                >
-                  <FiEdit />
-                </IconButton>
-                <IconButton className={`ms-2 fs-4`} variant="primary">
-                  <BsFileEarmarkArrowDown />
-                </IconButton>
-                <IconButton variant="danger" className={`ms-2 fs-4`}>
-                  <FiTrash />
-                </IconButton>
-              </td>
-            </tr>
+            {data.map((d, index) => (
+              <tr key={d.id}>
+                <th scope="row">{index + 1}</th>
+                <td className={`${d.status === 1 ? "" : "text-primary"}`}>
+                  {d.name}
+                </td>
+                <td>{d.class_name}</td>
+                <td>{d.subject_class}</td>
+                <td>{d.teacher_id}</td>
+                <td>{new Date(d.created_at).toLocaleString()}</td>
+                <td>{new Date(d.updated_at).toLocaleString()}</td>
+                <td>
+                  <IconButton
+                    className={`fs-4`}
+                    variant="warning"
+                    onClick={() =>
+                      setEditItem({
+                        id: d.id,
+                        name: d.name,
+                        className: d.class_name,
+                        teacher: d.teacher_id,
+                      })
+                    }
+                  >
+                    <FiEdit />
+                  </IconButton>
+
+                  {d.status === 1 && (
+                    <IconButton className={`ms-2 fs-4`} variant="primary">
+                      <BsFileEarmarkArrowDown />
+                    </IconButton>
+                  )}
+                  {d.status === 1 && (
+                    <IconButton
+                      variant="danger"
+                      className={`ms-2 fs-4`}
+                      onClick={() =>
+                        setDeleteItem({
+                          id: d.id,
+                          name: d.name,
+                        })
+                      }
+                    >
+                      <FiTrash />
+                    </IconButton>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

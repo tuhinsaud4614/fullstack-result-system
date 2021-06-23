@@ -33,6 +33,8 @@ use App\Http\Controllers\AssignedClassController;
 Route::post('/login' , [UserController::class , 'login']);
 Route::post('/logout' , [UserController::class , 'logout']);
 
+// User By Role
+Route::get('/users/{role}' , [UserController::class , 'showByRole']);
 //User Crontrollers
 Route::resource('/users' , UserController::class);
 

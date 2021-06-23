@@ -5,30 +5,30 @@ import {
 } from "./types";
 
 const initialState = {
-  options: null,
+  options: [],
   status: "idle",
-  error: false,
+  error: null,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case ADMIN_CLASS_PUPIL_OPTIONS_LOADING:
       return {
-        options: null,
+        options: [],
         status: "loading",
-        error: false,
+        error: null,
       };
     case ADMIN_CLASS_PUPIL_OPTIONS_ERROR:
       return {
-        options: null,
+        options: [],
         status: "complete",
-        error: true,
+        error: action.messages,
       };
     case ADMIN_CLASS_PUPIL_OPTIONS_FETCHED:
       return {
         options: action.payload,
         status: "complete",
-        error: false,
+        error: null,
       };
     default:
       return state;

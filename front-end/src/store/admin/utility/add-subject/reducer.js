@@ -5,34 +5,34 @@ import {
 } from "./types";
 
 const initialState = {
-  classes: null,
-  teachers: null,
+  classes: [],
+  teachers: [],
   status: "idle",
-  error: false,
+  error: null,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case UTILITY_SUBJECT_OPTIONS_LOADING:
       return {
-        classes: null,
-        teachers: null,
+        classes: [],
+        teachers: [],
         status: "loading",
-        error: false,
+        error: null,
       };
     case UTILITY_SUBJECT_OPTIONS_ERROR:
       return {
-        classes: null,
-        teachers: null,
+        classes: [],
+        teachers: [],
         status: "complete",
-        error: true,
+        error: action.messages,
       };
     case UTILITY_SUBJECT_OPTIONS_FETCHED:
       return {
         classes: action.classes,
         teachers: action.teachers,
         status: "complete",
-        error: false,
+        error: null,
       };
     default:
       return state;

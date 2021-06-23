@@ -1,49 +1,56 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../../shared/utils";
 import {
   UTILITY_SUBJECT_OPTIONS_ERROR,
   UTILITY_SUBJECT_OPTIONS_FETCHED,
   UTILITY_SUBJECT_OPTIONS_LOADING,
 } from "./types";
 
-const x = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      { name: "Red", value: "red" },
-      { name: "Green", value: "green" },
-    ]);
-  }, 3000);
-});
+export const fetchingClassTeacherOptions = () => {
+  return async (dispatch, getState) => {
+    const { adminClasses, adminUsers } = getState();
+    if (adminUsers.data.length && adminClasses.data.length) {
+      dispatch({
+        type: UTILITY_SUBJECT_OPTIONS_FETCHED,
+        classes: adminClasses.data,
+        teachers: adminUsers.data.filter((el) => el.role === "teacher"),
+      });
+      return;
+    }
 
-const y = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      { name: "Yellow", value: "yellow" },
-      { name: "Blue", value: "blue" },
-    ]);
-  }, 2000);
-});
-
-export const fetchingOptions = () => {
-  return async (dispatch) => {
     dispatch({
       type: UTILITY_SUBJECT_OPTIONS_LOADING,
     });
-
     try {
-      const all = await Promise.all([x, y]);
-      if (!Array.isArray(all[0]) || !Array.isArray(all[1])) {
+      const res = await Promise.all([
+        axios.get(`${process.env.REACT_APP_API_HOST_NAME}/class/index`),
+        axios.get(`${process.env.REACT_APP_API_HOST_NAME}/users/teacher`),
+      ]);
+      if (res[0].status === 200 && res[1].status === 200) {
+        const classOptions = res[0].data.data.map((el) => ({
+          name: el.name.toUpperCase(),
+          value: el.name,
+        }));
+        const teacherOptions = res[1].data.data.map((el) => ({
+          name: `${el.lname.toUpperCase()} - ${el.userid}`,
+          value: el.id,
+        }));
         dispatch({
-          type: UTILITY_SUBJECT_OPTIONS_ERROR,
+          type: UTILITY_SUBJECT_OPTIONS_FETCHED,
+          classes: classOptions,
+          teachers: teacherOptions,
         });
       } else {
         dispatch({
-          type: UTILITY_SUBJECT_OPTIONS_FETCHED,
-          classes: all[0],
-          teachers: all[1],
+          type: UTILITY_SUBJECT_OPTIONS_ERROR,
+          messages: "Failed to load classes and teachers data",
         });
       }
     } catch (error) {
       dispatch({
         type: UTILITY_SUBJECT_OPTIONS_ERROR,
+        messages: errorsGenerator(error),
       });
     }
   };

@@ -30,7 +30,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::orderBy('id', 'desc')->get();
             return response()->json([
                 'success'=> true,
                 'message' => 'Display All The Users List',
@@ -133,6 +133,34 @@ class UserController extends Controller
                 return response()->json([
                     'success'=> false,
                     'errors' => ["notFound"=> ['No User is available At that ID']],
+                ] , 404);
+            }
+        } 
+        catch (\Throwable $th) {
+            return response()->json([
+                'success'=> false,
+                'errors' => ["server"=> ['Something went wrong']],
+            ] , 401);
+        }
+    }
+
+    //    showByRole
+    public function showByRole($role)
+    {
+        try {
+            // $users = User::find($userid);
+            $users = User::where('role',$role)->get();
+            if(count($users) > 0){   
+            return response()->json([
+                'success'=> true,
+                'message' => 'Display the specific User by role',
+                'data'  => $users
+            ] , 200);
+            }
+            else{
+                return response()->json([
+                    'success'=> false,
+                    'errors' => ["notFound"=> ['No Users founds by this role']],
                 ] , 404);
             }
         } 

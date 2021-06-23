@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiEdit, FiTrash } from "react-icons/fi";
 
@@ -15,10 +15,6 @@ const AllClasses = () => {
   const { status, data, error } = useSelector((state) => state.adminClasses);
   const [editItem, setEditItem] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
-
-  const onEdit = (id) => {
-    setEditItem(id);
-  };
 
   const onHide = () => {
     setEditItem(null);
@@ -78,7 +74,7 @@ const AllClasses = () => {
         <EditClass
           data={{
             id: editItem.id,
-            name: "X",
+            name: editItem.name,
             pupils: [],
           }}
           onHide={onHide}

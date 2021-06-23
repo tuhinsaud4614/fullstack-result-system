@@ -1,45 +1,12 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../../shared/utils";
 import {
   ADMIN_CLASS_PUPIL_OPTIONS_ERROR,
   ADMIN_CLASS_PUPIL_OPTIONS_FETCHED,
   ADMIN_CLASS_PUPIL_OPTIONS_LOADING,
 } from "./types";
 
-const promise = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      {
-        id: "1",
-        name: "x",
-        value: false,
-        status: true,
-      },
-      {
-        id: "2",
-        name: "y",
-        value: false,
-        status: false,
-      },
-      {
-        id: "3",
-        name: "z",
-        value: false,
-        status: true,
-      },
-      {
-        id: "4",
-        name: "a",
-        value: false,
-        status: true,
-      },
-      {
-        id: "5",
-        name: "b",
-        value: false,
-        status: false,
-      },
-    ]);
-  }, 3000);
-});
 
 export const fetchingPupilOptions = () => {
   return async (dispatch) => {
@@ -48,14 +15,25 @@ export const fetchingPupilOptions = () => {
     });
 
     try {
-      const all = await promise;
-      dispatch({
-        type: ADMIN_CLASS_PUPIL_OPTIONS_FETCHED,
-        payload: all,
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_HOST_NAME}/users/pupil`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: ADMIN_CLASS_PUPIL_OPTIONS_FETCHED,
+          payload: res.data.data,
+        });
+        
+      } else {
+        dispatch({
+          type: ADMIN_CLASS_PUPIL_OPTIONS_ERROR,
+          messages: ["Associate pupils not found"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: ADMIN_CLASS_PUPIL_OPTIONS_ERROR,
+        messages: errorsGenerator(error),
       });
     }
   };

@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { fetchingOptions } from "../../../../store/admin/utility/add-subject/actions";
+import {
+  addSubject,
+  userErrorRemove,
+} from "../../../../store/admin/subjects/actions";
+import { fetchingClassTeacherOptions } from "../../../../store/admin/utility/add-subject/actions";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Select from "../../../../shared/components/select";
@@ -20,9 +25,10 @@ const AddSubject = () => {
   const { status, classes, teachers, error } = useSelector(
     (state) => state.adminUtilitySubjectOptions
   );
+  const subjectError = useSelector((state) => state.adminSubjects.error);
 
   useEffect(() => {
-    rdxDispatch(fetchingOptions());
+    rdxDispatch(fetchingClassTeacherOptions());
   }, [rdxDispatch]);
 
   if (status === "idle") {
@@ -34,7 +40,7 @@ const AddSubject = () => {
       <div
         className={`${styles.Form} rounded-1 border mb-3 p-3 d-flex justify-content-center`}
       >
-        <div className="spinner-grow text-danger" role="status">
+        <div className="spinner-grow text-warning" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       </div>
@@ -44,7 +50,15 @@ const AddSubject = () => {
   if (status === "complete" && error) {
     return (
       <div className={`${styles.Form} mb-3 alert alert-danger`} role="alert">
-        Something went wong!
+        <strong>
+          Facing problem while loading teachers or classes! You can't add a
+          subject.
+        </strong>
+        <ul className={`m-0 mt-1`}>
+          {error.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -66,8 +80,11 @@ const AddSubject = () => {
     teacher: teachers[0]["value"],
   };
 
-  const submitted = async (values) => {
-    console.log(values);
+  const submitted = async (values, { resetForm }) => {
+    await rdxDispatch(
+      addSubject(values.name, values.teacher, values.className)
+    );
+    resetForm();
   };
 
   return (
@@ -94,6 +111,18 @@ const AddSubject = () => {
               onSubmit={handleSubmit}
               autoComplete="off"
             >
+              {subjectError.add && (
+                <AlertDismissible
+                  className="mb-3"
+                  onHide={() => rdxDispatch(userErrorRemove("add"))}
+                >
+                  <ul className={`m-0`}>
+                    {subjectError.add.map((el, index) => (
+                      <li key={index}>{el}</li>
+                    ))}
+                  </ul>
+                </AlertDismissible>
+              )}
               <Input
                 label="Name"
                 id="name"
@@ -119,7 +148,7 @@ const AddSubject = () => {
                         ? errors.className
                         : null
                     }
-                    defaultValue={classes[0]["value"]}
+                    value={values.className}
                     options={classes}
                   />
                 </div>
@@ -133,7 +162,7 @@ const AddSubject = () => {
                     errorText={
                       touched.teacher && errors.teacher ? errors.teacher : null
                     }
-                    defaultValue={teachers[0]["value"]}
+                    value={values.teacher}
                     options={teachers}
                   />
                 </div>

@@ -24,7 +24,7 @@ class SubjectController extends Controller
         catch (\Throwable $th) {
             return response()->json([
                 'success'=> false,
-                'message' => 'Unauthorized User',
+                'message' => 'Something went wrong to fetch subjects',
             ] , 401);
         }
        
