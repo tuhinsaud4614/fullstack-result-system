@@ -90,5 +90,6 @@ Route::post('/AssignedClassController/create/store' , [AssignedClassController::
 Route::get('/teacher-list' , [MiscellaneousController::class , 'teacherlist']);
 Route::get('/class-list' , [MiscellaneousController::class , 'classlist']);
 Route::get('/teacher/assign/subject/{id}' , [MiscellaneousController::class , 'teacherAssignSubject']);
+Route::get('/teacher/average-grade/{teacher_id}/{subject_id}' , [MiscellaneousController::class , 'teacherAverageGrade']);
 Route::get('/test-list' , [MiscellaneousController::class , 'testList']);
 

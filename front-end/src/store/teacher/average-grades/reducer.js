@@ -22,7 +22,7 @@ function reducer(state = initialState, action) {
       return {
         data: [],
         status: "complete",
-        error: "Something went wrong",
+        error: action.messages,
       };
     case TEACHER_AVERAGE_GRADES_FETCHED:
       return {

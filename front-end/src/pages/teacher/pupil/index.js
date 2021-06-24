@@ -1,19 +1,22 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import qs from "query-string";
 
 import { getValidObjectValue } from "../../../shared/utils";
 import { fetchingAverageGrades } from "../../../store/teacher/average-grades/actions";
+import TableBox from "../../../shared/components/table-box";
 import styles from "./Index.module.css";
 
 const Pupil = () => {
   const params = useParams();
+  const { search } = useLocation();
   const subjectId = getValidObjectValue("subjectId", params);
   const rdxDispatch = useDispatch();
   const { status, data, error } = useSelector(
     (state) => state.teacherAverageGrades
   );
-  // console.log(data);
+  const gsResult = qs.parse(search);
 
   useEffect(() => {
     if (subjectId) {
@@ -37,51 +40,58 @@ const Pupil = () => {
 
   if (status === "complete" && error) {
     return (
-      <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
-        Something went wong!
-      </div>
+      <TableBox
+        className="alert alert-danger"
+        title={`Average Grades (Class: ${gsResult.class.toUpperCase()} - Subject: ${gsResult.subject.toUpperCase()})`}
+      >
+        <ul className={`m-0`}>
+          {error.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
+      </TableBox>
     );
   }
 
   if (status === "complete" && !data.length) {
     return (
-      <div className={`rounded-1 border p-3`}>
+      <TableBox
+        title={`Average Grades (Class: ${gsResult.class.toUpperCase()} - Subject: ${gsResult.subject.toUpperCase()})`}
+      >
         <p className="text-danger m-0">
           No data <span className="fw-bolder">found</span>
         </p>
-      </div>
+      </TableBox>
     );
   }
 
   return (
-    <div className={`rounded border p-3`}>
+    <TableBox
+      title={`Average Grades (Class: ${gsResult.class.toUpperCase()} - Subject: ${gsResult.subject.toUpperCase()})`}
+    >
       <div className="table-responsive">
         <table className={`table ${styles.Table}`}>
           <thead>
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
-              <th scope="col">Class</th>
-              <th scope="col">Subject</th>
               <th scope="col">Average Grades</th>
             </tr>
           </thead>
           <tbody>
             {data.map((d, index) => (
-              <tr key={d.id}>
+              <tr key={d.user_id}>
                 <th scope="row">{index + 1}</th>
                 <td>
-                  {d.pupil.forename} {d.pupil.surname}
+                  {d.fname} {d.lname} ({d.userid})
                 </td>
-                <td>{d.class.name}</td>
-                <td>{d.subject.name}</td>
-                <td>{d.grade}</td>
+                <td>{d.average_grade}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </TableBox>
   );
 };
 

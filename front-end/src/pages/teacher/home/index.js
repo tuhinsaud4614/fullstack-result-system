@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 import { fetchingAssignedSubject } from "../../../store/teacher/assigned-subjects/actions";
+import TableBox from "../../../shared/components/table-box";
 import styles from "./Index.module.css";
 
 const Home = () => {
@@ -34,28 +35,28 @@ const Home = () => {
 
   if (status === "complete" && error) {
     return (
-      <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
+      <TableBox className="alert alert-danger" title="Assigned Subjects">
         <ul className={`m-0`}>
           {error.map((el, index) => (
             <li key={index}>{el}</li>
           ))}
         </ul>
-      </div>
+      </TableBox>
     );
   }
 
   if (status === "complete" && !data.length) {
     return (
-      <div className={`rounded-1 border p-3`}>
+      <TableBox title="Assigned Subjects">
         <p className="text-danger m-0">
           No subjects <span className="fw-bolder">found</span>
         </p>
-      </div>
+      </TableBox>
     );
   }
 
   return (
-    <div className={`rounded border p-3`}>
+    <TableBox title="Assigned Subjects">
       <div className="table-responsive">
         <table className="table">
           <thead>
@@ -74,7 +75,7 @@ const Home = () => {
                 <td>{d.class_name}</td>
                 <td className={`${styles.Actions}`}>
                   <Link
-                    to={`${pathname}/${d.id}/pupils`}
+                    to={`${pathname}/${d.id}/pupils?class=${d.class_name}&subject=${d.name}`}
                     className={`btn btn-link`}
                   >
                     Average Grades
@@ -91,7 +92,7 @@ const Home = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </TableBox>
   );
 };
 

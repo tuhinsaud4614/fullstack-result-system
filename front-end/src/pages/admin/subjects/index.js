@@ -170,26 +170,27 @@ const AllSubjects = () => {
                 </td>
                 <td>{d.class_name}</td>
                 <td>{d.subject_class}</td>
-                <td>{d.teacher_id}</td>
+                <td>{d.teacher.lname} ({d.teacher.userId})</td>
                 <td>{new Date(d.created_at).toLocaleString()}</td>
                 <td>{new Date(d.updated_at).toLocaleString()}</td>
                 <td>
-                  <IconButton
-                    className={`fs-4`}
-                    variant="warning"
-                    onClick={() =>
-                      setEditItem({
-                        id: d.id,
-                        name: d.name,
-                        className: d.class_name,
-                        teacher: d.teacher_id,
-                      })
-                    }
-                  >
-                    <FiEdit />
-                  </IconButton>
-
-                  {d.status === 1 && (
+                  {!d.archiveable && d.status === 1 && (
+                    <IconButton
+                      className={`fs-4`}
+                      variant="warning"
+                      onClick={() =>
+                        setEditItem({
+                          id: d.id,
+                          name: d.name,
+                          className: d.class_name,
+                          teacher: d.teacher.id,
+                        })
+                      }
+                    >
+                      <FiEdit />
+                    </IconButton>
+                  )}
+                  {d.archiveable && d.status === 1 && (
                     <IconButton
                       className={`ms-2 fs-4`}
                       variant="primary"

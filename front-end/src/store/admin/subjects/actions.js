@@ -12,6 +12,25 @@ import {
   ADMIN_SUBJECTS_REMOVE_ERROR,
 } from "./types";
 
+const convertToSubjectObj = (data, archiveable) => {
+  return {
+    id: data.id,
+    name: data.name,
+    subject_class: data.subject_class,
+    class_name: data.class_name,
+    status: data.status,
+    archiveable: archiveable,
+    teacher: {
+      id: data.user.id,
+      userId: data.user.userid,
+      fname: data.user.fname,
+      lname: data.user.lname,
+    },
+    created_at: data.created_at,
+    updated_at: data.updated_at,
+  };
+};
+
 export const fetchingSubjects = () => {
   return async (dispatch) => {
     dispatch({
@@ -23,10 +42,14 @@ export const fetchingSubjects = () => {
       const res = await axios.get(
         `${process.env.REACT_APP_API_HOST_NAME}/subject/index`
       );
+      const modifiedData = res.data.data.map((el) =>
+        convertToSubjectObj(el, res.data.archiveableSubjects.includes(el.id))
+      );
+
       if (res.status === 200) {
         dispatch({
           type: ADMIN_SUBJECTS_FETCHED,
-          payload: res.data.data,
+          payload: modifiedData,
         });
       } else {
         dispatch({
@@ -59,7 +82,7 @@ export const addSubject = (name, teacherId, className) => {
       if (res.status === 201) {
         dispatch({
           type: ADMIN_SUBJECTS_ADD,
-          payload: res.data.data,
+          payload: convertToSubjectObj(res.data.data, false),
         });
       } else {
         dispatch({
@@ -101,7 +124,7 @@ export const editSubject = (id, name, className, teacher, onHide) => {
       if (res.status === 200 && res.data.data) {
         dispatch({
           type: ADMIN_SUBJECTS_EDIT,
-          payload: res.data.data,
+          payload: convertToSubjectObj(res.data.data, false),
         });
         onHide();
       } else {
@@ -162,28 +185,25 @@ export const archiveSubject = (subjectId, onHide) => {
         type: ADMIN_SUBJECTS_LOADING,
         for: "archive",
       });
-      dispatch({
-        type: ADMIN_SUBJECTS_ARCHIVE,
-        id: subjectId,
-      });
-      onHide();
-      // const res = await axios.post(
-      //   `${process.env.REACT_APP_API_HOST_NAME}/subject/delete/${subjectId}`
-      // );
-
-      // if (res.status === 200) {
-      //   dispatch({
-      //     type: ADMIN_SUBJECTS_ARCHIVE,
-      //     id: subjectId,
-      //   });
-      //   onHide();
-      // } else {
-      //   dispatch({
-      //     type: ADMIN_SUBJECTS_ERROR,
-      //     for: "archive",
-      //     messages: ["Subject delete failed!"],
-      //   });
-      // }
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_HOST_NAME}/subject/archive/${subjectId}`,
+        {
+          status: 0,
+        }
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: ADMIN_SUBJECTS_ARCHIVE,
+          id: subjectId,
+        });
+        onHide();
+      } else {
+        dispatch({
+          type: ADMIN_SUBJECTS_ERROR,
+          for: "archive",
+          messages: ["Subject archives failed!"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: ADMIN_SUBJECTS_ERROR,

@@ -46,16 +46,18 @@ function reducer(state = initialState, action) {
         error: { ...state.error, add: null },
       };
     case ADMIN_SUBJECTS_EDIT:
-      const updatedUserIndex = state.data.findIndex(
+      const updatedSubjectIndex = state.data.findIndex(
         (d) => d.id === action.payload.id
       );
-      const updatedUsers = JSON.parse(JSON.stringify(state.data));
-      if (updatedUserIndex >= 0) {
-        updatedUsers[updatedUserIndex] = action.payload;
+      const updatedSubjects = [...state.data];
+      if (updatedSubjectIndex >= 0) {
+        const prevArchive = updatedSubjects[updatedSubjectIndex].archiveable;
+        updatedSubjects[updatedSubjectIndex] = action.payload;
+        updatedSubjects[updatedSubjectIndex].archiveable = prevArchive;
       }
       return {
         ...state,
-        data: updatedUsers,
+        data: JSON.parse(JSON.stringify(updatedSubjects)),
         error: { ...state.error, edit: null },
       };
     case ADMIN_SUBJECTS_DELETE:
@@ -73,8 +75,9 @@ function reducer(state = initialState, action) {
           error: { ...state.error, archive: null },
         };
       }
-      const archivedSubjects = JSON.parse(JSON.stringify(state.data));
+      const archivedSubjects = [...state.data];
       archivedSubjects[archivedIndex].status = 0;
+      archivedSubjects[archivedIndex].archiveable = false;
       return {
         data: archivedSubjects,
         status: { ...state.status, archive: "complete" },

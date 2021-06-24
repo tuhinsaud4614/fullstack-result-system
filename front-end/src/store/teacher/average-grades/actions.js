@@ -1,52 +1,29 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../shared/utils";
 import {
   TEACHER_AVERAGE_GRADES_ERROR,
   TEACHER_AVERAGE_GRADES_FETCHED,
   TEACHER_AVERAGE_GRADES_LOADING,
 } from "./types";
 
-const promise = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      {
-        id: "1",
-        subject: { id: "1", name: "xyz" },
-        class: { id: "1", name: "ABC" },
-        pupil: { id: "1", forename: "x", surname: "y" },
-        grade: 2.5,
-      },
-      {
-        id: "2",
-        subject: { id: "2", name: "xyz" },
-        class: { id: "2", name: "ABC" },
-        pupil: { id: "2", forename: "x", surname: "y" },
-        grade: 2.5,
-      },
-      {
-        id: "3",
-        subject: { id: "3", name: "xyz" },
-        class: { id: "3", name: "ABC" },
-        pupil: { id: "3", forename: "x", surname: "y" },
-        grade: 2.5,
-      },
-    ]);
-  }, 3000);
-});
-
-export const fetchingAverageGrades = (subject_id) => {
+export const fetchingAverageGrades = (subjectId) => {
   return async (dispatch) => {
     dispatch({
       type: TEACHER_AVERAGE_GRADES_LOADING,
     });
 
     try {
-      const all = await promise;
+      // const res await axios.get(`${process.env.REACT_APP_API_HOST_NAME}/teacher/avarage-grade/{teacher_id}/${subjectId}`);
+      const res = await axios.get(`${process.env.REACT_APP_API_HOST_NAME}/teacher/average-grade/16/${subjectId}`);
       dispatch({
         type: TEACHER_AVERAGE_GRADES_FETCHED,
-        payload: all,
+        payload: res.data.data,
       });
     } catch (error) {
       dispatch({
         type: TEACHER_AVERAGE_GRADES_ERROR,
+        messages: errorsGenerator(error),
       });
     }
   };
