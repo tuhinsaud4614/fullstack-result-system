@@ -1,8 +1,12 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { editTest } from "../../../../store/teacher/tests/actions";
+import {
+  editTest,
+  userErrorRemove,
+} from "../../../../store/teacher/tests/actions";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Modal from "../../../../shared/components/modal";
@@ -20,15 +24,18 @@ const Schema = Yup.object().shape({
 
 const EditTest = ({ data: { id, name, date }, subjectId, onHide }) => {
   const rdxDispatch = useDispatch();
+  const { error } = useSelector((state) => state.teacherTests);
   const values = {
     name: name || "",
     date: date || "",
   };
 
-  const submitted = async (values, {resetForm}) => {
-    await rdxDispatch(editTest(subjectId, { id: id, ...values }));
-    resetForm();
-    onHide();
+  const submitted = async (values, { resetForm }) => {
+    await rdxDispatch(
+      editTest(subjectId, { id: id, ...values }, () => {
+        onHide();
+      })
+    );
   };
 
   return (
@@ -57,9 +64,21 @@ const EditTest = ({ data: { id, name, date }, subjectId, onHide }) => {
             scroll
             staticBack
           >
-            <Modal.Header label={id} closeBtn />
+            <Modal.Header label={name} closeBtn />
             <form onSubmit={handleSubmit} autoComplete="off">
               <Modal.Body>
+                {error.edit && (
+                  <AlertDismissible
+                    className="mb-3"
+                    onHide={() => rdxDispatch(userErrorRemove("edit"))}
+                  >
+                    <ul className={`m-0`}>
+                      {error.edit.map((el, index) => (
+                        <li key={index}>{el}</li>
+                      ))}
+                    </ul>
+                  </AlertDismissible>
+                )}
                 <div className={`row g-3`}>
                   <div className="col-12 col-sm-6">
                     <Input

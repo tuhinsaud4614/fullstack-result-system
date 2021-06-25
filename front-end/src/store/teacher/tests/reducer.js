@@ -5,6 +5,7 @@ import {
   TEACHER_TESTS_ERROR,
   TEACHER_TESTS_FETCHED,
   TEACHER_TESTS_LOADING,
+  TEACHER_TESTS_REMOVE_ERROR,
 } from "./types";
 
 const initialState = {
@@ -24,7 +25,12 @@ function reducer(state = initialState, action) {
       return {
         data: [],
         status: { ...state.status, [action.for]: "complete" },
-        error: { ...state.error, [action.for]: "Something went wrong" },
+        error: { ...state.error, [action.for]: action.messages },
+      };
+    case TEACHER_TESTS_REMOVE_ERROR:
+      return {
+        ...state,
+        error: { ...state.error, [action.closeFor]: null },
       };
     case TEACHER_TESTS_FETCHED:
       return {
@@ -35,14 +41,25 @@ function reducer(state = initialState, action) {
     case TEACHER_TESTS_ADD:
       return {
         ...state,
-        data: [...state.data, action.newTest],
+        data: [action.newTest, ...state.data],
         error: { ...state.error, add: null },
       };
-      case TEACHER_TESTS_EDIT:
-        const fData = state.data.filter((d) => d.id !== action.editTest.id);
+    case TEACHER_TESTS_EDIT:
+      const updatedTestIndex = state.data.findIndex(
+        (d) => d.id === action.editTest.id
+      );
+      if (updatedTestIndex === -1) {
         return {
+          ...state,
+          status: { ...state.status, edit: "complete" },
+          error: { ...state.error, edit: null },
+        };
+      }
+      const updatedTest = [...state.data];
+      updatedTest[updatedTestIndex] = action.editTest;
+      return {
         ...state,
-        data: [...fData, action.editTest],
+        data: updatedTest,
         error: { ...state.error, edit: null },
       };
     case TEACHER_TESTS_DELETE:

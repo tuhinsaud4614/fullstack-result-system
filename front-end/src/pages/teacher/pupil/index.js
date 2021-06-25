@@ -16,7 +16,14 @@ const Pupil = () => {
   const { status, data, error } = useSelector(
     (state) => state.teacherAverageGrades
   );
-  const gsResult = qs.parse(search);
+  const qsResult = qs.parse(search);
+  const className = getValidObjectValue("class", qsResult)
+    ? `(Class: ${qsResult.class.toUpperCase()} - `
+    : "";
+  const subjectName = getValidObjectValue("subject", qsResult)
+    ? `Subject: ${qsResult.subject.toUpperCase()})`
+    : "";
+  const label = `Average Grades ${className}${subjectName}`;
 
   useEffect(() => {
     if (subjectId) {
@@ -42,7 +49,7 @@ const Pupil = () => {
     return (
       <TableBox
         className="alert alert-danger"
-        title={`Average Grades (Class: ${gsResult.class.toUpperCase()} - Subject: ${gsResult.subject.toUpperCase()})`}
+        title={label}
       >
         <ul className={`m-0`}>
           {error.map((el, index) => (
@@ -56,7 +63,7 @@ const Pupil = () => {
   if (status === "complete" && !data.length) {
     return (
       <TableBox
-        title={`Average Grades (Class: ${gsResult.class.toUpperCase()} - Subject: ${gsResult.subject.toUpperCase()})`}
+        title={label}
       >
         <p className="text-danger m-0">
           No data <span className="fw-bolder">found</span>
@@ -67,7 +74,7 @@ const Pupil = () => {
 
   return (
     <TableBox
-      title={`Average Grades (Class: ${gsResult.class.toUpperCase()} - Subject: ${gsResult.subject.toUpperCase()})`}
+      title={label}
     >
       <div className="table-responsive">
         <table className={`table ${styles.Table}`}>

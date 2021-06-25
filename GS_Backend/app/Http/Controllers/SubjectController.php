@@ -212,19 +212,8 @@ class SubjectController extends Controller
         }
     }
 
-    public function subjectArchive(Request $request, $id)
+    public function subjectArchive($id)
     {
-        $validator = Validator::make($request->all(), [
-            'status' => 'numeric',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
             $subject = Subject::where('id', $id)->first();
             if (!$subject) {

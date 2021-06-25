@@ -81,7 +81,7 @@ const Home = () => {
                     Average Grades
                   </Link>
                   <Link
-                    to={`${pathname}/${d.id}`}
+                    to={`${pathname}/${d.id}?class=${d.class_name}&subject=${d.name}`}
                     className={`btn btn-link ms-2`}
                   >
                     Tests

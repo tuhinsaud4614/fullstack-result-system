@@ -1,3 +1,7 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../shared/utils";
+
 import {
   TEACHER_TESTS_ADD,
   TEACHER_TESTS_DELETE,
@@ -5,29 +9,8 @@ import {
   TEACHER_TESTS_ERROR,
   TEACHER_TESTS_FETCHED,
   TEACHER_TESTS_LOADING,
+  TEACHER_TESTS_REMOVE_ERROR,
 } from "./types";
-
-const promise = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      {
-        id: "1",
-        name: "ABC",
-        date: "2021-06-15",
-      },
-      {
-        id: "2",
-        name: "ABC",
-        date: "2021-05-15",
-      },
-      {
-        id: "3",
-        name: "ABC",
-        date: "2021-05-15",
-      },
-    ]);
-  }, 3000);
-});
 
 export const fetchingTests = (subjectId) => {
   return async (dispatch) => {
@@ -37,15 +20,27 @@ export const fetchingTests = (subjectId) => {
     });
 
     try {
-      const all = await promise;
-      dispatch({
-        type: TEACHER_TESTS_FETCHED,
-        payload: all,
-      });
+      // const res = await axios.get(`test/index/${teacherId}/${subjectId}`)
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_HOST_NAME}/test/index/16/${subjectId}`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_TESTS_FETCHED,
+          payload: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: TEACHER_TESTS_ERROR,
+          for: "fetched",
+          messages: ["Associated subject's test loading failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TESTS_ERROR,
         for: "fetched",
+        messages: errorsGenerator(error),
       });
     }
   };
@@ -54,66 +49,111 @@ export const fetchingTests = (subjectId) => {
 export const addTest = (subjectId, test) => {
   return async (dispatch) => {
     try {
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: TEACHER_TESTS_ADD,
-        newTest: test,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_HOST_NAME}/test/create/store`,
+        {
+          name: test.name,
+          teacher_id: 16,
+          subject_id: subjectId,
+          test_date: test.date,
+        }
+      );
+      if (res.status === 201) {
+        dispatch({
+          type: TEACHER_TESTS_ADD,
+          newTest: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: TEACHER_TESTS_ERROR,
+          for: "add",
+          messages: ["Test adding failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TESTS_ERROR,
         for: "add",
+        messages: errorsGenerator(error),
       });
     }
   };
 };
 
-export const editTest = (subjectId, test) => {
+export const editTest = (subjectId, test, onHide) => {
   return async (dispatch) => {
     try {
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: TEACHER_TESTS_EDIT,
-        editTest: test,
-      });
+      // const res = await axios.get(
+      //   `${process.env.REACT_APP_API_HOST_NAME}//test/update/{id}`
+      // );
+      const res = await axios.put(
+        `${process.env.REACT_APP_API_HOST_NAME}/test/update/${test.id}`,
+        {
+          name: test.name,
+          teacher_id: 16,
+          subject_id: subjectId,
+          test_date: test.date,
+        }
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_TESTS_EDIT,
+          editTest: res.data.data,
+        });
+        onHide();
+      } else {
+        dispatch({
+          type: TEACHER_TESTS_ERROR,
+          for: "edit",
+          messages: ["Test editing failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TESTS_ERROR,
         for: "edit",
+        messages: errorsGenerator(error),
       });
     }
   };
 };
 
-export const deleteTest = (subjectId, testId) => {
+export const deleteTest = (subjectId, testId, onHide) => {
   return async (dispatch) => {
     try {
       dispatch({
         type: TEACHER_TESTS_LOADING,
         for: "delete",
       });
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: TEACHER_TESTS_DELETE,
-        testId: testId,
-      });
+      const res = await axios.delete(
+        `${process.env.REACT_APP_API_HOST_NAME}/test/delete/${testId}`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_TESTS_DELETE,
+          testId: testId,
+        });
+        onHide();
+      } else {
+        dispatch({
+          type: TEACHER_TESTS_ERROR,
+          for: "delete",
+          messages: ["Test delete failed!"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TESTS_ERROR,
         for: "delete",
+        messages: errorsGenerator(error),
       });
     }
+  };
+};
+
+export const userErrorRemove = (closeFor) => {
+  return {
+    type: TEACHER_TESTS_REMOVE_ERROR,
+    closeFor: closeFor,
   };
 };

@@ -1,13 +1,17 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { useParams } from "react-router-dom";
 
 import { getValidObjectValue } from "../../../../shared/utils";
-import { addTest } from "../../../../store/teacher/tests/actions";
+import {
+  addTest,
+  userErrorRemove,
+} from "../../../../store/teacher/tests/actions";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import styles from "./Index.module.css";
-import { useParams } from "react-router-dom";
 
 const Schema = Yup.object().shape({
   name: Yup.string().required("Name is required!"),
@@ -20,6 +24,7 @@ const Schema = Yup.object().shape({
 });
 
 const AddTest = () => {
+  const { error } = useSelector((state) => state.teacherTests);
   const rdxDispatch = useDispatch();
   const params = useParams();
 
@@ -31,9 +36,7 @@ const AddTest = () => {
 
   const submitted = async (values, { resetForm }) => {
     if (subjectId) {
-      await rdxDispatch(
-        addTest(subjectId, { id: new Date().getTime().toString(), ...values })
-      );
+      await rdxDispatch(addTest(subjectId, { ...values }));
       resetForm();
     }
   };
@@ -60,6 +63,18 @@ const AddTest = () => {
             onSubmit={handleSubmit}
             autoComplete="off"
           >
+            {error.add && (
+              <AlertDismissible
+                className="mb-3"
+                onHide={() => rdxDispatch(userErrorRemove("add"))}
+              >
+                <ul className={`m-0`}>
+                  {error.add.map((el, index) => (
+                    <li key={index}>{el}</li>
+                  ))}
+                </ul>
+              </AlertDismissible>
+            )}
             <div className={`row g-3`}>
               <div className="col-12 col-sm-6">
                 <Input

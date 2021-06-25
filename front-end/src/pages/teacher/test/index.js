@@ -2,12 +2,16 @@ import { useCallback, useEffect, useState } from "react";
 import { FiEdit, FiEye, FiTrash } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
+import qs from "query-string";
 
 import {
   deleteTest,
   fetchingTests,
+  userErrorRemove,
 } from "../../../store/teacher/tests/actions";
 import { getValidObjectValue } from "../../../shared/utils";
+import TableBox from "../../../shared/components/table-box";
+import AlertDismissible from "../../../shared/components/alert/Dismissible";
 import Confirmation from "../../../shared/components/confirmation";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import SubHeader from "../components/header/SubHeader";
@@ -16,27 +20,34 @@ import EditTest from "../components/edit-test";
 import styles from "./Index.module.css";
 
 const AllTests = () => {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { push } = useHistory();
   const params = useParams();
   const rdxDispatch = useDispatch();
   const { status, data, error } = useSelector((state) => state.teacherTests);
-  const [edit, setEdit] = useState(null);
+  const [editItem, setEditItem] = useState(null);
   const [deleteItem, setDeleteItem] = useState(null);
 
+  const qsResult = qs.parse(search);
   const subjectId = getValidObjectValue("subjectId", params);
-
-  const onEdit = (obj) => {
-    setEdit(obj);
-  };
+  const className = getValidObjectValue("class", qsResult)
+    ? `(Class: ${qsResult.class.toUpperCase()} - `
+    : "";
+  const subjectName = getValidObjectValue("subject", qsResult)
+    ? `Subject: ${qsResult.subject.toUpperCase()})`
+    : "";
+  const label = `Test List ${className}${subjectName}`;
 
   const onHide = useCallback(() => {
-    setEdit(null);
+    setEditItem(null);
   }, []);
 
   const onDelete = async () => {
-    await rdxDispatch(deleteTest(subjectId, deleteItem.id));
-    setDeleteItem(null);
+    await rdxDispatch(
+      deleteTest(subjectId, deleteItem.id, () => {
+        setDeleteItem(null);
+      })
+    );
   };
 
   useEffect(() => {
@@ -61,28 +72,32 @@ const AllTests = () => {
 
   if (status.fetched === "complete" && error.fetched) {
     return (
-      <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
-        Something went wong!
-      </div>
+      <TableBox className="alert alert-danger" title={label}>
+        <ul className={`m-0`}>
+          {error.fetched.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
+      </TableBox>
     );
   }
 
   if (status.fetched === "complete" && !data.length) {
     return (
-      <div className={`rounded-1 border p-3`}>
+      <TableBox className="alert alert-danger" title={label}>
         <p className="text-danger m-0">
-          No data <span className="fw-bolder">found</span>
+          No tests <span className="fw-bolder">found</span>
         </p>
-      </div>
+      </TableBox>
     );
   }
 
   return (
-    <div className={`rounded border p-3`}>
-      {edit && (
+    <TableBox title={label}>
+      {editItem && (
         <EditTest
           data={{
-            ...edit,
+            ...editItem,
           }}
           subjectId={subjectId}
           onHide={onHide}
@@ -97,7 +112,20 @@ const AllTests = () => {
           onHide={() => {
             setDeleteItem(null);
           }}
-        />
+        >
+          {error.delete && (
+            <AlertDismissible
+              className="mb-3"
+              onHide={() => rdxDispatch(userErrorRemove("delete"))}
+            >
+              <ul className={`m-0`}>
+                {error.delete.map((el, index) => (
+                  <li key={index}>{el}</li>
+                ))}
+              </ul>
+            </AlertDismissible>
+          )}
+        </Confirmation>
       )}
       <div className="table-responsive">
         <table className="table">
@@ -114,7 +142,7 @@ const AllTests = () => {
               <tr key={d.id}>
                 <th scope="row">{index + 1}</th>
                 <td>{d.name}</td>
-                <td>{d.date}</td>
+                <td>{d.test_date}</td>
                 <td className={`${styles.Actions}`}>
                   <IconButton
                     variant="primary"
@@ -128,7 +156,9 @@ const AllTests = () => {
                   <IconButton
                     className={`ms-2 fs-4`}
                     variant="warning"
-                    onClick={() => onEdit({ ...d })}
+                    onClick={() =>
+                      setEditItem({ id: d.id, name: d.name, date: d.test_date })
+                    }
                   >
                     <FiEdit />
                   </IconButton>
@@ -145,7 +175,7 @@ const AllTests = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </TableBox>
   );
 };
 

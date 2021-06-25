@@ -12,6 +12,20 @@ import {
   ADMIN_SUBJECTS_REMOVE_ERROR,
 } from "./types";
 
+const convertObjToArray = (obj) => {
+  let temp = [];
+  if(Array.isArray(obj)) {
+    return obj;
+  }
+  if (obj !== null && typeof obj === "object" && !Array.isArray(obj)) {
+    for (const key in obj) {
+      temp = [...temp, obj[key]];
+    }
+    return temp;
+  }
+  return temp;
+};
+
 const convertToSubjectObj = (data, archiveable) => {
   return {
     id: data.id,
@@ -42,8 +56,9 @@ export const fetchingSubjects = () => {
       const res = await axios.get(
         `${process.env.REACT_APP_API_HOST_NAME}/subject/index`
       );
+      const aSubjects = convertObjToArray(res.data.archiveableSubjects);
       const modifiedData = res.data.data.map((el) =>
-        convertToSubjectObj(el, res.data.archiveableSubjects.includes(el.id))
+        convertToSubjectObj(el, aSubjects.includes(el.id))
       );
 
       if (res.status === 200) {
@@ -185,11 +200,8 @@ export const archiveSubject = (subjectId, onHide) => {
         type: ADMIN_SUBJECTS_LOADING,
         for: "archive",
       });
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_HOST_NAME}/subject/archive/${subjectId}`,
-        {
-          status: 0,
-        }
+      const res = await axios.put(
+        `${process.env.REACT_APP_API_HOST_NAME}/subject/archive/${subjectId}`
       );
       if (res.status === 200) {
         dispatch({

@@ -165,15 +165,26 @@ const AllSubjects = () => {
             {data.map((d, index) => (
               <tr key={d.id}>
                 <th scope="row">{index + 1}</th>
-                <td className={`${d.status === 1 ? "" : "text-primary"}`}>
+                <td
+                  className={`text-uppercase ${
+                    d.status === 1 ? "" : "text-primary"
+                  }`}
+                >
                   {d.name}
                 </td>
                 <td>{d.class_name}</td>
                 <td>{d.subject_class}</td>
-                <td>{d.teacher.lname} ({d.teacher.userId})</td>
+                <td>
+                  {d.teacher.lname} ({d.teacher.userId})
+                </td>
                 <td>{new Date(d.created_at).toLocaleString()}</td>
                 <td>{new Date(d.updated_at).toLocaleString()}</td>
                 <td>
+                  {d.status === 0 && (
+                    <span className="text-danger fw-bolder text-uppercase">
+                      archived
+                    </span>
+                  )}
                   {!d.archiveable && d.status === 1 && (
                     <IconButton
                       className={`fs-4`}
@@ -192,7 +203,7 @@ const AllSubjects = () => {
                   )}
                   {d.archiveable && d.status === 1 && (
                     <IconButton
-                      className={`ms-2 fs-4`}
+                      className={`fs-4`}
                       variant="primary"
                       onClick={() =>
                         setArchiveItem({
@@ -207,7 +218,7 @@ const AllSubjects = () => {
                   {d.status === 1 && (
                     <IconButton
                       variant="danger"
-                      className={`ms-2 fs-4`}
+                      className={`fs-4`}
                       onClick={() =>
                         setDeleteItem({
                           id: d.id,

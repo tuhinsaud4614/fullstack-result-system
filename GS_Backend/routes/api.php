@@ -53,14 +53,16 @@ Route::get('/subject/show/{name}' , [SubjectController::class , 'show']);
 Route::post('/subject/create/store' , [SubjectController::class , 'store']);
 Route::post('/subject/update/{id}' , [SubjectController::class , 'update']);
 Route::post('/subject/delete/{id}' , [SubjectController::class , 'delete']);
+Route::put('/subject/archive/{id}' , [SubjectController::class , 'subjectArchive']);
+
 
 
 //Test Crontrollers
-Route::get('/test/index' , [TestController::class , 'index']);
+Route::get('/test/index/{teacherId}/{subjectId}' , [TestController::class , 'index']);
 Route::get('/test/show/{name}' , [TestController::class , 'show']);
 Route::post('/test/create/store' , [TestController::class , 'store']);
-Route::post('/test/update/{id}' , [TestController::class , 'update']);
-Route::post('/test/delete/{id}' , [TestController::class , 'delete']);
+Route::put('/test/update/{id}' , [TestController::class , 'update']);
+Route::delete('/test/delete/{id}' , [TestController::class , 'delete']);
 
 
 //Result Crontrollers
