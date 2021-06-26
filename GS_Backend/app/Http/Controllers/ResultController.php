@@ -122,7 +122,7 @@ class ResultController extends Controller
         catch (\Throwable $th) {
             return response()->json([
                 'success'=> false,
-                'message' =>'Something Went Worng...While creating the Result!!!'
+                'message' =>'Something Went Wrong...While creating the Result!!!'
                 ], 400);
         }
         
@@ -197,7 +197,7 @@ class ResultController extends Controller
        catch (\Throwable $th) {
            return response()->json([
                'success'=> false,
-               'message' => 'Somthing Went Wrong...While deleting the Result !!!',
+               'message' => 'Something Went Wrong...While deleting the Result !!!',
            ] , 401);
        }
    }

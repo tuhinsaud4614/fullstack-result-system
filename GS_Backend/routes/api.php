@@ -43,8 +43,8 @@ Route::resource('/users' , UserController::class);
 Route::get('/class/index' , [ClassController::class , 'index']);
 Route::get('/class/show/{name}' , [ClassController::class , 'show']);
 Route::post('/class/create/store' , [ClassController::class , 'store']);
-Route::post('/class/update/{id}' , [ClassController::class , 'update']);
-Route::post('/class/delete/{id}' , [ClassController::class , 'delete']);
+Route::patch('/class/update/{id}' , [ClassController::class , 'update']);
+Route::delete('/class/delete/{id}' , [ClassController::class , 'delete']);
 
 
 //Subject Crontrollers
@@ -67,7 +67,7 @@ Route::delete('/test/delete/{id}' , [TestController::class , 'delete']);
 
 //Result Crontrollers
 Route::get('/result/index' , [ResultController::class , 'index']);
-Route::get('/result/avarage-grade-list' , [ResultController::class , 'avarageGradeList']);
+Route::get('/result/average-grade-list' , [ResultController::class , 'avarageGradeList']);
 Route::get('/result/show/{teacher_id}/{pupil_id}/{subject_id}' , [ResultController::class , 'show']);
 Route::post('/result/create/store' , [ResultController::class , 'store']);
 Route::post('/result/update/{id}' , [ResultController::class , 'update']);

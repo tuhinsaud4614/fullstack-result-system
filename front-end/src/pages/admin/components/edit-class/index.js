@@ -4,6 +4,11 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 
 import { fetchingPupilOptions } from "../../../../store/admin/utility/class-pupil-option/actions";
+import {
+  editClass,
+  userErrorRemove,
+} from "../../../../store/admin/classes/actions";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Select from "../../../../shared/components/select";
 import Input from "../../../../shared/components/input";
@@ -20,9 +25,14 @@ const EditClass = ({ data: { id, name, pupils }, onHide }) => {
   const { status, options, error } = useSelector(
     (state) => state.adminUtilityClassPupilOptionOptions
   );
+  const adminClass = useSelector((state) => state.adminClasses);
 
   const submitted = async (values) => {
-    console.log(id, values);
+    await rdxDispatch(
+      editClass(id, values.name, values.pupil, () => {
+        onHide();
+      })
+    );
     // onHide();
   };
 
@@ -114,6 +124,18 @@ const EditClass = ({ data: { id, name, pupils }, onHide }) => {
           return (
             <form onSubmit={handleSubmit} autoComplete="off">
               <Modal.Body>
+                {adminClass.error.edit && (
+                  <AlertDismissible
+                    className="mb-3"
+                    onHide={() => rdxDispatch(userErrorRemove("edit"))}
+                  >
+                    <ul className={`m-0`}>
+                      {adminClass.error.edit.map((el, index) => (
+                        <li key={index}>{el}</li>
+                      ))}
+                    </ul>
+                  </AlertDismissible>
+                )}
                 <Input
                   label="Name"
                   id="edit-name"

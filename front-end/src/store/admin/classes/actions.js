@@ -56,7 +56,7 @@ export const addClass = (name) => {
       if (res.status === 201) {
         dispatch({
           type: ADMIN_CLASSES_ADD,
-          payload: res.data.class_data,
+          payload: { ...res.data.class_data, assign_class: [] },
         });
       } else {
         dispatch({
@@ -82,20 +82,16 @@ export const userErrorRemove = (closeFor) => {
   };
 };
 
-export const editUser = (id, username, forename, surname, password, onHide) => {
+export const editClass = (id, name, pupilId, onHide) => {
   return async (dispatch) => {
     try {
       const obj = {
-        fname: forename,
-        lname: surname,
-        user_name: username,
+        name: name,
+        pupil_id: pupilId,
       };
 
-      if (password) {
-        obj.password = password;
-      }
-      const res = await axios.put(
-        `${process.env.REACT_APP_API_HOST_NAME}/users/${id}`,
+      const res = await axios.patch(
+        `${process.env.REACT_APP_API_HOST_NAME}/class/update/${id}`,
         obj
       );
       if (res.status === 200) {
@@ -108,7 +104,7 @@ export const editUser = (id, username, forename, surname, password, onHide) => {
         dispatch({
           type: ADMIN_CLASSES_ERROR,
           for: "edit",
-          messages: ["User update failed!"],
+          messages: ["Class update failed!"],
         });
       }
     } catch (error) {
@@ -128,10 +124,10 @@ export const deleteClass = (classId, onHide) => {
         type: ADMIN_CLASSES_LOADING,
         for: "delete",
       });
-      const res = await axios.post(
+      const res = await axios.delete(
         `${process.env.REACT_APP_API_HOST_NAME}/class/delete/${classId}`
       );
-      
+
       if (res.status === 200) {
         dispatch({
           type: ADMIN_CLASSES_DELETE,

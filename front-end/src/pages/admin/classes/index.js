@@ -1,8 +1,12 @@
-import { memo, useEffect, useState } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiEdit, FiTrash } from "react-icons/fi";
 
-import { deleteClass, fetchingClasses, userErrorRemove } from "../../../store/admin/classes/actions";
+import {
+  deleteClass,
+  fetchingClasses,
+  userErrorRemove,
+} from "../../../store/admin/classes/actions";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
 import Confirmation from "../../../shared/components/confirmation";
 import AlertDismissible from "../../../shared/components/alert/Dismissible";
@@ -75,7 +79,7 @@ const AllClasses = () => {
           data={{
             id: editItem.id,
             name: editItem.name,
-            pupils: [],
+            pupils: [...editItem.pupils],
           }}
           onHide={onHide}
         />
@@ -110,6 +114,7 @@ const AllClasses = () => {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
+              <th scope="col">Pupils</th>
               <th scope="col">Created At</th>
               <th scope="col">Updated At</th>
               <th scope="col">Actions</th>
@@ -120,6 +125,18 @@ const AllClasses = () => {
               <tr key={d.id}>
                 <th scope="row">{index + 1}</th>
                 <td>{d.name}</td>
+                <td>
+                  {d.assign_class.length === 0
+                    ? "No pupil assigned"
+                    : d.assign_class.map((el, index) => (
+                        <Fragment key={index}>
+                          <span>
+                            {el.pupil.lname} - ({el.pupil.userid})
+                          </span>
+                          <br />
+                        </Fragment>
+                      ))}
+                </td>
                 <td>{new Date(d.created_at).toLocaleString()}</td>
                 <td>{new Date(d.updated_at).toLocaleString()}</td>
                 <td>
@@ -130,6 +147,7 @@ const AllClasses = () => {
                       setEditItem({
                         id: d.id,
                         name: d.name,
+                        pupils: d.assign_class.map((p) => p.pupil),
                       })
                     }
                   >
