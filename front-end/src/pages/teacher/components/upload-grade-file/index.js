@@ -1,7 +1,13 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
+import {
+  testPupilGradeErrorRemove,
+  uploadPupilTestGradeFile,
+} from "../../../../store/teacher/test-pupil-grade/actions";
 
 const Schema = Yup.object().shape({
   grades: Yup.mixed()
@@ -13,13 +19,18 @@ const Schema = Yup.object().shape({
     ),
 });
 
-const UploadGradeFile = () => {
+const UploadGradeFile = ({ subjectId, testId }) => {
+  const rdxDispatch = useDispatch();
+  const { error } = useSelector((state) => state.teacherPupilTestGrade);
   const values = {
     grades: "",
   };
 
   const submitted = async (values, { resetForm }) => {
-    console.log(values);
+    await rdxDispatch(
+      uploadPupilTestGradeFile(subjectId, testId, values.grades)
+    );
+    resetForm({ values: { grades: "" } });
   };
 
   return (
@@ -44,6 +55,20 @@ const UploadGradeFile = () => {
               style={{ width: "100%", maxWidth: "576px" }}
               onSubmit={handleSubmit}
             >
+              {error.fileUpload && (
+                <AlertDismissible
+                  className="mb-3"
+                  onHide={() =>
+                    rdxDispatch(testPupilGradeErrorRemove("fileUpload"))
+                  }
+                >
+                  <ul className={`m-0`}>
+                    {error.fileUpload.map((el, index) => (
+                      <li key={index}>{el}</li>
+                    ))}
+                  </ul>
+                </AlertDismissible>
+              )}
               <div className={`row g-3 align-items-sm-end`}>
                 <div className={`col-12 col-sm-auto`}>
                   <label htmlFor="grades" className={`form-label`}>

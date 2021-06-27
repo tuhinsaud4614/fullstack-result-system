@@ -7,6 +7,7 @@ import {
   TEACHER_TEST_PUPIL_GRADE_EDIT,
   TEACHER_TEST_PUPIL_GRADE_ERROR,
   TEACHER_TEST_PUPIL_GRADE_FETCHED,
+  TEACHER_TEST_PUPIL_GRADE_FILE_UPLOAD,
   TEACHER_TEST_PUPIL_GRADE_LOADING,
   TEACHER_TEST_PUPIL_GRADE_REMOVE_ERROR,
 } from "./types";
@@ -50,11 +51,6 @@ export const fetchingPupilTestGrade = (subjectId, testId) => {
 export const addPupilTestGrade = (subjectId, testId, pupil, grade) => {
   return async (dispatch) => {
     try {
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/result/create/store`,
         {
@@ -147,6 +143,40 @@ export const deletePupilTestGrade = (resultId, onHide) => {
       dispatch({
         type: TEACHER_TEST_PUPIL_GRADE_ERROR,
         for: "delete",
+        messages: errorsGenerator(error),
+      });
+    }
+  };
+};
+
+export const uploadPupilTestGradeFile = (subjectId, testId, file) => {
+  return async (dispatch) => {
+    try {
+      const formData = new FormData();
+      formData.append("teacher_id", 18);
+      formData.append("subject_id", subjectId);
+      formData.append("test_id", testId);
+      formData.append("csvFile", file);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_HOST_NAME}/result/upload`,
+        formData
+      );
+      if (res.status === 201 && res.data.data) {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_FILE_UPLOAD,
+          payload: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_ERROR,
+          for: "fileUpload",
+          messages: ["Pupil grade file upload failed!"],
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: TEACHER_TEST_PUPIL_GRADE_ERROR,
+        for: "fileUpload",
         messages: errorsGenerator(error),
       });
     }

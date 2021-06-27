@@ -176,12 +176,11 @@ const TestDetail = () => {
   const params = useParams();
   const subjectId = getValidObjectValue("subjectId", params);
   const testId = getValidObjectValue("testId", params);
-
   return (
     <>
       <SubHeader>Pupil Test Grades</SubHeader>
       <AddGrade subjectId={subjectId} testId={testId} />
-      <UploadGradeFile />
+      <UploadGradeFile subjectId={subjectId} testId={testId} />
       <AllPupils subjectId={subjectId} testId={testId} />
     </>
   );

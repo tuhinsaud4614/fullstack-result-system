@@ -144,7 +144,7 @@ class ResultController extends Controller
                     'message' => 'Nothing Found!!!'
                 ], 404);
             }
-            
+
             $result->grade = $request->grade;
             $result->save();
 
@@ -253,26 +253,35 @@ class ResultController extends Controller
     {
 
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt,ods',
+            'csvFile' => 'required|file|mimes:csv,txt,ods',
+            'test_id' => 'required|numeric',
+            'teacher_id' => 'required|numeric',
+            'subject_id' => 'required|numeric',
         ]);
 
         try {
 
             if ($request->hasFile('file')) {
-                $filepath = $request->file('file')->getRealPath();
+                $filepath = $request->file('csvFile')->getRealPath();
 
-                Excel::import(new ResultImport, $request->file('file'));
+                Excel::import(new ResultImport, $request->file('csvFile'));
 
                 return response()->json([
                     'success' => true,
                     'message' => 'CSV/ODS Result Uploded Successfully!!!',
+                    // "data" => Result::orderBy('id', 'desc')->where([
+                    //     ['teacher_id', "=", $request->teacher_id],
+                    //     ['subject_id', "=", $request->subject_id],
+                    //     ['test_id', "=", $request->test_id],
+                    // ])->with('user')->get()
                 ], 201);
             }
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Somthing Went Wrong...While Uploading the CSV/ODS!!!',
-            ], 401);
+                'message' => 'Something Went Wrong...While Uploading the CSV/ODS!!!',
+                "error" => $request->file("csvFile")
+            ], 500);
         }
     }
 

@@ -4,6 +4,7 @@ import {
   TEACHER_TEST_PUPIL_GRADE_EDIT,
   TEACHER_TEST_PUPIL_GRADE_ERROR,
   TEACHER_TEST_PUPIL_GRADE_FETCHED,
+  TEACHER_TEST_PUPIL_GRADE_FILE_UPLOAD,
   TEACHER_TEST_PUPIL_GRADE_LOADING,
   TEACHER_TEST_PUPIL_GRADE_REMOVE_ERROR,
 } from "./types";
@@ -11,7 +12,13 @@ import {
 const initialState = {
   data: [],
   status: { fetched: "idle", delete: "idle" },
-  error: { fetched: null, add: null, edit: null, delete: null },
+  error: {
+    fetched: null,
+    add: null,
+    edit: null,
+    delete: null,
+    fileUpload: null,
+  },
 };
 
 function reducer(state = initialState, action) {
@@ -23,7 +30,7 @@ function reducer(state = initialState, action) {
       };
     case TEACHER_TEST_PUPIL_GRADE_ERROR:
       return {
-        data: [],
+        ...state,
         status: { ...state.status, [action.for]: "complete" },
         error: { ...state.error, [action.for]: action.messages },
       };
@@ -31,6 +38,12 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         error: { ...state.error, [action.closeFor]: null },
+      };
+    case TEACHER_TEST_PUPIL_GRADE_FILE_UPLOAD:
+      return {
+        ...state,
+        data: action.payload || state.data,
+        error: { ...state.error, fileUpload: null },
       };
     case TEACHER_TEST_PUPIL_GRADE_FETCHED:
       return {
