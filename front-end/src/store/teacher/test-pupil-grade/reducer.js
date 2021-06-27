@@ -5,6 +5,7 @@ import {
   TEACHER_TEST_PUPIL_GRADE_ERROR,
   TEACHER_TEST_PUPIL_GRADE_FETCHED,
   TEACHER_TEST_PUPIL_GRADE_LOADING,
+  TEACHER_TEST_PUPIL_GRADE_REMOVE_ERROR,
 } from "./types";
 
 const initialState = {
@@ -24,7 +25,12 @@ function reducer(state = initialState, action) {
       return {
         data: [],
         status: { ...state.status, [action.for]: "complete" },
-        error: { ...state.error, [action.for]: "Something went wrong" },
+        error: { ...state.error, [action.for]: action.messages },
+      };
+    case TEACHER_TEST_PUPIL_GRADE_REMOVE_ERROR:
+      return {
+        ...state,
+        error: { ...state.error, [action.closeFor]: null },
       };
     case TEACHER_TEST_PUPIL_GRADE_FETCHED:
       return {
@@ -35,29 +41,30 @@ function reducer(state = initialState, action) {
     case TEACHER_TEST_PUPIL_GRADE_ADD:
       return {
         ...state,
-        data: [...state.data, action.newPupilGrade],
+        data: [action.newPupilGrade, ...state.data],
         error: { ...state.error, add: null },
       };
     case TEACHER_TEST_PUPIL_GRADE_EDIT:
-      const fPupilIndex = state.data.findIndex((d) => d.id === action.pupilId);
-      if (fPupilIndex >= 0) {
-        let temp = state.data[fPupilIndex];
-        temp.grade = action.grade;
-        let newState = JSON.parse(JSON.stringify(state.data));
-        newState[fPupilIndex] = temp;
+      const updatedGradeIndex = state.data.findIndex(
+        (d) => d.id === action.resultId
+      );
+      if (updatedGradeIndex === -1) {
         return {
           ...state,
-          data: newState,
+          status: { ...state.status, edit: "complete" },
           error: { ...state.error, edit: null },
         };
       }
+      const updatedGrades = [...state.data];
+      updatedGrades[updatedGradeIndex].grade = action.grade;
       return {
         ...state,
+        data: updatedGrades,
         error: { ...state.error, edit: null },
       };
     case TEACHER_TEST_PUPIL_GRADE_DELETE:
       return {
-        data: state.data.filter((d) => d.id !== action.pupilId),
+        data: state.data.filter((d) => d.id !== action.resultId),
         status: { ...state.status, delete: "complete" },
         error: { ...state.error, delete: null },
       };

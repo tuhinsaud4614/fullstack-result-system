@@ -4,7 +4,11 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { fetchingPupilOptions } from "../../../../store/teacher/utility/pupil-options/actions";
-import { addPupilTestGrade } from "../../../../store/teacher/test-pupil-grade/actions";
+import {
+  addPupilTestGrade,
+  testPupilGradeErrorRemove,
+} from "../../../../store/teacher/test-pupil-grade/actions";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Select from "../../../../shared/components/select";
@@ -20,10 +24,13 @@ const AddGrade = ({ subjectId, testId }) => {
   const { status, data, error } = useSelector(
     (state) => state.teacherPupilOptions
   );
+  const teacherPupilTestGrade = useSelector(
+    (state) => state.teacherPupilTestGrade
+  );
 
   useEffect(() => {
-    rdxDispatch(fetchingPupilOptions());
-  }, [rdxDispatch]);
+    rdxDispatch(fetchingPupilOptions(subjectId));
+  }, [rdxDispatch, subjectId]);
 
   if (status === "idle") {
     return null;
@@ -44,7 +51,11 @@ const AddGrade = ({ subjectId, testId }) => {
   if (status === "complete" && error) {
     return (
       <div className={`${styles.Form} mb-3 alert alert-danger`} role="alert">
-        Something went wong!
+        <ul className={`m-0`}>
+          {error.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -70,11 +81,7 @@ const AddGrade = ({ subjectId, testId }) => {
       addPupilTestGrade(
         subjectId,
         testId,
-        {
-          id: new Date().getTime().toString(),
-          forename: values.pupil,
-          surname: values.pupil,
-        },
+        values.pupil,
         values.grade
       )
     );
@@ -103,6 +110,18 @@ const AddGrade = ({ subjectId, testId }) => {
             onSubmit={handleSubmit}
             autoComplete="off"
           >
+            {teacherPupilTestGrade.error.add && (
+              <AlertDismissible
+                className="mb-3"
+                onHide={() => rdxDispatch(testPupilGradeErrorRemove("add"))}
+              >
+                <ul className={`m-0`}>
+                  {teacherPupilTestGrade.error.add.map((el, index) => (
+                    <li key={index}>{el}</li>
+                  ))}
+                </ul>
+              </AlertDismissible>
+            )}
             <div className={`row g-3`}>
               <div className="col-12 col-sm-6">
                 <Select
@@ -114,7 +133,7 @@ const AddGrade = ({ subjectId, testId }) => {
                   errorText={
                     touched.pupil && errors.pupil ? errors.pupil : null
                   }
-                  defaultValue={data[0]["value"]}
+                  value={values.pupil}
                   options={data}
                 />
               </div>

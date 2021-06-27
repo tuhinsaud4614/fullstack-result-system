@@ -1,33 +1,42 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../../shared/utils";
 import {
   TEACHER_UTILITY_PUPIL_OPTIONS_ERROR,
   TEACHER_UTILITY_PUPIL_OPTIONS_FETCHED,
   TEACHER_UTILITY_PUPIL_OPTIONS_LOADING,
 } from "./types";
 
-const x = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      { name: "Red", value: "red" },
-      { name: "Green", value: "green" },
-    ]);
-  }, 3000);
-});
-
-export const fetchingPupilOptions = () => {
+export const fetchingPupilOptions = (subjectId) => {
   return async (dispatch) => {
     dispatch({
       type: TEACHER_UTILITY_PUPIL_OPTIONS_LOADING,
     });
 
     try {
-      const all = await x;
-      dispatch({
-        type: TEACHER_UTILITY_PUPIL_OPTIONS_FETCHED,
-        payload: all,
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_HOST_NAME}/teacher/test-pupil-option/16/${subjectId}`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_UTILITY_PUPIL_OPTIONS_FETCHED,
+          payload: Array.isArray(res.data.data)
+            ? res.data.data.map((el) => ({
+                name: `${el.pupil.fname} (${el.pupil.userid})`,
+                value: el.pupil.id,
+              }))
+            : [],
+        });
+      } else {
+        dispatch({
+          type: TEACHER_UTILITY_PUPIL_OPTIONS_ERROR,
+          messages: ["Pupil's loading failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_UTILITY_PUPIL_OPTIONS_ERROR,
+        messages: errorsGenerator(error),
       });
     }
   };

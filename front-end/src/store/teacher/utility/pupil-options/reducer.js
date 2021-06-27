@@ -8,7 +8,7 @@ const initialState = {
   classes: null,
   data: null,
   status: "idle",
-  error: false,
+  error: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -17,19 +17,19 @@ const reducer = (state = initialState, action) => {
       return {
         data: null,
         status: "loading",
-        error: false,
+        error: null,
       };
     case TEACHER_UTILITY_PUPIL_OPTIONS_ERROR:
       return {
         data: null,
         status: "complete",
-        error: true,
+        error: action.messages,
       };
     case TEACHER_UTILITY_PUPIL_OPTIONS_FETCHED:
       return {
         data: action.payload,
         status: "complete",
-        error: false,
+        error: null,
       };
     default:
       return state;

@@ -7,7 +7,9 @@ import { getValidObjectValue } from "../../../shared/utils";
 import {
   deletePupilTestGrade,
   fetchingPupilTestGrade,
+  testPupilGradeErrorRemove,
 } from "../../../store/teacher/test-pupil-grade/actions";
+import AlertDismissible from "../../../shared/components/alert/Dismissible";
 import Confirmation from "../../../shared/components/confirmation";
 import SubHeader from "../components/header/SubHeader";
 import IconButton from "../../../shared/components/button/icon-button/IconButton";
@@ -29,12 +31,15 @@ const AllPupils = ({ subjectId, testId }) => {
   };
 
   const onDelete = async () => {
-    await rdxDispatch(deletePupilTestGrade(subjectId, testId, deleteItem.pupilId));
-    setDeleteItem(null);
+    await rdxDispatch(
+      deletePupilTestGrade(deleteItem.id, () => {
+        setDeleteItem(null);
+      })
+    );
   };
 
   useEffect(() => {
-    if (subjectId) {
+    if (subjectId && testId) {
       rdxDispatch(fetchingPupilTestGrade(subjectId, testId));
     }
   }, [rdxDispatch, subjectId, testId]);
@@ -56,7 +61,11 @@ const AllPupils = ({ subjectId, testId }) => {
   if (status.fetched === "complete" && error.fetched) {
     return (
       <div className={`rounded-1 border p-3 alert alert-danger`} role="alert">
-        Something went wong!
+        <ul className={`m-0`}>
+          {error.fetched.map((el, index) => (
+            <li key={index}>{el}</li>
+          ))}
+        </ul>
       </div>
     );
   }
@@ -65,7 +74,7 @@ const AllPupils = ({ subjectId, testId }) => {
     return (
       <div className={`rounded-1 border p-3`}>
         <p className="text-danger m-0">
-          No data <span className="fw-bolder">found</span>
+          No pupil <span className="fw-bolder">found</span> with associate test.
         </p>
       </div>
     );
@@ -75,10 +84,9 @@ const AllPupils = ({ subjectId, testId }) => {
     <div className={`rounded border p-3`}>
       {editPupilGrade && (
         <EditGrade
-          subjectId={subjectId}
-          testId={testId}
           data={{
             id: editPupilGrade.id,
+            name: editPupilGrade.name,
             grade: editPupilGrade.grade,
           }}
           onHide={onHide}
@@ -86,20 +94,34 @@ const AllPupils = ({ subjectId, testId }) => {
       )}
       {deleteItem && (
         <Confirmation
-          id={deleteItem.pupilId}
+          id={deleteItem.id}
           title={deleteItem.name}
           handler={onDelete}
           pending={status.delete === "loading"}
           onHide={() => {
             setDeleteItem(null);
           }}
-        />
+        >
+          {error.delete && (
+            <AlertDismissible
+              className="mb-3"
+              onHide={() => rdxDispatch(testPupilGradeErrorRemove("delete"))}
+            >
+              <ul className={`m-0`}>
+                {error.delete.map((el, index) => (
+                  <li key={index}>{el}</li>
+                ))}
+              </ul>
+            </AlertDismissible>
+          )}
+        </Confirmation>
       )}
       <div className="table-responsive">
         <table className="table">
           <thead>
             <tr>
               <th scope="col">#</th>
+              <th scope="col">ID</th>
               <th scope="col">Forename</th>
               <th scope="col">Surname</th>
               <th scope="col">Grade</th>
@@ -110,15 +132,20 @@ const AllPupils = ({ subjectId, testId }) => {
             {data.map((d, index) => (
               <tr key={d.id}>
                 <th scope="row">{index + 1}</th>
-                <td>{d.forename}</td>
-                <td>{d.surname}</td>
+                <td>{d.user.userid}</td>
+                <td>{d.user.fname}</td>
+                <td>{d.user.lname}</td>
                 <td>{d.grade}</td>
                 <td className={`${styles.Actions}`}>
                   <IconButton
                     className={`fs-4`}
                     variant="warning"
                     onClick={() =>
-                      setEditPupilGrade({ id: d.id, grade: d.grade })
+                      setEditPupilGrade({
+                        id: d.id,
+                        name: `${d.user.lname} (${d.user.userid})`,
+                        grade: d.grade,
+                      })
                     }
                   >
                     <FiEdit />
@@ -128,8 +155,8 @@ const AllPupils = ({ subjectId, testId }) => {
                     className={`ms-2 fs-4`}
                     onClick={() =>
                       setDeleteItem({
-                        pupilId: d.id,
-                        name: `${d.forename} ${d.surname}`,
+                        id: d.id,
+                        name: `${d.user.lname} (${d.user.userid})`,
                       })
                     }
                   >

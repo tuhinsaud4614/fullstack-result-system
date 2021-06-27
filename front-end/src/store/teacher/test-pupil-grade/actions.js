@@ -1,3 +1,6 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../shared/utils";
 import {
   TEACHER_TEST_PUPIL_GRADE_ADD,
   TEACHER_TEST_PUPIL_GRADE_DELETE,
@@ -5,32 +8,8 @@ import {
   TEACHER_TEST_PUPIL_GRADE_ERROR,
   TEACHER_TEST_PUPIL_GRADE_FETCHED,
   TEACHER_TEST_PUPIL_GRADE_LOADING,
+  TEACHER_TEST_PUPIL_GRADE_REMOVE_ERROR,
 } from "./types";
-
-const promise = new Promise((res, rej) => {
-  setTimeout(() => {
-    res([
-      {
-        id: "1",
-        forename: "ABC",
-        surname: "XYZ",
-        grade: 1.5,
-      },
-      {
-        id: "2",
-        forename: "ABC",
-        surname: "XYZ",
-        grade: 1.5,
-      },
-      {
-        id: "3",
-        forename: "ABC",
-        surname: "XYZ",
-        grade: 1.5,
-      },
-    ]);
-  }, 3000);
-});
 
 export const fetchingPupilTestGrade = (subjectId, testId) => {
   return async (dispatch) => {
@@ -40,15 +19,29 @@ export const fetchingPupilTestGrade = (subjectId, testId) => {
     });
 
     try {
-      const all = await promise;
-      dispatch({
-        type: TEACHER_TEST_PUPIL_GRADE_FETCHED,
-        payload: all,
-      });
+      // const res = await axios.get(
+      //   `${process.env.REACT_APP_API_HOST_NAME}/result/index/{teacherId}/{subjectId}/{testId}`
+      // );
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_HOST_NAME}/result/index/16/${subjectId}/${testId}`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_FETCHED,
+          payload: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_ERROR,
+          for: "fetched",
+          messages: ["Pupil grade's loading failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TEST_PUPIL_GRADE_ERROR,
         for: "fetched",
+        messages: errorsGenerator(error),
       });
     }
   };
@@ -62,62 +55,107 @@ export const addPupilTestGrade = (subjectId, testId, pupil, grade) => {
           res();
         }, 3000);
       });
-      dispatch({
-        type: TEACHER_TEST_PUPIL_GRADE_ADD,
-        newPupilGrade: {...pupil, grade: grade},
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_HOST_NAME}/result/create/store`,
+        {
+          test_id: testId,
+          teacher_id: 16,
+          pupil_id: pupil,
+          subject_id: subjectId,
+          grade: grade,
+        }
+      );
+      if (res.status === 201) {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_ADD,
+          newPupilGrade: res.data.data,
+        });
+      } else {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_ERROR,
+          for: "add",
+          messages: ["Pupil grade's adding failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TEST_PUPIL_GRADE_ERROR,
         for: "add",
+        messages: errorsGenerator(error),
       });
     }
   };
 };
 
-export const editPupilTestGrade = (subjectId, testId, pupilId, grade) => {
+export const editPupilTestGrade = (resultId, grade, onHide) => {
   return async (dispatch) => {
     try {
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: TEACHER_TEST_PUPIL_GRADE_EDIT,
-        pupilId: pupilId,
-        grade: grade,
-      });
+      const res = await axios.patch(
+        `${process.env.REACT_APP_API_HOST_NAME}/result/update/${resultId}`,
+        {
+          grade: grade,
+        }
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_EDIT,
+          resultId: resultId,
+          grade: grade,
+        });
+        onHide();
+      } else {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_ERROR,
+          for: "edit",
+          messages: ["Pupil grade's updating failed"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TEST_PUPIL_GRADE_ERROR,
         for: "edit",
+        messages: errorsGenerator(error),
       });
     }
   };
 };
 
-export const deletePupilTestGrade = (subjectId, testId, pupilId) => {
+export const deletePupilTestGrade = (resultId, onHide) => {
   return async (dispatch) => {
     try {
       dispatch({
         type: TEACHER_TEST_PUPIL_GRADE_LOADING,
         for: "delete",
       });
-      await new Promise((res, rej) => {
-        setTimeout(() => {
-          res();
-        }, 3000);
-      });
-      dispatch({
-        type: TEACHER_TEST_PUPIL_GRADE_DELETE,
-        pupilId: pupilId,
-      });
+      const res = await axios.delete(
+        `${process.env.REACT_APP_API_HOST_NAME}/result/delete/${resultId}`
+      );
+      if (res.status === 200) {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_DELETE,
+          resultId: resultId,
+        });
+        onHide();
+      } else {
+        dispatch({
+          type: TEACHER_TEST_PUPIL_GRADE_ERROR,
+          for: "delete",
+          messages: ["Pupil grade delete failed!"],
+        });
+      }
     } catch (error) {
       dispatch({
         type: TEACHER_TEST_PUPIL_GRADE_ERROR,
         for: "delete",
+        messages: errorsGenerator(error),
       });
     }
+  };
+};
+
+export const testPupilGradeErrorRemove = (closeFor) => {
+  return {
+    type: TEACHER_TEST_PUPIL_GRADE_REMOVE_ERROR,
+    closeFor: closeFor,
   };
 };

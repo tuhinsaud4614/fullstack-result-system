@@ -1,8 +1,12 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { editPupilTestGrade } from "../../../../store/teacher/test-pupil-grade/actions";
+import {
+  editPupilTestGrade,
+  testPupilGradeErrorRemove,
+} from "../../../../store/teacher/test-pupil-grade/actions";
+import AlertDismissible from "../../../../shared/components/alert/Dismissible";
 import Button from "../../../../shared/components/button";
 import Input from "../../../../shared/components/input";
 import Modal from "../../../../shared/components/modal";
@@ -12,16 +16,19 @@ const Schema = Yup.object().shape({
   grade: Yup.number().required("Grade is required!"),
 });
 
-const EditGrade = ({ data: { id, grade }, subjectId, testId, onHide }) => {
+const EditGrade = ({ data: { id, name, grade }, onHide }) => {
   const rdxDispatch = useDispatch();
+  const { error } = useSelector((state) => state.teacherPupilTestGrade);
   const values = {
     grade: grade || "",
   };
 
-  const submitted = async (values, { resetForm }) => {
-    await rdxDispatch(editPupilTestGrade(subjectId, testId, id, values.grade));
-    resetForm();
-    onHide();
+  const submitted = async (values) => {
+    await rdxDispatch(
+      editPupilTestGrade(id, values.grade, () => {
+        onHide();
+      })
+    );
   };
 
   return (
@@ -50,9 +57,23 @@ const EditGrade = ({ data: { id, grade }, subjectId, testId, onHide }) => {
             scroll
             staticBack
           >
-            <Modal.Header label={id} closeBtn />
+            <Modal.Header label={name} closeBtn />
             <form onSubmit={handleSubmit} autoComplete="off">
               <Modal.Body>
+                {error.edit && (
+                  <AlertDismissible
+                    className="mb-3"
+                    onHide={() =>
+                      rdxDispatch(testPupilGradeErrorRemove("edit"))
+                    }
+                  >
+                    <ul className={`m-0`}>
+                      {error.edit.map((el, index) => (
+                        <li key={index}>{el}</li>
+                      ))}
+                    </ul>
+                  </AlertDismissible>
+                )}
                 <Input
                   label="Grade"
                   id="grade"
