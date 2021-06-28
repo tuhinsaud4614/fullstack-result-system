@@ -8,22 +8,22 @@ use Illuminate\Support\Facades\Validator;
 
 class PupilController extends Controller
 {
-    public function pupilIndividualAvarageGrade($id)
+    public function pupilIndividualAverageGrade($id)
     {
         try {
 
-            $avarge_grade_by_individual_pupils = DB::table('results')
+            $average_grade_by_individual_pupils = DB::table('results')
             ->join('users', 'users.id', '=', 'results.pupil_id')
             ->join('subjects', 'subjects.id', '=', 'results.subject_id')
-            ->select('users.userid','users.fname','users.lname','users.id as db_User_id','subjects.name as subject_name','subjects.id as subject_id', DB::raw('AVG(grade) as AvaregeGrade'))
+            ->select('users.userid','users.fname','users.lname','users.id as db_User_id','subjects.name as subject_name','subjects.id as subject_id', DB::raw('AVG(grade) as averageGrade'))
             ->where('users.id' ,$id )
             ->groupBy('subject_id')
             ->get();
 
             return response()->json([
                 'success'=> true,
-                'message' => 'Display All The Test Result by Pupils Avarage Grade',
-                'data'  => $avarge_grade_by_individual_pupils
+                'message' => 'Display All The Test Result by Pupils Average Grade',
+                'data'  => $average_grade_by_individual_pupils
 
             ] , 200);
         } 

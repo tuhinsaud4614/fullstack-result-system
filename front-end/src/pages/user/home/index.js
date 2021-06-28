@@ -12,7 +12,7 @@ const Home = () => {
   );
 
   useEffect(() => {
-    rdxDispatch(fetchingSubjectAverageGrade("1"));
+    rdxDispatch(fetchingSubjectAverageGrade());
   }, [rdxDispatch]);
 
   if (status === "idle") {
@@ -35,7 +35,11 @@ const Home = () => {
     return (
       <TableBox title="Average Grades">
         <div className={`alert alert-danger`} role="alert">
-          Something went wong!
+          <ul className={`m-0`}>
+            {error.map((el, index) => (
+              <li key={index}>{el}</li>
+            ))}
+          </ul>
         </div>
       </TableBox>
     );
@@ -55,12 +59,15 @@ const Home = () => {
           </thead>
           <tbody>
             {data.map((el, index) => (
-              <tr key={el.id}>
+              <tr key={index}>
                 <th scope="row">{index + 1}</th>
-                <td>{el.name}</td>
-                <td>{el.average}</td>
+                <td className="text-uppercase">{el.subject_name}</td>
+                <td>{el.averageGrade}</td>
                 <td>
-                  <Link to={`/${el.id}`} className={`btn btn-outline-info`}>
+                  <Link
+                    to={`/${el.subject_id}`}
+                    className={`btn btn-outline-info`}
+                  >
                     More
                   </Link>
                 </td>

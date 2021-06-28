@@ -22,7 +22,8 @@ const User = () => {
     return null;
   }
 
-  return pupil.token && pupil.role === "pupil" ? (
+  // return pupil.token && pupil.role === "pupil" ? (
+  return true ? (
     <>
       <Header />
       <main className={`container py-3`}>
@@ -30,7 +31,11 @@ const User = () => {
           <Route path={USER_ROUTES.home.path} exact>
             <Home />
           </Route>
-          <Redirect from={USER_ROUTES.auth.path} to={USER_ROUTES.home.path} exact />
+          <Redirect
+            from={USER_ROUTES.auth.path}
+            to={USER_ROUTES.home.path}
+            exact
+          />
           <Route path={USER_ROUTES.tests.path} exact>
             <SubjectTestGrade />
           </Route>

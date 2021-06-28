@@ -77,7 +77,7 @@ Route::post('/result/upload', [ResultController::class, 'Upload']);
 
 //Pupils Controllers
 
-Route::get('/pupil/avarage-grade/{id}', [PupilController::class, 'pupilIndividualAvarageGrade']);
+Route::get('/pupil/average-grade/{id}', [PupilController::class, 'pupilIndividualAverageGrade']);
 Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}', [PupilController::class, 'subjectWiseTestGrade']);
 
 

@@ -16,7 +16,7 @@ const SubjectTestGrade = () => {
 
   useEffect(() => {
     if (subjectId) {
-      rdxDispatch(fetchingSubjectTestGrade("1", subjectId));
+      rdxDispatch(fetchingSubjectTestGrade(subjectId));
     }
   }, [rdxDispatch, subjectId]);
 
@@ -40,7 +40,11 @@ const SubjectTestGrade = () => {
     return (
       <TableBox title="Test Grade">
         <div className={`alert alert-danger`} role="alert">
-          Something went wong!
+          <ul className={`m-0`}>
+            {error.map((el, index) => (
+              <li key={index}>{el}</li>
+            ))}
+          </ul>
         </div>
       </TableBox>
     );
@@ -60,10 +64,10 @@ const SubjectTestGrade = () => {
           </thead>
           <tbody>
             {data.map((el, index) => (
-              <tr key={el.id}>
+              <tr key={index}>
                 <th scope="row">{index + 1}</th>
-                <td>{el.subjectName}</td>
-                <td>{el.name}</td>
+                <td className="text-uppercase">{el.subject_name}</td>
+                <td className="text-uppercase">{el.test_name}</td>
                 <td>{el.grade}</td>
               </tr>
             ))}

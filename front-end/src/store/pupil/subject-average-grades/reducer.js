@@ -16,12 +16,13 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         status: "loading",
+        error: null,
       };
     case PUPIL_SUBJECT_AVERAGE_GRADE_ERROR:
       return {
-        data: [],
+        data: state.data,
         status: "complete",
-        error: "Something went wrong",
+        error: action.messages,
       };
     case PUPIL_SUBJECT_AVERAGE_GRADE_FETCHED:
       return {

@@ -6,11 +6,32 @@ use App\Models\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Excel;
-use App\Imports\ResultImport;
+// use Excel;
+// use App\Imports\ResultImport;
+
+function csvToArray($filename = '', $delimiter = ',')
+{
+    if (!file_exists($filename) || !is_readable($filename))
+        return false;
+
+    $header = null;
+    $data = array();
+    if (($handle = fopen($filename, 'r')) !== false) {
+        while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
+            if (!$header)
+                $header = $row;
+            else
+                $data[] = array_combine($header, $row);
+        }
+        fclose($handle);
+    }
+
+    return $data;
+}
 
 class ResultController extends Controller
 {
+
     public function index($teacherId, $subjectId, $testId)
     {
         try {
@@ -253,7 +274,7 @@ class ResultController extends Controller
     {
 
         $request->validate([
-            'csvFile' => 'required|file|mimes:csv,txt,ods',
+            'file' => 'required|file|mimes:csv,txt,ods',
             'test_id' => 'required|numeric',
             'teacher_id' => 'required|numeric',
             'subject_id' => 'required|numeric',
@@ -262,25 +283,40 @@ class ResultController extends Controller
         try {
 
             if ($request->hasFile('file')) {
-                $filepath = $request->file('csvFile')->getRealPath();
-
-                Excel::import(new ResultImport, $request->file('csvFile'));
-
+                // Excel::import(new ResultImport, $request->file("file"));
+                $data = csvToArray($request->file('file'));
+                if (count($data)) {
+                    foreach ($data as $el) {
+                        if (
+                            isset($el["pupil_id"])
+                            && isset($el["grade"])
+                            && is_numeric($el["pupil_id"])
+                            && is_numeric($el["grade"])
+                        ) {
+                            Result::firstOrCreate([
+                                "test_id" => $request->test_id,
+                                "teacher_id" => $request->teacher_id,
+                                "subject_id" => $request->subject_id,
+                                "pupil_id" => $el["pupil_id"],
+                                "grade" => $el["grade"],
+                            ]);
+                        }
+                    }
+                }
                 return response()->json([
                     'success' => true,
-                    'message' => 'CSV/ODS Result Uploded Successfully!!!',
-                    // "data" => Result::orderBy('id', 'desc')->where([
-                    //     ['teacher_id', "=", $request->teacher_id],
-                    //     ['subject_id', "=", $request->subject_id],
-                    //     ['test_id', "=", $request->test_id],
-                    // ])->with('user')->get()
+                    'message' => 'CSV/ODS Result uploaded Successfully!!!',
+                    "data" => Result::orderBy('id', 'desc')->where([
+                        ['teacher_id', "=", $request->teacher_id],
+                        ['subject_id', "=", $request->subject_id],
+                        ['test_id', "=", $request->test_id],
+                    ])->with('user')->get()
                 ], 201);
             }
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
                 'message' => 'Something Went Wrong...While Uploading the CSV/ODS!!!',
-                "error" => $request->file("csvFile")
             ], 500);
         }
     }
@@ -300,7 +336,7 @@ class ResultController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Display All The Test Result by Pupils Avarage Grade',
-                'data'  => $avarge_grade_list_by_pupils
+                'data'  => $avarge_grade_by_individual_pupils
 
             ], 200);
         } catch (\Throwable $th) {
