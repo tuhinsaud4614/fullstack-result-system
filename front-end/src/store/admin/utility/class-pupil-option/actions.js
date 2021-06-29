@@ -8,7 +8,7 @@ import {
 } from "./types";
 
 export const fetchingPupilOptions = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: ADMIN_CLASS_PUPIL_OPTIONS_LOADING,
     });

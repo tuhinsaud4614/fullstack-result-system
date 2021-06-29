@@ -180,7 +180,7 @@ export const deleteSubject = (subjectId, onHide) => {
       const {
         adminAuth: { admin },
       } = getState();
-      const res = await axios.post(
+      const res = await axios.delete(
         `${process.env.REACT_APP_API_HOST_NAME}/subject/delete/${subjectId}`,
         setAuthHeader(admin.token)
       );

@@ -126,16 +126,20 @@ const AllClasses = () => {
                 <th scope="row">{index + 1}</th>
                 <td>{d.name}</td>
                 <td>
-                  {d.assign_class.length === 0
-                    ? "No pupil assigned"
-                    : d.assign_class.map((el, index) => (
-                        <Fragment key={index}>
-                          <span>
-                            {el.pupil.lname} - ({el.pupil.userid})
-                          </span>
-                          <br />
-                        </Fragment>
-                      ))}
+                  {Array.isArray(d.assign_class) && d.assign_class.length
+                    ? d.assign_class.map(
+                        (el, index) =>
+                          el.pupil && (
+                            <Fragment key={index}>
+                              <span>
+                                {el.pupil.lname} - ({el.pupil.userid})
+                              </span>
+
+                              <br />
+                            </Fragment>
+                          )
+                      )
+                    : "No pupil assigned"}
                 </td>
                 <td>{new Date(d.created_at).toLocaleString()}</td>
                 <td>{new Date(d.updated_at).toLocaleString()}</td>
@@ -147,7 +151,7 @@ const AllClasses = () => {
                       setEditItem({
                         id: d.id,
                         name: d.name,
-                        pupils: d.assign_class.map((p) => p.pupil),
+                        pupils: d.assign_class.filter((p) => p.pupil),
                       })
                     }
                   >

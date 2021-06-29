@@ -93,7 +93,7 @@ class TestController extends Controller
     {
         $validator = Validator::make($request->all(), [
 
-            'name' => 'unique:tests|required|string',
+            'name' => 'required|string',
             'teacher_id' => 'required|numeric',
             'subject_id' => 'required|numeric',
             'test_date' => 'required|date'
@@ -114,7 +114,9 @@ class TestController extends Controller
                     'message' => 'Nothing found to update!!!'
                 ], 404);
             }
-            $test->name = $request->name;
+            if ($request->name !== $test->name) {
+                $test->name = $request->name;
+            }
             $test->teacher_id = $request->teacher_id;
             $test->subject_id = $request->subject_id;
             $test->test_date = $request->test_date;

@@ -33,8 +33,6 @@ use App\Http\Controllers\AssignedClassController;
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout']);
 
-Route::resource('/users', UserController::class);
-
 // Admin routes start
 Route::get('/class/index', [ClassController::class, 'index'])->middleware(['auth:api', 'admin']);
 Route::post('/class/create/store', [ClassController::class, 'store'])->middleware(['auth:api', 'admin']);
@@ -43,10 +41,12 @@ Route::delete('/class/delete/{id}', [ClassController::class, 'delete'])->middlew
 Route::get('/subject/index', [SubjectController::class, 'index'])->middleware(['auth:api', 'admin']);
 Route::post('/subject/create/store', [SubjectController::class, 'store'])->middleware(['auth:api', 'admin']);
 Route::post('/subject/update/{id}', [SubjectController::class, 'update'])->middleware(['auth:api', 'admin']);
-Route::post('/subject/delete/{id}', [SubjectController::class, 'delete'])->middleware(['auth:api', 'admin']);
+Route::delete('/subject/delete/{id}', [SubjectController::class, 'delete'])->middleware(['auth:api', 'admin']);
 Route::put('/subject/archive/{id}', [SubjectController::class, 'subjectArchive'])->middleware(['auth:api', 'admin']);
 Route::get('/users/{role}', [UserController::class, 'showByRole'])->middleware(['auth:api', 'admin']);
 // Admin routes end
+
+Route::resource('/users', UserController::class);
 
 // Teacher routes start
 Route::get('/test/index/{teacherId}/{subjectId}', [TestController::class, 'index'])->middleware(['auth:api', 'teacher']);

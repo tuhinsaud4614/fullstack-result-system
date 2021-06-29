@@ -30,7 +30,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::orderBy('id', 'desc')->get();
+            $users = User::orderBy('id', 'desc')->where("role", "!=", "admin")->get();
             return response()->json([
                 'success' => true,
                 'message' => 'Display All The Users List',
@@ -113,30 +113,30 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($userid)
-    {
-        try {
-            // $users = User::find($userid);
-            $users = User::where('userid', $userid)->get();
-            if (count($users) > 0) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Display the specific User',
-                    'data'  => $users
-                ], 302);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'errors' => ["notFound" => ['No User is available At that ID']],
-                ], 404);
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => false,
-                'errors' => ["server" => ['Something went wrong']],
-            ], 401);
-        }
-    }
+    // public function show($userid)
+    // {
+    //     try {
+    //         // $users = User::find($userid);
+    //         $users = User::where('userid', $userid)->get();
+    //         if (count($users) > 0) {
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'message' => 'Display the specific User',
+    //                 'data'  => $users
+    //             ], 302);
+    //         } else {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'errors' => ["notFound" => ['No User is available At that ID']],
+    //             ], 404);
+    //         }
+    //     } catch (\Throwable $th) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'errors' => ["server" => ['Something went wrong']],
+    //         ], 401);
+    //     }
+    // }
 
     //    showByRole
     public function showByRole($role)

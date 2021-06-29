@@ -1,9 +1,12 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { adminAuthErrorRemove, adminSignIn } from "../../../store/admin/auth/actions";
+import {
+  adminAuthErrorRemove,
+  adminSignIn,
+} from "../../../store/admin/auth/actions";
 import AlertDismissible from "../../../shared/components/alert/Dismissible";
 import Button from "../../../shared/components/button";
 import styles from "./Auth.module.css";
@@ -15,6 +18,7 @@ const Schema = Yup.object().shape({
 
 const Auth = () => {
   const rdxDispatch = useDispatch();
+  const { error } = useSelector((state) => state.adminAuth);
   const { push } = useHistory();
   const values = {
     username: "",

@@ -47,10 +47,7 @@ const Pupil = () => {
 
   if (status === "complete" && error) {
     return (
-      <TableBox
-        className="alert alert-danger"
-        title={label}
-      >
+      <TableBox className="alert alert-danger" title={label}>
         <ul className={`m-0`}>
           {error.map((el, index) => (
             <li key={index}>{el}</li>
@@ -62,9 +59,7 @@ const Pupil = () => {
 
   if (status === "complete" && !data.length) {
     return (
-      <TableBox
-        title={label}
-      >
+      <TableBox title={label}>
         <p className="text-danger m-0">
           No data <span className="fw-bolder">found</span>
         </p>
@@ -73,15 +68,15 @@ const Pupil = () => {
   }
 
   return (
-    <TableBox
-      title={label}
-    >
+    <TableBox title={label}>
       <div className="table-responsive">
         <table className={`table ${styles.Table}`}>
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Name</th>
+              <th scope="col">ID</th>
+              <th scope="col">Forename</th>
+              <th scope="col">Surname</th>
               <th scope="col">Average Grades</th>
             </tr>
           </thead>
@@ -89,9 +84,9 @@ const Pupil = () => {
             {data.map((d, index) => (
               <tr key={d.user_id}>
                 <th scope="row">{index + 1}</th>
-                <td>
-                  {d.fname} {d.lname} ({d.userid})
-                </td>
+                <td>{d.userid}</td>
+                <td>{d.fname}</td>
+                <td>{d.lname}</td>
                 <td>{d.average_grade}</td>
               </tr>
             ))}
