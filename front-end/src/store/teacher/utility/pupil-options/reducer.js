@@ -21,7 +21,7 @@ const reducer = (state = initialState, action) => {
       };
     case TEACHER_UTILITY_PUPIL_OPTIONS_ERROR:
       return {
-        data: null,
+        ...state,
         status: "complete",
         error: action.messages,
       };
