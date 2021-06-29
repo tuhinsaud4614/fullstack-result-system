@@ -42,7 +42,7 @@ Route::get('/subject/index', [SubjectController::class, 'index'])->middleware(['
 Route::post('/subject/create/store', [SubjectController::class, 'store'])->middleware(['auth:api', 'admin']);
 Route::post('/subject/update/{id}', [SubjectController::class, 'update'])->middleware(['auth:api', 'admin']);
 Route::delete('/subject/delete/{id}', [SubjectController::class, 'delete'])->middleware(['auth:api', 'admin']);
-Route::put('/subject/archive/{id}', [SubjectController::class, 'subjectArchive'])->middleware(['auth:api', 'admin']);
+Route::patch('/subject/archive/{id}', [SubjectController::class, 'subjectArchive'])->middleware(['auth:api', 'admin']);
 Route::get('/users/{role}', [UserController::class, 'showByRole'])->middleware(['auth:api', 'admin']);
 // Admin routes end
 

@@ -218,8 +218,9 @@ export const archiveSubject = (subjectId, onHide) => {
       const {
         adminAuth: { admin },
       } = getState();
-      const res = await axios.put(
+      const res = await axios.patch(
         `${process.env.REACT_APP_API_HOST_NAME}/subject/archive/${subjectId}`,
+        {},
         setAuthHeader(admin.token)
       );
       if (res.status === 200) {

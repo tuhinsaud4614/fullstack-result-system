@@ -244,7 +244,7 @@ class SubjectController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Subject Data Update failed!!!'
-            ], 401);
+            ], 400);
         }
     }
 }
