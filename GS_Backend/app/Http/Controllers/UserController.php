@@ -19,7 +19,7 @@ class UserController extends Controller
      */
        public function __construct()
        {
-           $this->middleware(['auth:api', 'admin'])->except(['login','logout']);
+        //    $this->middleware(['auth:api', 'admin'])->only([]));
        }
 
     /**
@@ -339,7 +339,7 @@ class UserController extends Controller
             return $this->respondWithToken($token, $data);
         }
 
-        return response()->json(['error' => 'Login failed!'], 401);
+        return response()->json(['message' => 'Login failed!'], 401);
     }
 
     /**

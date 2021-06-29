@@ -23,7 +23,7 @@ function reducer(state = initialState, action) {
       };
     case TEACHER_TESTS_ERROR:
       return {
-        data: [],
+        ...state,
         status: { ...state.status, [action.for]: "complete" },
         error: { ...state.error, [action.for]: action.messages },
       };

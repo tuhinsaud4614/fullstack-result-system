@@ -3,6 +3,7 @@ import {
   TEACHER_AUTH_ACTION_PENDING,
   TEACHER_AUTH_ACTION_SIGN_IN,
   TEACHER_AUTH_ACTION_SIGN_OUT,
+  TEACHER_AUTH_REMOVE_ERROR,
 } from "./types";
 
 const initialState = {
@@ -33,6 +34,11 @@ function reducer(state = initialState, action) {
         ...state,
         loading: "complete",
         error: action.error,
+      };
+    case TEACHER_AUTH_REMOVE_ERROR:
+      return {
+        ...state,
+        error: null,
       };
     case TEACHER_AUTH_ACTION_SIGN_OUT:
       return {

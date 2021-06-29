@@ -1,9 +1,13 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { teacherSignIn } from "../../../store/teacher/auth/actions";
+import {
+  teacherAuthErrorRemove,
+  teacherSignIn,
+} from "../../../store/teacher/auth/actions";
+import AlertDismissible from "../../../shared/components/alert/Dismissible";
 import Button from "../../../shared/components/button";
 import Input from "../../../shared/components/input";
 import styles from "./Auth.module.css";
@@ -15,6 +19,7 @@ const Schema = Yup.object().shape({
 
 const Auth = () => {
   const rdxDispatch = useDispatch();
+  const { error } = useSelector((state) => state.teacherAuth);
   const { push } = useHistory();
   const values = {
     username: "",
@@ -56,12 +61,24 @@ const Auth = () => {
                   Sign In (Teacher)
                 </div>
                 <div className={`card-body`}>
+                  {error && (
+                    <AlertDismissible
+                      className="mb-3"
+                      onHide={() => rdxDispatch(teacherAuthErrorRemove())}
+                    >
+                      <ul className={`m-0`}>
+                        {error.map((el, index) => (
+                          <li key={index}>{el}</li>
+                        ))}
+                      </ul>
+                    </AlertDismissible>
+                  )}
                   <Input
-                    label="Username / User ID"
+                    label="User ID"
                     id="username"
                     name="username"
                     type="text"
-                    placeholder="Username"
+                    placeholder="User ID"
                     value={values.username}
                     onBlur={handleBlur}
                     onChange={handleChange}

@@ -24,8 +24,8 @@ const Teacher = () => {
     return null;
   }
 
-  // return teacher.token && teacher.role === "teacher" ? (
-  return true ? (
+  return teacher.token && teacher.role === "teacher" ? (
+  // return true ? (
     <>
       <Header />
       <main className={`container py-3`}>

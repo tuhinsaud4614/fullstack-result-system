@@ -22,7 +22,7 @@ class TestController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load associate subject\'s tests',
-            ], 401);
+            ], 400);
         }
     }
 
@@ -84,7 +84,7 @@ class TestController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something Went Worng...While creating the Test!!!'
+                'message' => 'Failed to create a test!!!'
             ], 400);
         }
     }
@@ -111,7 +111,7 @@ class TestController extends Controller
             if (!$test) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Nothing Found!!!'
+                    'message' => 'Nothing found to update!!!'
                 ], 404);
             }
             $test->name = $request->name;
@@ -128,8 +128,8 @@ class TestController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Test Data Update failed!!!'
-            ], 401);
+                'message' => 'Test update failed!!!'
+            ], 400);
         }
     }
 
@@ -163,8 +163,8 @@ class TestController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Somthing Went Wrong...While deleting the Test !!!',
-            ], 401);
+                'message' => 'Something Went Wrong...While deleting the Test !!!',
+            ], 400);
         }
     }
 }

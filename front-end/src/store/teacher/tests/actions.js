@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { errorsGenerator } from "../../../shared/utils";
+import { errorsGenerator, setAuthHeader } from "../../../shared/utils";
 
 import {
   TEACHER_TESTS_ADD,
@@ -13,16 +13,21 @@ import {
 } from "./types";
 
 export const fetchingTests = (subjectId) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: TEACHER_TESTS_LOADING,
       for: "fetched",
     });
 
     try {
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       // const res = await axios.get(`test/index/${teacherId}/${subjectId}`)
+
       const res = await axios.get(
-        `${process.env.REACT_APP_API_HOST_NAME}/test/index/16/${subjectId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/test/index/${teacher.id}/${subjectId}`,
+        setAuthHeader(teacher.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -47,8 +52,12 @@ export const fetchingTests = (subjectId) => {
 };
 
 export const addTest = (subjectId, test) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        teacherAuth: { teacher },
+      } = getState();
+
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/test/create/store`,
         {
@@ -56,7 +65,8 @@ export const addTest = (subjectId, test) => {
           teacher_id: 16,
           subject_id: subjectId,
           test_date: test.date,
-        }
+        },
+        setAuthHeader(teacher.token)
       );
       if (res.status === 201) {
         dispatch({
@@ -81,8 +91,11 @@ export const addTest = (subjectId, test) => {
 };
 
 export const editTest = (subjectId, test, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       // const res = await axios.get(
       //   `${process.env.REACT_APP_API_HOST_NAME}//test/update/{id}`
       // );
@@ -93,7 +106,8 @@ export const editTest = (subjectId, test, onHide) => {
           teacher_id: 16,
           subject_id: subjectId,
           test_date: test.date,
-        }
+        },
+        setAuthHeader(teacher.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -119,14 +133,18 @@ export const editTest = (subjectId, test, onHide) => {
 };
 
 export const deleteTest = (subjectId, testId, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: TEACHER_TESTS_LOADING,
         for: "delete",
       });
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       const res = await axios.delete(
-        `${process.env.REACT_APP_API_HOST_NAME}/test/delete/${testId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/test/delete/${testId}`,
+        setAuthHeader(teacher.token)
       );
       if (res.status === 200) {
         dispatch({

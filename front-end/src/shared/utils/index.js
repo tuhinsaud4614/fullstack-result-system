@@ -41,3 +41,11 @@ export const errorsGenerator = (res) => {
   }
   return messages;
 };
+
+export const setAuthHeader = (token) => {
+  return {
+    headers: {
+      Authorization: token,
+    },
+  };
+};

@@ -58,11 +58,11 @@ Route::put('/subject/archive/{id}', [SubjectController::class, 'subjectArchive']
 
 
 //Test Crontrollers
-Route::get('/test/index/{teacherId}/{subjectId}', [TestController::class, 'index']);
+// Route::get('/test/index/{teacherId}/{subjectId}', [TestController::class, 'index']);
 Route::get('/test/show/{name}', [TestController::class, 'show']);
-Route::post('/test/create/store', [TestController::class, 'store']);
-Route::put('/test/update/{id}', [TestController::class, 'update']);
-Route::delete('/test/delete/{id}', [TestController::class, 'delete']);
+// Route::post('/test/create/store', [TestController::class, 'store']);
+// Route::put('/test/update/{id}', [TestController::class, 'update']);
+// Route::delete('/test/delete/{id}', [TestController::class, 'delete']);
 
 
 //Result Crontrollers
@@ -74,11 +74,6 @@ Route::patch('/result/update/{id}', [ResultController::class, 'update']);
 Route::delete('/result/delete/{id}', [ResultController::class, 'delete']);
 Route::post('/result/upload', [ResultController::class, 'Upload']);
 
-
-// Pupils routes start
-Route::get('/pupil/average-grade/{id}', [PupilController::class, 'pupilIndividualAverageGrade'])->middleware(['auth:api', 'pupil']);
-Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}', [PupilController::class, 'subjectWiseTestGrade'])->middleware(['auth:api', 'pupil']);
-// Pupils routes end
 
 //AssignedClassController Crontrollers
 Route::get('/AssignedClassController/index', [AssignedClassController::class, 'index']);
@@ -94,3 +89,17 @@ Route::get('/teacher/assign/subject/{id}', [MiscellaneousController::class, 'tea
 Route::get('/teacher/average-grade/{teacher_id}/{subject_id}', [MiscellaneousController::class, 'teacherAverageGrade']);
 Route::get('/test-list', [MiscellaneousController::class, 'testList']);
 Route::get('/teacher/test-pupil-option/{teacherId}/{subjectId}', [MiscellaneousController::class, 'teacherTestPupilOption']);
+
+
+// Teacher routes start
+Route::get('/test/index/{teacherId}/{subjectId}', [TestController::class, 'index'])->middleware(['auth:api', 'teacher']);
+Route::post('/test/create/store', [TestController::class, 'store'])->middleware(['auth:api', 'teacher']);
+Route::put('/test/update/{id}', [TestController::class, 'update'])->middleware(['auth:api', 'teacher']);
+Route::delete('/test/delete/{id}', [TestController::class, 'delete'])->middleware(['auth:api', 'teacher']);
+// Teacher routes end
+
+
+// Pupils routes start
+Route::get('/pupil/average-grade/{id}', [PupilController::class, 'pupilIndividualAverageGrade'])->middleware(['auth:api', 'pupil']);
+Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}', [PupilController::class, 'subjectWiseTestGrade'])->middleware(['auth:api', 'pupil']);
+// Pupils routes end
