@@ -66,13 +66,13 @@ Route::get('/test/show/{name}', [TestController::class, 'show']);
 
 
 //Result Crontrollers
-Route::get('/result/index/{teacherId}/{subjectId}/{testId}', [ResultController::class, 'index']);
+// Route::get('/result/index/{teacherId}/{subjectId}/{testId}', [ResultController::class, 'index']);
 Route::get('/result/average-grade-list', [ResultController::class, 'avarageGradeList']);
 Route::get('/result/show/{teacher_id}/{pupil_id}/{subject_id}', [ResultController::class, 'show']);
-Route::post('/result/create/store', [ResultController::class, 'store']);
-Route::patch('/result/update/{id}', [ResultController::class, 'update']);
-Route::delete('/result/delete/{id}', [ResultController::class, 'delete']);
-Route::post('/result/upload', [ResultController::class, 'Upload']);
+// Route::post('/result/create/store', [ResultController::class, 'store']);
+// Route::patch('/result/update/{id}', [ResultController::class, 'update']);
+// Route::delete('/result/delete/{id}', [ResultController::class, 'delete']);
+// Route::post('/result/upload', [ResultController::class, 'Upload']);
 
 
 //AssignedClassController Crontrollers
@@ -86,7 +86,7 @@ Route::post('/AssignedClassController/create/store', [AssignedClassController::c
 Route::get('/teacher-list', [MiscellaneousController::class, 'teacherlist']);
 Route::get('/class-list', [MiscellaneousController::class, 'classlist']);
 // Route::get('/teacher/assign/subject/{id}', [MiscellaneousController::class, 'teacherAssignSubject']);
-Route::get('/teacher/average-grade/{teacher_id}/{subject_id}', [MiscellaneousController::class, 'teacherAverageGrade']);
+// Route::get('/teacher/average-grade/{teacher_id}/{subject_id}', [MiscellaneousController::class, 'teacherAverageGrade']);
 Route::get('/test-list', [MiscellaneousController::class, 'testList']);
 // Route::get('/teacher/test-pupil-option/{teacherId}/{subjectId}', [MiscellaneousController::class, 'teacherTestPupilOption']);
 
@@ -98,6 +98,12 @@ Route::put('/test/update/{id}', [TestController::class, 'update'])->middleware([
 Route::delete('/test/delete/{id}', [TestController::class, 'delete'])->middleware(['auth:api', 'teacher']);
 Route::get('/teacher/test-pupil-option/{teacherId}/{subjectId}', [MiscellaneousController::class, 'teacherTestPupilOption'])->middleware(['auth:api', 'teacher']);
 Route::get('/teacher/assign/subject/{id}', [MiscellaneousController::class, 'teacherAssignSubject'])->middleware(['auth:api', 'teacher']);
+Route::get('/teacher/average-grade/{teacher_id}/{subject_id}', [MiscellaneousController::class, 'teacherAverageGrade'])->middleware(['auth:api', 'teacher']);
+Route::get('/result/index/{teacherId}/{subjectId}/{testId}', [ResultController::class, 'index'])->middleware(['auth:api', 'teacher']);
+Route::post('/result/create/store', [ResultController::class, 'store'])->middleware(['auth:api', 'teacher']);
+Route::patch('/result/update/{id}', [ResultController::class, 'update'])->middleware(['auth:api', 'teacher']);
+Route::delete('/result/delete/{id}', [ResultController::class, 'delete'])->middleware(['auth:api', 'teacher']);
+Route::post('/result/upload', [ResultController::class, 'Upload'])->middleware(['auth:api', 'teacher']);
 // Teacher routes end
 
 

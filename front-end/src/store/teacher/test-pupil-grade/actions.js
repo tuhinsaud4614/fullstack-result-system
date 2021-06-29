@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { errorsGenerator } from "../../../shared/utils";
+import { errorsGenerator, setAuthHeader } from "../../../shared/utils";
 import {
   TEACHER_TEST_PUPIL_GRADE_ADD,
   TEACHER_TEST_PUPIL_GRADE_DELETE,
@@ -13,18 +13,22 @@ import {
 } from "./types";
 
 export const fetchingPupilTestGrade = (subjectId, testId) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: TEACHER_TEST_PUPIL_GRADE_LOADING,
       for: "fetched",
     });
 
     try {
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       // const res = await axios.get(
       //   `${process.env.REACT_APP_API_HOST_NAME}/result/index/{teacherId}/{subjectId}/{testId}`
       // );
       const res = await axios.get(
-        `${process.env.REACT_APP_API_HOST_NAME}/result/index/18/${subjectId}/${testId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/result/index/${teacher.id}/${subjectId}/${testId}`,
+        setAuthHeader(teacher.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -49,17 +53,21 @@ export const fetchingPupilTestGrade = (subjectId, testId) => {
 };
 
 export const addPupilTestGrade = (subjectId, testId, pupil, grade) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/result/create/store`,
         {
           test_id: testId,
-          teacher_id: 16,
+          teacher_id: teacher.id,
           pupil_id: pupil,
           subject_id: subjectId,
           grade: grade,
-        }
+        },
+        setAuthHeader(teacher.token)
       );
       if (res.status === 201) {
         dispatch({
@@ -84,13 +92,17 @@ export const addPupilTestGrade = (subjectId, testId, pupil, grade) => {
 };
 
 export const editPupilTestGrade = (resultId, grade, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       const res = await axios.patch(
         `${process.env.REACT_APP_API_HOST_NAME}/result/update/${resultId}`,
         {
           grade: grade,
-        }
+        },
+        setAuthHeader(teacher.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -117,14 +129,18 @@ export const editPupilTestGrade = (resultId, grade, onHide) => {
 };
 
 export const deletePupilTestGrade = (resultId, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: TEACHER_TEST_PUPIL_GRADE_LOADING,
         for: "delete",
       });
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       const res = await axios.delete(
-        `${process.env.REACT_APP_API_HOST_NAME}/result/delete/${resultId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/result/delete/${resultId}`,
+        setAuthHeader(teacher.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -150,16 +166,20 @@ export const deletePupilTestGrade = (resultId, onHide) => {
 };
 
 export const uploadPupilTestGradeFile = (subjectId, testId, file) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        teacherAuth: { teacher },
+      } = getState();
       const formData = new FormData();
-      formData.append("teacher_id", 18);
+      formData.append("teacher_id", teacher.id);
       formData.append("subject_id", subjectId);
       formData.append("test_id", testId);
       formData.append("file", file);
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/result/upload`,
-        formData
+        formData,
+        setAuthHeader(teacher.token)
       );
       if (res.status === 201 && res.data.data) {
         dispatch({

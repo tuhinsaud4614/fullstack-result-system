@@ -62,7 +62,7 @@ export const addTest = (subjectId, test) => {
         `${process.env.REACT_APP_API_HOST_NAME}/test/create/store`,
         {
           name: test.name,
-          teacher_id: 16,
+          teacher_id: teacher.id,
           subject_id: subjectId,
           test_date: test.date,
         },
@@ -103,7 +103,7 @@ export const editTest = (subjectId, test, onHide) => {
         `${process.env.REACT_APP_API_HOST_NAME}/test/update/${test.id}`,
         {
           name: test.name,
-          teacher_id: 16,
+          teacher_id: teacher.id,
           subject_id: subjectId,
           test_date: test.date,
         },

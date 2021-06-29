@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { BsBoxArrowRight, BsPeopleCircle } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
@@ -13,6 +13,7 @@ import styles from "./Index.module.css";
 
 const Header = () => {
   const rdxDispatch = useDispatch();
+  const { teacher } = useSelector((state) => state.teacherAuth);
 
   const signOutHandler = () => {
     rdxDispatch(teacherSignOut());
@@ -66,7 +67,7 @@ const Header = () => {
                 <BsBoxArrowRight
                   className={`${styles.Icon} d-block mx-auto mb-1`}
                 />
-                Sign Out
+                Sign Out ({teacher.forename})
               </span>
             </li>
           </ul>

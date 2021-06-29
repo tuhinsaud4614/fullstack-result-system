@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { errorsGenerator } from "../../../shared/utils";
+import { errorsGenerator, setAuthHeader } from "../../../shared/utils";
 import {
   TEACHER_AVERAGE_GRADES_ERROR,
   TEACHER_AVERAGE_GRADES_FETCHED,
@@ -8,14 +8,20 @@ import {
 } from "./types";
 
 export const fetchingAverageGrades = (subjectId) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: TEACHER_AVERAGE_GRADES_LOADING,
     });
 
     try {
-      // const res await axios.get(`${process.env.REACT_APP_API_HOST_NAME}/teacher/avarage-grade/{teacher_id}/${subjectId}`);
-      const res = await axios.get(`${process.env.REACT_APP_API_HOST_NAME}/teacher/average-grade/16/${subjectId}`);
+      const {
+        teacherAuth: { teacher },
+      } = getState();
+      // const res await axios.get(`${process.env.REACT_APP_API_HOST_NAME}/teacher/average-grade/{teacher_id}/${subjectId}`);
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_HOST_NAME}/teacher/average-grade/${teacher.id}/${subjectId}`,
+        setAuthHeader(teacher.token)
+      );
       dispatch({
         type: TEACHER_AVERAGE_GRADES_FETCHED,
         payload: res.data.data,

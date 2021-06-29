@@ -62,7 +62,7 @@ class MiscellaneousController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Assign subjects loading failed'
-            ], 401);
+            ], 400);
         }
     }
 

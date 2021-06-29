@@ -20,7 +20,7 @@ function reducer(state = initialState, action) {
       };
     case TEACHER_ASSIGNED_SUBJECTS_ERROR:
       return {
-        data: [],
+        ...state,
         status: "complete",
         error: action.messages,
       };

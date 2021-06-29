@@ -20,7 +20,7 @@ function reducer(state = initialState, action) {
       };
     case TEACHER_AVERAGE_GRADES_ERROR:
       return {
-        data: [],
+        ...state,
         status: "complete",
         error: action.messages,
       };
