@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { errorsGenerator } from "../../../shared/utils";
+import { errorsGenerator, setAuthHeader } from "../../../shared/utils";
 import {
   ADMIN_SUBJECTS_ADD,
   ADMIN_SUBJECTS_ARCHIVE,
@@ -14,7 +14,7 @@ import {
 
 const convertObjToArray = (obj) => {
   let temp = [];
-  if(Array.isArray(obj)) {
+  if (Array.isArray(obj)) {
     return obj;
   }
   if (obj !== null && typeof obj === "object" && !Array.isArray(obj)) {
@@ -46,15 +46,19 @@ const convertToSubjectObj = (data, archiveable) => {
 };
 
 export const fetchingSubjects = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: ADMIN_SUBJECTS_LOADING,
       for: "fetched",
     });
 
     try {
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.get(
-        `${process.env.REACT_APP_API_HOST_NAME}/subject/index`
+        `${process.env.REACT_APP_API_HOST_NAME}/subject/index`,
+        setAuthHeader(admin.token)
       );
       const aSubjects = convertObjToArray(res.data.archiveableSubjects);
       const modifiedData = res.data.data.map((el) =>
@@ -84,15 +88,19 @@ export const fetchingSubjects = () => {
 };
 
 export const addSubject = (name, teacherId, className) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/subject/create/store`,
         {
           name: name,
           teacher_id: teacherId,
           class_name: className,
-        }
+        },
+        setAuthHeader(admin.token)
       );
       if (res.status === 201) {
         dispatch({
@@ -124,17 +132,20 @@ export const userErrorRemove = (closeFor) => {
 };
 
 export const editSubject = (id, name, className, teacher, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       const obj = {
         name: name,
         class_name: className,
         teacher_id: teacher,
       };
-
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/subject/update/${id}`,
-        obj
+        obj,
+        setAuthHeader(admin.token)
       );
       if (res.status === 200 && res.data.data) {
         dispatch({
@@ -160,14 +171,18 @@ export const editSubject = (id, name, className, teacher, onHide) => {
 };
 
 export const deleteSubject = (subjectId, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: ADMIN_SUBJECTS_LOADING,
         for: "delete",
       });
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.post(
-        `${process.env.REACT_APP_API_HOST_NAME}/subject/delete/${subjectId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/subject/delete/${subjectId}`,
+        setAuthHeader(admin.token)
       );
 
       if (res.status === 200) {
@@ -194,14 +209,18 @@ export const deleteSubject = (subjectId, onHide) => {
 };
 
 export const archiveSubject = (subjectId, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: ADMIN_SUBJECTS_LOADING,
         for: "archive",
       });
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.put(
-        `${process.env.REACT_APP_API_HOST_NAME}/subject/archive/${subjectId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/subject/archive/${subjectId}`,
+        setAuthHeader(admin.token)
       );
       if (res.status === 200) {
         dispatch({

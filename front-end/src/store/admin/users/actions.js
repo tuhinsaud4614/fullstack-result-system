@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { errorsGenerator } from "../../../shared/utils";
+import { errorsGenerator, setAuthHeader } from "../../../shared/utils";
 import {
   ADMIN_USERS_ADD,
   ADMIN_USERS_DELETE,
@@ -12,15 +12,19 @@ import {
 } from "./types";
 
 export const fetchingUsers = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: ADMIN_USERS_LOADING,
       for: "fetched",
     });
 
     try {
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.get(
-        `${process.env.REACT_APP_API_HOST_NAME}/users`
+        `${process.env.REACT_APP_API_HOST_NAME}/users`,
+        setAuthHeader(admin.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -45,8 +49,11 @@ export const fetchingUsers = () => {
 };
 
 export const addUser = (username, forename, surname, role, password) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/users`,
         {
@@ -55,7 +62,8 @@ export const addUser = (username, forename, surname, role, password) => {
           lname: surname,
           role: role,
           password: password,
-        }
+        },
+        setAuthHeader(admin.token)
       );
       if (res.status === 201) {
         dispatch({
@@ -87,7 +95,7 @@ export const userErrorRemove = (closeFor) => {
 };
 
 export const editUser = (id, username, forename, surname, password, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       const obj = {
         fname: forename,
@@ -98,9 +106,13 @@ export const editUser = (id, username, forename, surname, password, onHide) => {
       if (password) {
         obj.password = password;
       }
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.put(
         `${process.env.REACT_APP_API_HOST_NAME}/users/${id}`,
-        obj
+        obj,
+        setAuthHeader(admin.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -126,14 +138,18 @@ export const editUser = (id, username, forename, surname, password, onHide) => {
 };
 
 export const deleteUser = (userId, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: ADMIN_USERS_LOADING,
         for: "delete",
       });
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.delete(
-        `${process.env.REACT_APP_API_HOST_NAME}/users/${userId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/users/${userId}`,
+        setAuthHeader(admin.token)
       );
       if (res.status === 200) {
         dispatch({

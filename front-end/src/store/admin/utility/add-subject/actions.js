@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { errorsGenerator } from "../../../../shared/utils";
+import { errorsGenerator, setAuthHeader } from "../../../../shared/utils";
 import {
   UTILITY_SUBJECT_OPTIONS_ERROR,
   UTILITY_SUBJECT_OPTIONS_FETCHED,
@@ -10,6 +10,9 @@ import {
 export const fetchingClassTeacherOptions = () => {
   return async (dispatch, getState) => {
     const { adminClasses, adminUsers } = getState();
+    const {
+      adminAuth: { admin },
+    } = getState();
     if (adminUsers.data.length && adminClasses.data.length) {
       dispatch({
         type: UTILITY_SUBJECT_OPTIONS_FETCHED,
@@ -18,14 +21,19 @@ export const fetchingClassTeacherOptions = () => {
       });
       return;
     }
-
     dispatch({
       type: UTILITY_SUBJECT_OPTIONS_LOADING,
     });
     try {
       const res = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API_HOST_NAME}/class/index`),
-        axios.get(`${process.env.REACT_APP_API_HOST_NAME}/users/teacher`),
+        axios.get(
+          `${process.env.REACT_APP_API_HOST_NAME}/class/index`,
+          setAuthHeader(admin.token)
+        ),
+        axios.get(
+          `${process.env.REACT_APP_API_HOST_NAME}/users/teacher`,
+          setAuthHeader(admin.token)
+        ),
       ]);
       if (res[0].status === 200 && res[1].status === 200) {
         const classOptions = res[0].data.data.map((el) => ({

@@ -17,10 +17,10 @@ class UserController extends Controller
      *
      * @return void
      */
-       public function __construct()
-       {
-        //    $this->middleware(['auth:api', 'admin'])->only([]));
-       }
+    public function __construct()
+    {
+        $this->middleware(['auth:api', 'admin'])->only(['index', 'store', 'update', 'destroy']);
+    }
 
     /**
      * Display a listing of the resource.

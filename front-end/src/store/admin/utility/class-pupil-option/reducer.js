@@ -20,7 +20,7 @@ const reducer = (state = initialState, action) => {
       };
     case ADMIN_CLASS_PUPIL_OPTIONS_ERROR:
       return {
-        options: [],
+        ...state,
         status: "complete",
         error: action.messages,
       };

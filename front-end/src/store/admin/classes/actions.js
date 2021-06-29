@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { errorsGenerator } from "../../../shared/utils";
+import { errorsGenerator, setAuthHeader } from "../../../shared/utils";
 import {
   ADMIN_CLASSES_ADD,
   ADMIN_CLASSES_DELETE,
@@ -12,15 +12,19 @@ import {
 } from "./types";
 
 export const fetchingClasses = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: ADMIN_CLASSES_LOADING,
       for: "fetched",
     });
 
     try {
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.get(
-        `${process.env.REACT_APP_API_HOST_NAME}/class/index`
+        `${process.env.REACT_APP_API_HOST_NAME}/class/index`,
+        setAuthHeader(admin.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -45,13 +49,17 @@ export const fetchingClasses = () => {
 };
 
 export const addClass = (name) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/class/create/store`,
         {
           name: name,
-        }
+        },
+        setAuthHeader(admin.token)
       );
       if (res.status === 201) {
         dispatch({
@@ -83,16 +91,21 @@ export const userErrorRemove = (closeFor) => {
 };
 
 export const editClass = (id, name, pupilId, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       const obj = {
         name: name,
         pupil_id: pupilId,
       };
 
+      const {
+        adminAuth: { admin },
+      } = getState();
+
       const res = await axios.patch(
         `${process.env.REACT_APP_API_HOST_NAME}/class/update/${id}`,
-        obj
+        obj,
+        setAuthHeader(admin.token)
       );
       if (res.status === 200) {
         dispatch({
@@ -118,14 +131,18 @@ export const editClass = (id, name, pupilId, onHide) => {
 };
 
 export const deleteClass = (classId, onHide) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: ADMIN_CLASSES_LOADING,
         for: "delete",
       });
+      const {
+        adminAuth: { admin },
+      } = getState();
       const res = await axios.delete(
-        `${process.env.REACT_APP_API_HOST_NAME}/class/delete/${classId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/class/delete/${classId}`,
+        setAuthHeader(admin.token)
       );
 
       if (res.status === 200) {

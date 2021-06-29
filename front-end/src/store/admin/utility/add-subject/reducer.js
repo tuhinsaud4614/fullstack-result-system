@@ -22,8 +22,7 @@ const reducer = (state = initialState, action) => {
       };
     case UTILITY_SUBJECT_OPTIONS_ERROR:
       return {
-        classes: [],
-        teachers: [],
+        ...state,
         status: "complete",
         error: action.messages,
       };

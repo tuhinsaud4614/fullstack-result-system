@@ -3,18 +3,12 @@ import {
   ADMIN_AUTH_ACTION_PENDING,
   ADMIN_AUTH_ACTION_SIGN_IN,
   ADMIN_AUTH_ACTION_SIGN_OUT,
+  ADMIN_AUTH_REMOVE_ERROR,
 } from "./types";
 import { ADMIN_ROUTES } from "../../../routes/meta-data";
+import { errorsGenerator } from "../../../shared/utils";
 
 let logoutTimer;
-
-function exampleApi(data, duration = 1000) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(data);
-    }, duration);
-  });
-}
 
 export function adminSignOut() {
   localStorage.removeItem("adminData");
@@ -32,35 +26,47 @@ export function adminAuthTimeout(duration) {
   };
 }
 
-export function adminSignIn(username, password, push) {
+export function adminSignIn(userId, password, push) {
   return async (dispatch) => {
     dispatch({
       type: ADMIN_AUTH_ACTION_PENDING,
     });
     try {
-      const signOutTime = Date.now() + 6000 * 20;
-      const data = await exampleApi({
-        id: Date.now().toString(),
-        adminId: Date.now().toString(),
-        forename: "x",
-        surname: "y",
-        username: "xy",
-        role: "admin",
-        expiration: new Date(signOutTime).toISOString(),
-        token: "Bearer ",
-      });
-      localStorage.setItem("adminData", JSON.stringify(data));
-      dispatch({
-        type: ADMIN_AUTH_ACTION_SIGN_IN,
-        admin: data,
-      });
-      dispatch(adminAuthTimeout(signOutTime - Date.now()));
-      push(ADMIN_ROUTES.dashboard.path);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_HOST_NAME}/login`,
+        { userid: userId, password: password }
+      );
+      if (res.status === 200) {
+        const signOutTime =
+          new Date().getTime() + parseInt(res.data.expires_in) * 1000;
+        const data = {
+          id: res.data.user.id,
+          adminId: res.data.user.userid,
+          forename: res.data.user.fname,
+          surname: res.data.user.lname,
+          username: res.data.user.user_name,
+          role: res.data.user.role,
+          expiration: new Date(signOutTime).toISOString(),
+          token: `Bearer ${res.data.access_token}`,
+        };
+        localStorage.setItem("adminData", JSON.stringify(data));
+        dispatch({
+          type: ADMIN_AUTH_ACTION_SIGN_IN,
+          admin: data,
+        });
+        dispatch(adminAuthTimeout(signOutTime - Date.now()));
+        push(ADMIN_ROUTES.dashboard.path);
+      } else {
+        dispatch({
+          type: ADMIN_AUTH_ACTION_ERROR,
+          error: ["Admin login failed"],
+        });
+      }
     } catch (e) {
-      console.log("Sign In Error", e);
+      // console.log("Sign In Error", e);
       dispatch({
         type: ADMIN_AUTH_ACTION_ERROR,
-        errors: "something went wrong",
+        error: errorsGenerator(e),
       });
     }
   };
@@ -85,3 +91,9 @@ export function adminAutoSignIn() {
     }
   };
 }
+
+export const adminAuthErrorRemove = () => {
+  return {
+    type: ADMIN_AUTH_REMOVE_ERROR,
+  };
+};

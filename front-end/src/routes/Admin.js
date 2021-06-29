@@ -37,8 +37,7 @@ const Admin = () => {
     return null;
   }
 
-  // return admin.token && admin.role === "admin" ? (
-    return true ? (
+  return admin.token && admin.role === "admin" ? (
     <div className={`${styles.Root}`}>
       <Sidebar open={isSidebarOpen} onClose={closeSidebar} />
       <section className={`${styles.Content}`}>

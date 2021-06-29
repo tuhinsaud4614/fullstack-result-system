@@ -3,6 +3,7 @@ import {
   ADMIN_AUTH_ACTION_PENDING,
   ADMIN_AUTH_ACTION_SIGN_IN,
   ADMIN_AUTH_ACTION_SIGN_OUT,
+  ADMIN_AUTH_REMOVE_ERROR,
 } from "./types";
 
 const initialState = {
@@ -33,6 +34,11 @@ function reducer(state = initialState, action) {
         ...state,
         loading: "complete",
         error: action.error,
+      };
+    case ADMIN_AUTH_REMOVE_ERROR:
+      return {
+        ...state,
+        error: null,
       };
     case ADMIN_AUTH_ACTION_SIGN_OUT:
       return {

@@ -3,7 +3,8 @@ import { useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import { adminSignIn } from "../../../store/admin/auth/actions";
+import { adminAuthErrorRemove, adminSignIn } from "../../../store/admin/auth/actions";
+import AlertDismissible from "../../../shared/components/alert/Dismissible";
 import Button from "../../../shared/components/button";
 import styles from "./Auth.module.css";
 
@@ -55,6 +56,18 @@ const Auth = () => {
                   Admin Authentication
                 </div>
                 <div className={`card-body`}>
+                  {error && (
+                    <AlertDismissible
+                      className="mb-3"
+                      onHide={() => rdxDispatch(adminAuthErrorRemove())}
+                    >
+                      <ul className={`m-0`}>
+                        {error.map((el, index) => (
+                          <li key={index}>{el}</li>
+                        ))}
+                      </ul>
+                    </AlertDismissible>
+                  )}
                   <div className={`form-floating mb-3`}>
                     <input
                       type="text"
@@ -68,7 +81,7 @@ const Auth = () => {
                       onBlur={handleBlur}
                       onChange={handleChange}
                     />
-                    <label htmlFor="username">Username</label>
+                    <label htmlFor="username">User ID</label>
                     {touched.username && errors.username && (
                       <div className={`invalid-feedback`}>
                         {errors.username}
