@@ -12,15 +12,15 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
- /**
+    /**
      * Create a new AuthController instance.
      *
      * @return void
      */
-//    public function __construct()
-//    {
-//        $this->middleware('auth:api')->except(['login','store']);
-//    }
+       public function __construct()
+       {
+           $this->middleware(['auth:api', 'admin'])->except(['login','logout']);
+       }
 
     /**
      * Display a listing of the resource.
@@ -32,16 +32,16 @@ class UserController extends Controller
         try {
             $users = User::orderBy('id', 'desc')->get();
             return response()->json([
-                'success'=> true,
+                'success' => true,
                 'message' => 'Display All The Users List',
                 'data'  => $users
 
-            ] , 200);
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
-                'errors' => ["notFound"=> ['Users not found']],
-            ] , 401);
+                'success' => false,
+                'errors' => ["notFound" => ['Users not found']],
+            ], 401);
         }
     }
 
@@ -64,24 +64,23 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
 
             'user_name' => 'required|unique:users|string',
             'userid' => 'unique:users|string',
-            'role' => 'required|string', 
-            'password' =>'required|min:6'
+            'role' => 'required|string',
+            'password' => 'required|min:6'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                'success'=> false,
+                'success' => false,
                 'errors' => $validator->errors()
-                ], 422);
+            ], 422);
         }
 
         try {
-            $userid = $request->role == 'admin' ? 'A-'.random_int(100000, 999999) : 
-            (($request->role == 'teacher') ? 'T-'.random_int(100000, 999999) : 'P-'.random_int(100000, 999999));
+            $userid = $request->role == 'admin' ? 'A-' . random_int(100000, 999999) : (($request->role == 'teacher') ? 'T-' . random_int(100000, 999999) : 'P-' . random_int(100000, 999999));
             $user = User::create([
                 // 'userid' =>$request->userid,
                 // 'userid' =>random_int(100000, 999999), //Auto generated id by the system
@@ -91,23 +90,20 @@ class UserController extends Controller
                 'lname' => $request->lname,
                 'role' => $request->role,
                 'remember_token' => NULL,
-                'password' => Hash::make( $request->password)
+                'password' => Hash::make($request->password)
             ]);
 
             return response()->json([
-                'success'=> true,
-                'message' =>'User Created Successfully!!!',
+                'success' => true,
+                'message' => 'User Created Successfully!!!',
                 'data' => $user
-                ], 201);
-           
-        } 
-        catch (\Throwable $th) {
+            ], 201);
+        } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
-                'errors' => ["server"=> ['Something Went Worng...!!!']]
-                ], 400);
+                'success' => false,
+                'errors' => ["server" => ['Something Went Worng...!!!']]
+            ], 400);
         }
-        
     }
 
     /**
@@ -121,26 +117,24 @@ class UserController extends Controller
     {
         try {
             // $users = User::find($userid);
-            $users = User::where('userid',$userid)->get();
-            if(count($users) > 0){   
-            return response()->json([
-                'success'=> true,
-                'message' => 'Display the specific User',
-                'data'  => $users
-            ] , 302);
-            }
-            else{
+            $users = User::where('userid', $userid)->get();
+            if (count($users) > 0) {
                 return response()->json([
-                    'success'=> false,
-                    'errors' => ["notFound"=> ['No User is available At that ID']],
-                ] , 404);
+                    'success' => true,
+                    'message' => 'Display the specific User',
+                    'data'  => $users
+                ], 302);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ["notFound" => ['No User is available At that ID']],
+                ], 404);
             }
-        } 
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
-                'errors' => ["server"=> ['Something went wrong']],
-            ] , 401);
+                'success' => false,
+                'errors' => ["server" => ['Something went wrong']],
+            ], 401);
         }
     }
 
@@ -149,26 +143,24 @@ class UserController extends Controller
     {
         try {
             // $users = User::find($userid);
-            $users = User::where('role',$role)->get();
-            if(count($users) > 0){   
-            return response()->json([
-                'success'=> true,
-                'message' => 'Display the specific User by role',
-                'data'  => $users
-            ] , 200);
-            }
-            else{
+            $users = User::where('role', $role)->get();
+            if (count($users) > 0) {
                 return response()->json([
-                    'success'=> false,
-                    'errors' => ["notFound"=> ['No Users founds by this role']],
-                ] , 404);
+                    'success' => true,
+                    'message' => 'Display the specific User by role',
+                    'data'  => $users
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ["notFound" => ['No Users founds by this role']],
+                ], 404);
             }
-        } 
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
-                'errors' => ["server"=> ['Something went wrong']],
-            ] , 401);
+                'success' => false,
+                'errors' => ["server" => ['Something went wrong']],
+            ], 401);
         }
     }
 
@@ -193,47 +185,45 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
 
             //'userid' => 'required|unique:users|numeric',
             'user_name' => 'unique:users',
-            'password' =>'min:6'
+            'password' => 'min:6'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                'success'=> false,
+                'success' => false,
                 'errors' => $validator->errors()
-                ], 422);
+            ], 422);
         }
 
         try {
-            
-             $user = User::findorfail($id);
+
+            $user = User::findorfail($id);
             //$user = User::where('userid', $userid)->get();
             // dd($user);
             // $user->userid = $request->userid;
-            if($request->user_name && $request->user_name !== $user->user_name){
+            if ($request->user_name && $request->user_name !== $user->user_name) {
                 $user->user_name = $request->user_name;
             }
             $user->fname = $request->fname ? $request->fname : $user->fname;
-            $user->lname = $request->lname ?$request->lname : $user->lname;
+            $user->lname = $request->lname ? $request->lname : $user->lname;
             $user->remember_token = NULL;
-            $user->password =  $request->password ? Hash::make( $request->password) : $user->password;
+            $user->password =  $request->password ? Hash::make($request->password) : $user->password;
             $user->save();
-    
+
             return response()->json([
-                'success'=> true,
-                'message' =>'User Data Updated Successfully!!!',
+                'success' => true,
+                'message' => 'User Data Updated Successfully!!!',
                 'data' => $user
-                ], 200);
-           
-        } 
-        catch (\Throwable $th) {
+            ], 200);
+        } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
-                'errors' => ["updateFailed"=> ['User Data Update failed!!!']],
-                ], 401);
+                'success' => false,
+                'errors' => ["updateFailed" => ['User Data Update failed!!!']],
+            ], 401);
         }
     }
 
@@ -261,106 +251,95 @@ class UserController extends Controller
     //     }
     // }
 
-        /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {   
+    {
         try {
-            $user = User::where('id',$id)->first();
+            $user = User::where('id', $id)->first();
             //deleting the teacher
-            if($user->role === 'teacher')
-            {
-                $subject_teacher = Subject::where('teacher_id',$id)->get();
-                foreach($subject_teacher as $value){
-                    if(count($subject_teacher) > 0 and $value->status == 1)
-                    {
+            if ($user->role === 'teacher') {
+                $subject_teacher = Subject::where('teacher_id', $id)->get();
+                foreach ($subject_teacher as $value) {
+                    if (count($subject_teacher) > 0 and $value->status == 1) {
                         return response()->json([
-                            'success'=> false,
+                            'success' => false,
                             'message' => 'Teacher cannot be Deleted cause He/She is already assigned to Subject!',
-            
-                       ] , 401);
-                    }
-                    else if(count($subject_teacher) > 0 and $value->status == 0)
-                    {
+
+                        ], 401);
+                    } else if (count($subject_teacher) > 0 and $value->status == 0) {
                         $user->delete();
                         return response()->json([
-                            'success'=> true,
+                            'success' => true,
                             'message' => 'Teacher Deleted Successfully!',
-            
-                       ] , 200);
+
+                        ], 200);
                     }
                 }
                 $user->delete();
                 return response()->json([
-                       'success'=> true,
-                       'message' => 'Teacher Deleted Successfully!',
-            
-                ] , 200);
+                    'success' => true,
+                    'message' => 'Teacher Deleted Successfully!',
+
+                ], 200);
             }
-          //  deleting the pupil
-            elseif($user->role === 'pupil')
-            {
-                $pupil_result = Result::where('pupil_id',$id)->get();
+            //  deleting the pupil
+            elseif ($user->role === 'pupil') {
+                $pupil_result = Result::where('pupil_id', $id)->get();
                 //  dd(count($pupil_result));
-                    if(count($pupil_result) > 0 )
-                    {    foreach ($pupil_result as  $value) 
-                        {
-                         $value->delete();
-                        }
-                        $user->delete();
-                        return response()->json([
-                            'success'=> true,
-                            'message' => 'Pupil And Their All Results Deleted Successfully!',
-            
-                    ] , 200);
+                if (count($pupil_result) > 0) {
+                    foreach ($pupil_result as  $value) {
+                        $value->delete();
                     }
-                    else{
-                        $user->delete();
-                        return response()->json([
-                            'success'=> true,
-                            'message' => 'Pupil Deleted Successfully!',
-            
-                        ] , 200);
-                    }
-            }
-            else
-            {
+                    $user->delete();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Pupil And Their All Results Deleted Successfully!',
+
+                    ], 200);
+                } else {
+                    $user->delete();
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Pupil Deleted Successfully!',
+
+                    ], 200);
+                }
+            } else {
                 $user->delete();
                 return response()->json([
-                    'success'=> true,
+                    'success' => true,
                     'message' => 'Admin Deleted Successfully!',
-    
-               ] , 200);
+
+                ], 200);
             }
-            
-        } 
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
+                'success' => false,
                 'message' => 'Somthing Went Wrong... while deleting the user!!!',
-            ] , 401);
+            ], 401);
         }
     }
 
-   /**
-    *
-    * @return \Illuminate\Http\JsonResponse
-    */
-    public function login(Request $request){
+    /**
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login(Request $request)
+    {
 
         $credentials = $request->only('userid', 'password');
-        $data = User::where('userid',$request->userid)->get();
+        $data = User::where('userid', $request->userid)->first();
 
         if ($token = auth()->attempt($credentials)) {
-            return $this->respondWithToken($token , $data);
+            return $this->respondWithToken($token, $data);
         }
 
-        return response()->json(['error' => 'Unauthorized'], 401);
-      
+        return response()->json(['error' => 'Login failed!'], 401);
     }
 
     /**
@@ -368,11 +347,12 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh($data) {
-        return $this->respondWithToken(auth()->refresh(),$data);
+    public function refresh($data)
+    {
+        return $this->respondWithToken(auth()->refresh(), $data);
     }
 
-     /**
+    /**
      * Get the token array structure.
      *
      * @param  string $token
@@ -380,14 +360,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token ,$data)
+    protected function respondWithToken($token, $data)
     {
         return response()->json([
-            'success'=> true,
-            'data'=> $data,
+            'success' => true,
+            'user' => $data,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60 *24
+            'expires_in' => $this->guard()->factory()->getTTL() * 60 * 24
         ]);
     }
 
@@ -402,7 +382,7 @@ class UserController extends Controller
     }
 
 
-        /**
+    /**
      * Log the user out (Invalidate the token)
      *
      * @return \Illuminate\Http\JsonResponse
@@ -411,7 +391,6 @@ class UserController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out'],200);
+        return response()->json(['message' => 'Successfully logged out'], 200);
     }
-
 }

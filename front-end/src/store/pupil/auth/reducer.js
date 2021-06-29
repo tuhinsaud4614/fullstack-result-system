@@ -3,6 +3,7 @@ import {
   PUPIL_AUTH_ACTION_PENDING,
   PUPIL_AUTH_ACTION_SIGN_IN,
   PUPIL_AUTH_ACTION_SIGN_OUT,
+  PUPIL_AUTH_REMOVE_ERROR,
 } from "./types";
 
 const initialState = {
@@ -33,6 +34,11 @@ function reducer(state = initialState, action) {
         ...state,
         loading: "complete",
         error: action.error,
+      };
+    case PUPIL_AUTH_REMOVE_ERROR:
+      return {
+        ...state,
+        error: null,
       };
     case PUPIL_AUTH_ACTION_SIGN_OUT:
       return {

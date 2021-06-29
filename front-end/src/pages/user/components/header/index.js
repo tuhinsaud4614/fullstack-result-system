@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
 // import styles from "./Index.module.css";
@@ -11,6 +11,7 @@ import {
 
 const Header = () => {
   const rdxDispatch = useDispatch();
+  const { pupil } = useSelector((state) => state.pupilAuth);
 
   const signOutHandler = () => {
     rdxDispatch(pupilSignOut());
@@ -56,7 +57,7 @@ const Header = () => {
             </li>
             <li className="nav-item" style={{ cursor: "pointer" }}>
               <span className="nav-link" onClick={signOutHandler}>
-                Sign Out (Pupil)
+                Sign Out ({pupil.forename} {pupil.surname})
               </span>
             </li>
           </ul>

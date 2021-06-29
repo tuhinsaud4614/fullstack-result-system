@@ -8,17 +8,25 @@ import {
 } from "./types";
 
 export const fetchingSubjectAverageGrade = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: PUPIL_SUBJECT_AVERAGE_GRADE_LOADING,
     });
 
     try {
+      const {
+        pupilAuth: { pupil },
+      } = getState();
       // const res = await axios.get(`http://127.0.0.1:8000/api/pupil/average-grade/${userId}`);
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/pupil/average-grade/18`
+        `${process.env.REACT_APP_API_HOST_NAME}/pupil/average-grade/${pupil.id}`,
+        {
+          headers: {
+            Authorization: pupil.token,
+          },
+        }
       );
-      
+
       if (res.status === 200) {
         dispatch({
           type: PUPIL_SUBJECT_AVERAGE_GRADE_FETCHED,
@@ -33,7 +41,7 @@ export const fetchingSubjectAverageGrade = () => {
     } catch (error) {
       dispatch({
         type: PUPIL_SUBJECT_AVERAGE_GRADE_ERROR,
-        messages: errorsGenerator(error)
+        messages: errorsGenerator(error),
       });
     }
   };

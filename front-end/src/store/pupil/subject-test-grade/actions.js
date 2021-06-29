@@ -8,15 +8,23 @@ import {
 } from "./types";
 
 export const fetchingSubjectTestGrade = (subjectId) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: PUPIL_SUBJECT_TEST_GRADE_LOADING,
     });
 
     try {
+      const {
+        pupilAuth: { pupil },
+      } = getState();
       // const res = await axios.get(`http://127.0.0.1:8000/api/pupil/subject-wise-test-grade/${userId}/${subjectId}`);
       const res = await axios.get(
-        `http://127.0.0.1:8000/api/pupil/subject-wise-test-grade/18/${subjectId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/pupil/subject-wise-test-grade/${pupil.id}/${subjectId}`,
+        {
+          headers: {
+            Authorization: pupil.token,
+          },
+        }
       );
       if (res.status === 200) {
         dispatch({

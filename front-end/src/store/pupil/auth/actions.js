@@ -1,20 +1,16 @@
+import axios from "axios";
+
+import { errorsGenerator } from "../../../shared/utils";
 import {
   PUPIL_AUTH_ACTION_ERROR,
   PUPIL_AUTH_ACTION_PENDING,
   PUPIL_AUTH_ACTION_SIGN_IN,
   PUPIL_AUTH_ACTION_SIGN_OUT,
+  PUPIL_AUTH_REMOVE_ERROR,
 } from "./types";
 import { USER_ROUTES } from "../../../routes/meta-data";
 
 let logoutTimer;
-
-function exampleApi(data, duration = 1000) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(data);
-    }, duration);
-  });
-}
 
 export function pupilSignOut() {
   localStorage.removeItem("pupilData");
@@ -26,41 +22,55 @@ export function pupilSignOut() {
 
 export function pupilAuthTimeout(duration) {
   return (dispatch) => {
+    // clearTimeout(logoutTimer);
     logoutTimer = setTimeout(() => {
       dispatch(pupilSignOut());
     }, duration);
   };
 }
 
-export function pupilSignIn(username, password, push) {
+export function pupilSignIn(userId, password, push) {
   return async (dispatch) => {
     dispatch({
       type: PUPIL_AUTH_ACTION_PENDING,
     });
     try {
-      const signOutTime = Date.now() + 6000 * 20;
-      const data = await exampleApi({
-        id: Date.now().toString(),
-        pupilId: Date.now().toString(),
-        forename: "x",
-        surname: "y",
-        username: "xy",
-        role: "pupil",
-        expiration: new Date(signOutTime).toISOString(),
-        token: "Bearer ",
-      });
-      localStorage.setItem("pupilData", JSON.stringify(data));
-      dispatch({
-        type: PUPIL_AUTH_ACTION_SIGN_IN,
-        pupil: data,
-      });
-      dispatch(pupilAuthTimeout(signOutTime - Date.now()));
-      push(USER_ROUTES.home.path);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_HOST_NAME}/login`,
+        { userid: userId, password: password }
+      );
+      if (res.status === 200) {
+        const signOutTime =
+          new Date().getTime() + parseInt(res.data.expires_in) * 1000;
+        const data = {
+          id: res.data.user.id,
+          pupilId: res.data.user.userid,
+          forename: res.data.user.fname,
+          surname: res.data.user.lname,
+          username: res.data.user.user_name,
+          role: res.data.user.role,
+          expiration: new Date(signOutTime).toISOString(),
+          token: `Bearer ${res.data.access_token}`,
+        };
+
+        localStorage.setItem("pupilData", JSON.stringify(data));
+        dispatch({
+          type: PUPIL_AUTH_ACTION_SIGN_IN,
+          pupil: data,
+        });
+        dispatch(pupilAuthTimeout(signOutTime - Date.now()));
+        push(USER_ROUTES.home.path);
+      } else {
+        dispatch({
+          type: PUPIL_AUTH_ACTION_ERROR,
+          error: ["Pupil login failed"],
+        });
+      }
     } catch (e) {
-      console.log("Sign In Error", e);
+      // console.log("Sign In Error", e);
       dispatch({
         type: PUPIL_AUTH_ACTION_ERROR,
-        errors: "something went wrong",
+        error: errorsGenerator(e),
       });
     }
   };
@@ -85,3 +95,9 @@ export function pupilAutoSignIn() {
     }
   };
 }
+
+export const pupilAuthErrorRemove = () => {
+  return {
+    type: PUPIL_AUTH_REMOVE_ERROR,
+  };
+};

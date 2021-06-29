@@ -75,11 +75,10 @@ Route::delete('/result/delete/{id}', [ResultController::class, 'delete']);
 Route::post('/result/upload', [ResultController::class, 'Upload']);
 
 
-//Pupils Controllers
-
-Route::get('/pupil/average-grade/{id}', [PupilController::class, 'pupilIndividualAverageGrade']);
-Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}', [PupilController::class, 'subjectWiseTestGrade']);
-
+// Pupils routes start
+Route::get('/pupil/average-grade/{id}', [PupilController::class, 'pupilIndividualAverageGrade'])->middleware(['auth:api', 'pupil']);
+Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}', [PupilController::class, 'subjectWiseTestGrade'])->middleware(['auth:api', 'pupil']);
+// Pupils routes end
 
 //AssignedClassController Crontrollers
 Route::get('/AssignedClassController/index', [AssignedClassController::class, 'index']);

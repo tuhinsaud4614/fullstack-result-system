@@ -22,8 +22,8 @@ const User = () => {
     return null;
   }
 
-  // return pupil.token && pupil.role === "pupil" ? (
-  return true ? (
+  return pupil.token && pupil.role === "pupil" ? (
+  // return true ? (
     <>
       <Header />
       <main className={`container py-3`}>

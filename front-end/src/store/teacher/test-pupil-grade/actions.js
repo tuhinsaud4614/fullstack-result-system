@@ -24,7 +24,7 @@ export const fetchingPupilTestGrade = (subjectId, testId) => {
       //   `${process.env.REACT_APP_API_HOST_NAME}/result/index/{teacherId}/{subjectId}/{testId}`
       // );
       const res = await axios.get(
-        `${process.env.REACT_APP_API_HOST_NAME}/result/index/16/${subjectId}/${testId}`
+        `${process.env.REACT_APP_API_HOST_NAME}/result/index/18/${subjectId}/${testId}`
       );
       if (res.status === 200) {
         dispatch({
@@ -156,7 +156,7 @@ export const uploadPupilTestGradeFile = (subjectId, testId, file) => {
       formData.append("teacher_id", 18);
       formData.append("subject_id", subjectId);
       formData.append("test_id", testId);
-      formData.append("csvFile", file);
+      formData.append("file", file);
       const res = await axios.post(
         `${process.env.REACT_APP_API_HOST_NAME}/result/upload`,
         formData
