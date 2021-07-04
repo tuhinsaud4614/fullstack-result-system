@@ -65,7 +65,7 @@ const Home = () => {
                 <td>{el.averageGrade}</td>
                 <td>
                   <Link
-                    to={`/${el.subject_id}`}
+                    to={`/pupil/${el.subject_id}`}
                     className={`btn btn-outline-info`}
                   >
                     More

@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { BiShare } from "react-icons/bi";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
@@ -12,7 +13,7 @@ import Button from "../../../shared/components/button";
 import styles from "./Auth.module.css";
 
 const Schema = Yup.object().shape({
-  username: Yup.string().required("Username is required!"),
+  username: Yup.string().required("User ID is required!"),
   password: Yup.string().required("Password is required!"),
 });
 
@@ -57,6 +58,9 @@ const Auth = () => {
                 <div
                   className={`card-header bg-dark text-light fw-bold ${styles.Title}`}
                 >
+                  <Link to="/" className={`${styles.Back}`}>
+                    <BiShare />
+                  </Link>
                   Admin Authentication
                 </div>
                 <div className={`card-body`}>

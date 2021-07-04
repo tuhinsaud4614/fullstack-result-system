@@ -15,7 +15,7 @@ export const TEACHER_ROUTES = {
 };
 
 export const USER_ROUTES = {
-  home: { name: "Home", path: "/" },
-  auth: { name: "Auth", path: "/auth" },
-  tests: {name: "Tests", path: "/:subjectId"}
+  home: { name: "Home", path: "/pupil" },
+  auth: { name: "Auth", path: "/pupil/auth" },
+  tests: {name: "Tests", path: "/pupil/:subjectId"}
 };
